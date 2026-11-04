@@ -305,7 +305,7 @@
                 await signOut(auth);
 
                 await showAnpAlert("Registration Successful", "A verification link has been sent to your email. Please verify your email before logging in.", true);
-                window.location.href = "ANP.HTML"; 
+                window.location.href = "login.html"; 
             } catch (e) {
                 let friendlyMessage = e.message;
                 if (e.code === 'auth/email-already-in-use') {
