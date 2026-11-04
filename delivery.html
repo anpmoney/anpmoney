@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ANP MONEY - Transaction History</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a1f12 0%, #000000 100%);
+            -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .bg-wave-pattern {
+            background: linear-gradient(to bottom, #5cb45c, #3f8e43);
+        }
+        .app-container {
+            width: 100%;
+            max-width: 430px;
+            height: 100dvh;
+            background: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+        @media (min-width: 640px) {
+            .app-container {
+                height: 880px;
+                max-height: 92vh;
+                border-radius: 36px;
+                border: 8px solid rgba(255, 255, 255, 0.12);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="bg-wave-pattern pt-6 px-5 pb-6 text-white">
+            <div class="flex items-center justify-between mb-2">
+                <h1 class="text-lg font-black tracking-tight">Transaction History</h1>
+                <button onclick="window.location.href='index.html'" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs">
+                    <i class="fas fa-home"></i>
+                </button>
+            </div>
+            <p class="text-xs text-green-100">Your deposits, payouts, and request status.</p>
+        </header>
+
+        <!-- Main Content List -->
+        <main class="flex-1 bg-white rounded-t-[24px] -mt-3 relative z-10 px-5 pt-6 pb-24 overflow-y-auto hide-scrollbar">
+            
+            <h3 class="text-gray-800 font-bold text-xs mb-3 flex items-center gap-2">
+                <i class="fas fa-history text-green-600"></i> History Log
+            </h3>
+
+            <div id="history-list" class="flex flex-col gap-3">
+                <div class="text-center py-12 text-gray-400 text-xs">
+                    <i class="fas fa-spinner fa-spin text-lg mb-2 text-green-500"></i>
+                    <p>Loading history...</p>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Bottom Navigation Bar -->
+        <nav class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between items-center px-6 pt-2 pb-5 z-40">
+            <button onclick="window.location.href='index.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600">
+                <i class="fas fa-home text-lg mb-1"></i>
+                <span class="text-[10px] font-medium">Home</span>
+            </button>
+            <button onclick="window.location.href='delivery.html'" class="flex flex-col items-center text-green-600 group">
+                <i class="fas fa-box text-lg mb-1"></i>
+                <span class="text-[10px] font-medium">Delivery</span>
+            </button>
+            <div class="relative -top-6">
+                <button onclick="window.location.href='referral.html'" class="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white border-4 border-white shadow-[0_5px_15px_rgba(74,222,128,0.4)]">
+                    <i class="fas fa-bicycle text-2xl"></i>
+                </button>
+            </div>
+            <button onclick="alert('Map view coming soon!');" class="flex flex-col items-center text-gray-400 group hover:text-green-600">
+                <i class="fas fa-map-marked-alt text-lg mb-1"></i>
+                <span class="text-[10px] font-medium">Map</span>
+            </button>
+            <button onclick="window.location.href='my.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600">
+                <i class="fas fa-user text-lg mb-1"></i>
+                <span class="text-[10px] font-medium">My</span>
+            </button>
+        </nav>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+         const firebaseConfig = {
+    apiKey: "AIzaSyAoXMQtogVuO8O_OXO62JthLagGeqGSPHg",
+    authDomain: "anpmoney-290eb.firebaseapp.com",
+    projectId: "anpmoney-290eb",
+    storageBucket: "anpmoney-290eb.firebasestorage.app",
+    messagingSenderId: "609571923036",
+    appId: "1:609571923036:web:45544e187ce63adec0f299",
+    measurementId: "G-HCW4DY6E6J"
+  };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            const listContainer = document.getElementById("history-list");
+            if (!user) {
+                listContainer.innerHTML = `<p class="text-center text-xs text-gray-500 py-8">Please log in to view your history.</p>`;
+                return;
+            }
+
+            try {
+                const depositsQuery = query(collection(db, "deposits"), where("uid", "==", user.uid));
+                const withdrawalsQuery = query(collection(db, "withdrawals"), where("uid", "==", user.uid));
+
+                const [depositsSnap, withdrawalsSnap] = await Promise.all([
+                    getDocs(depositsQuery),
+                    getDocs(withdrawalsQuery)
+                ]);
+
+                let items = [];
+
+                depositsSnap.forEach(doc => {
+                    const data = doc.data();
+                    items.push({
+                        type: 'Deposit (VIP Pack)',
+                        amount: data.amount,
+                        status: data.status, // approved, pending, rejected
+                        date: data.createdAt ? new Date(data.createdAt) : new Date(0),
+                        meta: `UTR: ${data.utr}`,
+                        adminNote: data.adminNote || null
+                    });
+                });
+
+                withdrawalsSnap.forEach(doc => {
+                    const data = doc.data();
+                    items.push({
+                        type: 'Withdrawal Payout',
+                        amount: data.amount,
+                        status: data.status, // pending, verified, paid, rejected
+                        date: data.createdAt ? new Date(data.createdAt) : new Date(0),
+                        meta: `Bank A/C: ${data.bankAccount}`,
+                        adminNote: data.adminNote || null
+                    });
+                });
+
+                items.sort((a, b) => b.date - a.date);
+
+                listContainer.innerHTML = "";
+
+                if (items.length === 0) {
+                    listContainer.innerHTML = `
+                        <div class="text-center py-12 text-gray-400 text-xs">
+                            <i class="fas fa-file-invoice-dollar text-2xl text-green-300 mb-2"></i>
+                            <p>No transaction history found yet.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                items.forEach(item => {
+                    let badgeColor = "bg-yellow-500/10 text-yellow-600 border-yellow-200";
+                    if (item.status === "approved" || item.status === "paid") {
+                        badgeColor = "bg-green-500/10 text-green-700 border-green-200";
+                    } else if (item.status === "verified") {
+                        badgeColor = "bg-blue-500/10 text-blue-700 border-blue-200";
+                    } else if (item.status === "rejected") {
+                        badgeColor = "bg-red-500/10 text-red-700 border-red-200";
+                    }
+
+                    const card = `
+                        <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 flex flex-col gap-2 shadow-sm">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-xs font-bold text-gray-900">${item.type}</span>
+                                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-full uppercase border ${badgeColor}">${item.status}</span>
+                                    </div>
+                                    <p class="text-[11px] text-gray-500">${item.meta}</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-sm font-black ${item.type.includes('Withdrawal') ? 'text-red-600' : 'text-green-600'}">
+                                        ${item.type.includes('Withdrawal') ? '-' : '+'}₹${(item.amount || 0).toLocaleString()}
+                                    </span>
+                                </div>
+                            </div>
+                            ${item.adminNote ? `
+                                <div class="bg-red-50 border border-red-200 rounded-xl p-2.5 text-[10px] text-red-600 font-medium">
+                                    <i class="fas fa-exclamation-circle mr-1"></i> Note from Admin: ${item.adminNote}
+                                </div>
+                            ` : ''}
+                            <div class="text-[10px] text-gray-400 text-right">${item.date.toLocaleString('en-IN')}</div>
+                        </div>
+                    `;
+                    listContainer.innerHTML += card;
+                });
+
+            } catch (error) {
+                console.error("Error loading history:", error);
+                listContainer.innerHTML = `<p class="text-red-500 text-xs text-center py-4">Error loading history: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

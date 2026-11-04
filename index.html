@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ANP MONEY - Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a1f12 0%, #000000 100%);
+            -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at 20% 20%, rgba(45,164,90,0.15), transparent 40%), 
+                        radial-gradient(circle at 80% 80%, rgba(0,255,150,0.08), transparent 45%);
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .bg-wave-pattern {
+            background: linear-gradient(to bottom, #5cb45c, #3f8e43);
+            position: relative;
+            overflow: hidden;
+        }
+        .banner-landscape {
+            background: linear-gradient(to bottom, #eef7e9, #d3e2c3);
+            position: relative;
+            overflow: hidden;
+        }
+        .anp-banner {
+            background: linear-gradient(to right, #e8f5e9, #c8e6c9);
+        }
+        .glass-modal {
+            background: rgba(20, 40, 25, 0.95);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .app-container {
+            width: 100%;
+            max-width: 430px;
+            height: 100dvh;
+            background: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+        @media (min-width: 640px) {
+            .app-container {
+                height: 880px;
+                max-height: 92vh;
+                border-radius: 36px;
+                border: 8px solid rgba(255, 255, 255, 0.12);
+            }
+        }
+
+        /* Tactile Button & Ripple Physics */
+        .tactile-btn {
+            position: relative; overflow: hidden; transform: translateZ(0);
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease, filter 0.15s ease;
+            cursor: pointer; -webkit-user-select: none; user-select: none;
+        }
+        .tactile-btn:hover { filter: brightness(1.05); }
+        .tactile-btn:active { transform: scale(0.94) translateY(1px) !important; box-shadow: 0 2px 6px rgba(63, 142, 67, 0.25) !important; }
+
+        .ripple {
+            position: absolute; background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%; transform: scale(0); animation: rippleEffect 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards; pointer-events: none;
+        }
+        @keyframes rippleEffect {
+            0% { transform: scale(0); opacity: 0.8; }
+            100% { transform: scale(4.5); opacity: 0; }
+        }
+
+        /* Ambient Header Orbs */
+        @keyframes floatOrb1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(25px, -15px) scale(1.2); }
+        }
+        @keyframes floatOrb2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-20px, 20px) scale(1.3); }
+        }
+        .orb-1 {
+            position: absolute; top: -20px; left: -20px; width: 120px; height: 120px;
+            background: rgba(255, 255, 255, 0.18); border-radius: 50%; filter: blur(25px);
+            animation: floatOrb1 6s infinite ease-in-out; pointer-events: none;
+        }
+        .orb-2 {
+            position: absolute; bottom: -20px; right: -10px; width: 140px; height: 140px;
+            background: rgba(0, 255, 150, 0.15); border-radius: 50%; filter: blur(30px);
+            animation: floatOrb2 8s infinite ease-in-out; pointer-events: none;
+        }
+
+        /* Elite Neon Auras for VIP 3 & 4 */
+        @keyframes eliteAuraGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(250, 204, 21, 0.3), inset 0 0 10px rgba(250, 204, 21, 0.1); border-color: rgba(250, 204, 21, 0.7); }
+            50% { box-shadow: 0 0 30px rgba(250, 204, 21, 0.7), inset 0 0 20px rgba(250, 204, 21, 0.3); border-color: rgba(250, 204, 21, 1); }
+        }
+        @keyframes elitePurpleAura {
+            0%, 100% { box-shadow: 0 0 15px rgba(168, 85, 247, 0.3), inset 0 0 10px rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.7); }
+            50% { box-shadow: 0 0 30px rgba(168, 85, 247, 0.7), inset 0 0 20px rgba(168, 85, 247, 0.3); border-color: rgba(168, 85, 247, 1); }
+        }
+        .animate-gold-aura { animation: eliteAuraGlow 3s infinite ease-in-out; }
+        .animate-purple-aura { animation: elitePurpleAura 3s infinite ease-in-out; }
+
+        @keyframes scaleUpModal {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-modal-pop {
+            animation: scaleUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* UPI-Style Success Ripple & Checkmark Animations */
+        @keyframes rippleEffectModal {
+            0% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+            70% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 30px rgba(34, 197, 94, 0); }
+            100% { transform: scale(1.4); opacity: 0; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        @keyframes popCheck {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-ripple {
+            animation: rippleEffectModal 1.8s infinite cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .animate-pop-check {
+            animation: popCheck 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Floating Telegram Widget Button -->
+        <a href="https://t.me/anpmoney" target="_blank" class="fixed bottom-20 right-5 w-12 h-12 bg-sky-500 hover:bg-sky-600 rounded-full flex items-center justify-center text-white shadow-lg border-2 border-white z-40 transition-transform active:scale-95 tactile-btn" title="Join Telegram Channel">
+            <i class="fab fa-telegram-plane text-xl"></i>
+        </a>
+
+        <div class="flex-1 overflow-y-auto hide-scrollbar pb-24">
+            
+            <header class="bg-wave-pattern pt-6 px-5 pb-8 text-white relative">
+                <!-- Ambient Orbs -->
+                <div class="orb-1"></div>
+                <div class="orb-2"></div>
+
+                <div class="flex items-center justify-between mb-4 relative z-10">
+                    <div class="flex items-center space-x-2 cursor-pointer" onclick="handleAuthAction(() => { handleMyButton(); })">
+                        <div class="w-9 h-9 rounded-full bg-pink-100 flex items-center justify-center border border-pink-200 shadow-sm">
+                            <i class="fas fa-bicycle text-pink-500 text-sm"></i>
+                        </div>
+                        <span class="font-semibold text-sm" id="user-phone">Partner</span>
+                        
+                        <div class="w-8 h-8 rounded-full bg-yellow-300 flex items-center justify-center shadow-sm ml-2 relative">
+                            <div class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></div>
+                            <i class="fas fa-user-astronaut text-blue-600 text-xs"></i>
+                        </div>
+                    </div>
+                    
+                    <div onclick="handleAuthAction(() => { handleMyButton(); })" class="cursor-pointer p-1" title="Account Profile">
+                        <i class="fas fa-user-circle text-white opacity-90 text-xl hover:opacity-100"></i>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-end mt-4 px-2 pb-2 relative z-10">
+                    <div class="flex flex-col">
+                        <span class="text-3xl font-bold tracking-tight" id="user-balance">0.00</span>
+                        <span class="text-xs text-green-100 mt-1">Balance(₹) / Coins</span>
+                    </div>
+                    <div class="flex flex-col items-end gap-2">
+                        <span class="text-xs text-green-100 font-semibold bg-green-700 bg-opacity-40 px-3 py-1 rounded-full" id="partner-level">VIP1</span>
+                        <!-- Withdrawal Button -->
+                        <button onclick="openWithdrawalModal()" class="bg-white text-green-800 font-bold text-xs px-3.5 py-1.5 rounded-xl shadow hover:bg-green-50 transition-all tactile-btn">
+                            <i class="fas fa-wallet mr-1"></i> Withdraw
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="bg-white rounded-t-[24px] -mt-4 relative z-10 px-5 pt-7 pb-8 shadow-[0_-4px_15px_rgba(0,0,0,0.05)]">
+                
+                <div class="grid grid-cols-2 gap-y-8 gap-x-4">
+                    <div class="text-center flex flex-col border-r border-gray-100">
+                        <span class="text-[11px] text-gray-500 font-medium mb-2">Today's earnings(₹)</span>
+                        <span class="text-gray-800 font-bold text-[17px]" id="stat-today">0.00</span>
+                    </div>
+                    <div class="text-center flex flex-col">
+                        <span class="text-[11px] text-gray-500 font-medium mb-2">Referral Rebate(₹)</span>
+                        <span class="text-gray-800 font-bold text-[17px]" id="stat-referral">0.00</span>
+                    </div>
+                    
+                    <div class="col-span-2 h-[1px] bg-gray-100 w-3/4 mx-auto my-[-10px]"></div>
+
+                    <div class="text-center flex flex-col border-r border-gray-100">
+                        <span class="text-[11px] text-gray-500 font-medium mb-2">Delivery rebate(₹)</span>
+                        <span class="text-gray-800 font-bold text-[17px]" id="stat-delivery">0.00</span>
+                    </div>
+                    <div class="text-center flex flex-col">
+                        <span class="text-[11px] text-gray-500 font-medium mb-2">Total revenue(₹)</span>
+                        <span class="text-gray-800 font-bold text-[17px]" id="stat-revenue">0.00</span>
+                    </div>
+                </div>
+
+                <div class="text-center mt-6 mb-4">
+                    <span class="text-xs text-gray-500 font-medium tracking-wide" id="start-date-text">Start date: --</span>
+                </div>
+
+                <!-- VIP PACKAGES SECTION -->
+                <div class="mt-6 mb-6">
+                    <h3 class="text-gray-800 font-bold text-sm mb-3 flex items-center gap-2">
+                        <i class="fas fa-crown text-yellow-500"></i> Select VIP Partner Pack
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- VIP 1 -->
+                        <div onclick="handleVIPClick(499, 'VIP 1', '₹50 daily earnings (Except Monday & Tuesday)')" class="bg-gradient-to-br from-green-50 to-emerald-100 border border-green-200 rounded-2xl p-3 text-center cursor-pointer shadow-sm hover:shadow-md transition-all active:scale-95 tactile-btn">
+                            <span class="text-[11px] font-bold text-green-700 block mb-1">VIP 1</span>
+                            <span class="text-base font-extrabold text-gray-900 block mb-2">₹499</span>
+                            <span class="bg-green-600 text-white text-[10px] font-bold py-1 px-3 rounded-full inline-block">View Details</span>
+                        </div>
+                        
+                        <!-- VIP 2 -->
+                        <div onclick="handleVIPClick(1299, 'VIP 2', '₹130 daily earnings (Except Monday & Tuesday)')" class="bg-gradient-to-br from-emerald-100 to-green-200 border border-green-300 rounded-2xl p-3 text-center cursor-pointer shadow-sm hover:shadow-md transition-all active:scale-95 relative overflow-hidden tactile-btn">
+                            <div class="absolute top-0 right-0 bg-yellow-400 text-[8px] font-bold text-gray-900 px-2.5 py-0.5 rounded-bl-xl shadow">HOT</div>
+                            <span class="text-[11px] font-bold text-green-800 block mb-1">VIP 2</span>
+                            <span class="text-base font-extrabold text-gray-900 block mb-2">₹1,299</span>
+                            <span class="bg-green-700 text-white text-[10px] font-bold py-1 px-3 rounded-full inline-block">View Details</span>
+                        </div>
+                        
+                        <!-- VIP 3 (Diwali Dhamaka) -->
+                        <div onclick="handleVIPClick(4999, 'VIP 3 (Diwali Dhamaka)', '₹500 daily earnings (Except Monday & Tuesday)')" id="vip-card-3" class="bg-gradient-to-br from-red-950 via-amber-900 to-yellow-950 border-2 border-yellow-400 rounded-2xl p-3 text-center cursor-pointer shadow-xl hover:shadow-2xl transition-all active:scale-95 relative overflow-hidden animate-gold-aura tactile-btn">
+                            <div class="absolute top-0 right-0 bg-yellow-400 text-[7px] font-extrabold text-red-950 px-2.5 py-0.5 rounded-bl-xl shadow flex items-center gap-0.5">
+                                <i class="fas fa-fire text-[8px]"></i> DIWALI
+                            </div>
+                            <span class="text-[11px] font-extrabold text-yellow-300 block mb-0.5 tracking-wider">VIP 3 SPECIAL</span>
+                            <div class="mb-1.5">
+                                <span class="line-through text-red-300 text-[10px] block">₹5,999</span>
+                                <span class="text-base font-black text-white drop-shadow-[0_0_8px_rgba(255,215,0,0.9)]">₹4,999</span>
+                            </div>
+                            <span class="bg-gradient-to-r from-yellow-400 to-amber-500 text-red-950 text-[9px] font-black py-0.5 px-2.5 rounded-full inline-block shadow uppercase tracking-wide">
+                                View Details
+                            </span>
+                        </div>
+                        
+                        <!-- VIP 4 (Elite Pack) -->
+                        <div onclick="handleVIPClick(20000, 'VIP 4 Elite', '₹2,000 daily earnings (Except Monday & Tuesday)')" id="vip-card-4" class="bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-950 border-2 border-purple-400 rounded-2xl p-3 text-center cursor-pointer shadow-xl hover:shadow-2xl transition-all active:scale-95 relative overflow-hidden animate-purple-aura tactile-btn">
+                            <div class="absolute top-0 right-0 bg-purple-400 text-[7px] font-extrabold text-indigo-950 px-2.5 py-0.5 rounded-bl-xl shadow flex items-center gap-0.5">
+                                <i class="fas fa-gem text-[8px]"></i> ELITE
+                            </div>
+                            <span class="text-[11px] font-extrabold text-purple-300 block mb-0.5 tracking-wider">VIP 4 PACK</span>
+                            <span class="text-base font-black text-white block mb-2 drop-shadow-[0_0_8px_rgba(168,85,247,0.9)]">₹20,000</span>
+                            <span class="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-[9px] font-black py-0.5 px-2.5 rounded-full inline-block shadow uppercase tracking-wide">
+                                View Details
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="banner-landscape rounded-xl h-28 w-full mt-4 relative shadow-sm border border-green-100 flex flex-col p-3">
+                    <h3 class="text-green-800 font-bold text-sm z-10">Green Ride Partner Program</h3>
+                    <p class="text-[9px] text-green-700 mt-0.5 z-10 w-2/3 leading-tight">let each of your shares bring you green benefits and earnings</p>
+                    
+                    <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#8d6e63] to-transparent opacity-40"></div>
+                    <div class="absolute bottom-0 left-0 w-full flex items-end justify-between px-2 pb-1 z-10">
+                         <div class="flex flex-col items-center"><i class="fas fa-users text-[#388e3c] text-xs"></i><span class="text-[6px] font-bold text-[#3e2723] mt-1 uppercase">Refer</span></div>
+                         <div class="flex flex-col items-center"><i class="fas fa-coins text-[#388e3c] text-xs"></i><span class="text-[6px] font-bold text-[#3e2723] mt-1 uppercase">Earn</span></div>
+                         <div class="flex flex-col items-center"><i class="fas fa-biking text-[#388e3c] text-xs"></i><span class="text-[6px] font-bold text-[#3e2723] mt-1 uppercase">Ride</span></div>
+                         <div class="flex flex-col items-center"><i class="fas fa-leaf text-[#388e3c] text-xs"></i><span class="text-[6px] font-bold text-[#3e2723] mt-1 uppercase">Save</span></div>
+                    </div>
+                    
+                    <div onclick="window.open('https://whatsapp.com', '_blank')" class="absolute right-3 top-3 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white shadow-lg border-2 border-white z-20 cursor-pointer animate-pulse hover:bg-green-600 tactile-btn">
+                        <i class="fab fa-whatsapp text-lg"></i>
+                    </div>
+                </div>
+
+                <div class="anp-banner rounded-xl w-full mt-5 relative p-4 shadow-sm border border-green-200">
+                    <h3 class="text-green-700 font-bold text-base mb-3" id="user-fullname">My ANP Level</h3>
+                    <div class="flex justify-between items-end px-2 mt-2 relative z-10">
+                        <div class="absolute bottom-2 left-4 right-4 h-0.5 bg-green-300 -z-10"></div>
+                        <div class="flex flex-col items-center"><i class="fas fa-bicycle text-green-400 text-sm mb-1 opacity-60"></i><div class="w-1.5 h-1.5 bg-green-400 rounded-full"></div></div>
+                        <div class="flex flex-col items-center"><i class="fas fa-bicycle text-green-500 text-base mb-1 opacity-80"></i><div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div></div>
+                        <div class="flex flex-col items-center"><i class="fas fa-bicycle text-green-600 text-lg mb-1"></i><div class="w-1.5 h-1.5 bg-green-600 rounded-full"></div></div>
+                        <div class="flex flex-col items-center"><i class="fas fa-bicycle text-green-700 text-xl mb-1 transform scale-110"></i><div class="w-2 h-2 bg-green-700 rounded-full"></div></div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+        <!-- Fully Linked Bottom Navigation Bar -->
+        <nav class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between items-center px-6 pt-2 pb-5 z-40 shadow-lg">
+            <button onclick="window.location.href='index.html'" class="flex flex-col items-center text-green-600 group tactile-btn">
+                <i class="fas fa-home text-lg mb-1"></i>
+                <span class="text-[10px] font-medium">Home</span>
+            </button>
+            <button onclick="window.location.href='delivery.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600 transition-colors tactile-btn">
+                <i class="fas fa-box text-lg mb-1"></i>
+                <span class="text-[10px] font-medium">Delivery</span>
+            </button>
+            <div class="relative -top-6">
+                <button onclick="window.location.href='referral.html'" class="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white border-4 border-white shadow-[0_5px_15px_rgba(74,222,128,0.4)] tactile-btn">
+                    <i class="fas fa-bicycle text-2xl"></i>
+                </button>
+            </div>
+            <!-- Map button linked to map.html -->
+            <button onclick="window.location.href='map.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600 transition-colors tactile-btn">
+                <i class="fas fa-map-marked-alt text-lg mb-1"></i>
+                <span class="text-[10px] font-medium">Map</span>
+            </button>
+            <button onclick="handleMyButton()" class="flex flex-col items-center text-gray-400 group hover:text-green-600 transition-colors tactile-btn">
+                <i class="fas fa-user text-lg mb-1"></i>
+                <span class="text-[10px] font-medium" id="nav-my-label">Register</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- VIP Package Details Modal -->
+    <div id="vip-details-modal" class="fixed inset-0 bg-black bg-opacity-85 z-50 flex items-center justify-center hidden px-4 backdrop-blur-md">
+        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl text-white animate-modal-pop">
+            <div class="w-14 h-14 bg-yellow-500 bg-opacity-25 border border-yellow-400 rounded-full flex items-center justify-center mx-auto mb-3 text-yellow-300 text-2xl">
+                <i class="fas fa-award"></i>
+            </div>
+            <h3 id="modal-vip-title" class="text-xl font-bold mb-1">VIP Details</h3>
+            <p id="modal-vip-price" class="text-sm font-extrabold text-yellow-400 mb-4">₹0</p>
+            
+            <div class="bg-white/10 border border-white/10 rounded-2xl p-4 mb-5 text-left">
+                <div class="flex items-center gap-2 mb-2 text-green-300 text-xs font-bold">
+                    <i class="fas fa-check-circle"></i> Daily Earnings Rule:
+                </div>
+                <p id="modal-vip-desc" class="text-xs text-gray-200 leading-relaxed font-medium">Earnings apply daily except Monday and Tuesday.</p>
+            </div>
+
+            <div class="flex flex-col gap-2.5">
+                <button onclick="proceedToPaymentFromModal()" class="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold rounded-2xl text-xs shadow-lg tactile-btn">
+                    Proceed to Payment
+                </button>
+                <button onclick="closeVIPDetailsModal()" class="w-full py-2.5 px-4 bg-transparent hover:bg-white/10 text-gray-300 font-medium rounded-2xl text-xs border border-white/10 tactile-btn">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdrawal Modal with Bank Details & IFSC Validation -->
+    <div id="withdrawal-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden px-4 backdrop-blur-md">
+        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl text-white animate-modal-pop">
+            <div class="w-12 h-12 bg-green-500 bg-opacity-30 border border-green-400 rounded-full flex items-center justify-center mx-auto mb-3 text-green-300 text-xl">
+                <i class="fas fa-university"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-1">Withdraw Funds</h3>
+            <p class="text-[11px] text-gray-300 mb-4">Max withdrawal limit: ₹200</p>
+            
+            <div class="flex flex-col gap-3 text-left mb-3">
+                <div>
+                    <label class="text-[10px] text-green-300 font-semibold mb-1 block">Withdrawal Amount (₹)</label>
+                    <input type="number" id="withdraw-amount" oninput="validateWithdrawalAmount(this)" placeholder="Enter amount" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-green-400">
+                    <p id="withdraw-error-note" class="text-[10px] text-red-400 font-semibold mt-1 hidden"></p>
+                </div>
+                <div id="bank-details-container"></div>
+            </div>
+
+            <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-3 mb-4 text-left">
+                <p class="text-[10px] text-yellow-300 font-medium leading-relaxed">
+                    <i class="fas fa-shield-alt mr-1"></i> Fraudsters usually ask you pin or otp beware of them we are safe and trustworthy.
+                </p>
+            </div>
+
+            <button onclick="submitWithdrawalRequest()" class="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold rounded-2xl text-xs shadow-lg mb-2 tactile-btn">
+                Submit Withdrawal Request
+            </button>
+            <button onclick="closeWithdrawalModal()" class="w-full py-2 px-4 bg-transparent hover:bg-white/10 text-gray-400 rounded-xl text-[11px] tactile-btn">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- Deposit / UPI Payment Modal with Rotating UPI & QR Code -->
+    <div id="deposit-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden px-4 backdrop-blur-md">
+        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl text-white animate-modal-pop">
+            <div class="w-12 h-12 bg-green-500 bg-opacity-30 border border-green-400 rounded-full flex items-center justify-center mx-auto mb-3 text-green-300 text-xl">
+                <i class="fas fa-qrcode"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-1">Buy ANP Coins via UPI</h3>
+            <p class="text-[11px] text-gray-300 mb-2">Scan QR code or click apps below:</p>
+            
+            <!-- Rotating UPI Indicator Box -->
+            <div class="bg-black/40 border border-green-500/30 rounded-xl p-2.5 mb-3 text-xs flex justify-between items-center">
+                <span class="text-gray-300">UPI ID: <strong id="active-upi-text" class="text-green-400 font-mono">...</strong></span>
+                <span class="text-[10px] text-yellow-400 font-mono"><i class="fas fa-clock mr-1"></i> Rotates in <span id="upi-timer-display">60:00</span></span>
+            </div>
+
+            <div id="step-qr" class="block">
+                <div class="bg-white p-3 rounded-2xl inline-block mb-3 shadow-md">
+                    <img id="upi-qr-img" src="qrimg.jpg" alt="UPI QR Code" class="w-40 h-40 mx-auto object-contain">
+                </div>
+                
+                <div class="text-xs text-green-300 font-semibold mb-1">Amount to Pay: <span id="display-amount" class="text-white text-sm font-bold">₹0</span></div>
+                <p class="text-[10px] text-gray-300 mb-3">Pay via app, then enter your 12-digit UPI Reference (UTR) number:</p>
+
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                    <a id="gpay-btn" href="#" target="_blank" class="py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl text-[10px] flex flex-col items-center justify-center shadow-md tactile-btn">
+                        <i class="fab fa-google text-xs mb-1"></i> GPay
+                    </a>
+                    <a id="paytm-btn" href="#" target="_blank" class="py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-xl text-[10px] flex flex-col items-center justify-center shadow-md tactile-btn">
+                        <i class="fas fa-wallet text-xs mb-1"></i> Paytm
+                    </a>
+                    <a id="phonepe-btn" href="#" target="_blank" class="py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-xl text-[10px] flex flex-col items-center justify-center shadow-md tactile-btn">
+                        <i class="fas fa-mobile-alt text-xs mb-1"></i> PhonePe
+                    </a>
+                </div>
+
+                <div class="w-full bg-white rounded-xl flex items-center px-3 py-2.5 mb-3 text-gray-800">
+                    <span class="text-xs font-bold mr-2 text-green-700">UTR</span>
+                    <input type="text" id="utr-number" placeholder="Enter 12-digit UTR / Ref No" maxlength="12" class="w-full bg-transparent outline-none text-xs font-semibold text-gray-800 font-mono">
+                </div>
+
+                <button onclick="submitPaymentProof()" class="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold rounded-2xl text-xs shadow-lg mb-2 tactile-btn">
+                    Submit Payment for Verification
+                </button>
+                <button onclick="closeDepositModal()" class="w-full py-2 px-4 bg-transparent hover:bg-white/10 text-gray-400 rounded-xl text-[11px] tactile-btn">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Ripple & Tick Animation Modal -->
+    <div id="success-animation-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden px-4 backdrop-blur-md">
+        <div class="glass-modal rounded-3xl max-w-sm w-full p-8 text-center shadow-2xl text-white animate-modal-pop relative overflow-hidden">
+            <div class="relative w-24 h-24 mx-auto mb-5 flex items-center justify-center">
+                <div class="absolute inset-0 bg-green-500/30 rounded-full animate-ripple"></div>
+                <div class="absolute inset-2 bg-green-500/40 rounded-full animate-ripple" style="animation-delay: 0.5s;"></div>
+                <div class="relative w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white text-3xl shadow-[0_10px_30px_rgba(34,197,94,0.6)] animate-pop-check">
+                    <i class="fas fa-check"></i>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-extrabold mb-1 tracking-tight">Success!</h3>
+            <p class="text-[12px] text-emerald-300 font-semibold mb-4">Request Processed</p>
+            
+            <div class="bg-white/10 border border-white/10 rounded-2xl p-4 shadow-inner">
+                <p id="success-modal-text" class="text-xs text-gray-200 leading-relaxed font-medium">Your request has been submitted successfully.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guest Mode Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center hidden px-4 backdrop-blur-sm">
+        <div class="glass-modal rounded-3xl max-w-sm w-full p-7 text-center shadow-2xl text-white animate-modal-pop">
+            <div class="w-14 h-14 bg-green-500 bg-opacity-30 border border-green-400 rounded-full flex items-center justify-center mx-auto mb-4 text-green-300 text-2xl">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">New to ANP? Register Now</h3>
+            <p class="text-xs text-gray-200 mb-6">Create an account or log in to buy VIP packs and track your earnings.</p>
+            
+            <div class="flex flex-col gap-3">
+                <button onclick="window.location.href='anpregister.html'" class="w-full py-3.5 px-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-2xl text-sm shadow-lg tactile-btn">
+                    Register Now
+                </button>
+                <button onclick="closeAuthModal()" class="w-full py-3 px-4 bg-transparent hover:bg-white/10 text-gray-300 font-medium rounded-2xl text-xs border border-white/10 tactile-btn">
+                    Continue Browsing
+                </button>
+            </div>
+            <div class="mt-4">
+                <a href="login.html" class="text-xs text-green-400 hover:underline font-semibold">Already have an account? Log In</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+       const firebaseConfig = {
+    apiKey: "AIzaSyAoXMQtogVuO8O_OXO62JthLagGeqGSPHg",
+    authDomain: "anpmoney-290eb.firebaseapp.com",
+    projectId: "anpmoney-290eb",
+    storageBucket: "anpmoney-290eb.firebasestorage.app",
+    messagingSenderId: "609571923036",
+    appId: "1:609571923036:web:45544e187ce63adec0f299",
+    measurementId: "G-HCW4DY6E6J"
+  };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let currentUserData = null;
+        let userDocRef = null;
+        let selectedVIPAmount = 0;
+        let upiTimerInterval = null;
+
+        // Hourly Rotating UPI Pool
+        const MERCHANT_UPIS = ["anpadarshanp@fam", "8115898176@ibl"];
+        const MERCHANT_NAME = "ANP Green Ride";
+
+        function getActiveMerchantUPI() {
+            const hourIndex = Math.floor(Date.now() / (1000 * 60 * 60));
+            return MERCHANT_UPIS[hourIndex % MERCHANT_UPIS.length];
+        }
+
+        function startUpiCountdown() {
+            if (upiTimerInterval) clearInterval(upiTimerInterval);
+            const timerEl = document.getElementById("upi-timer-display");
+            if (!timerEl) return;
+
+            function updateTimer() {
+                const now = new Date();
+                const minutesLeft = 59 - now.getMinutes();
+                const secondsLeft = 59 - now.getSeconds();
+                timerEl.innerText = `${String(minutesLeft).padStart(2, '0')}:${String(secondsLeft).padStart(2, '0')}`;
+            }
+            updateTimer();
+            upiTimerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function showSuccessModal(message = "Your request has been submitted successfully.") {
+            return new Promise((resolve) => {
+                document.getElementById("success-modal-text").innerText = message;
+                const modal = document.getElementById("success-animation-modal");
+                modal.classList.remove("hidden");
+                setTimeout(() => {
+                    modal.classList.add("hidden");
+                    resolve(true);
+                }, 2400);
+            });
+        }
+
+        function getLocalDateStr(date = new Date()) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function parseLocalDate(dateStr) {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        async function checkAndProcessDailyEarnings(userData, docRef) {
+            const todayStr = getLocalDateStr();
+            const lastEarned = userData.lastEarnedDate || todayStr;
+
+            if (lastEarned === todayStr) return;
+
+            let currentDate = parseLocalDate(lastEarned);
+            currentDate.setDate(currentDate.getDate() + 1);
+
+            const todayDate = parseLocalDate(todayStr);
+            let earnedToday = 0;
+            let totalAdded = 0;
+
+            const level = userData.partnerLevel || "VIP1";
+            let dailyRate = 50;
+            if (level === "VIP2") dailyRate = 130;
+            if (level === "VIP3") dailyRate = 500;
+            if (level === "VIP4") dailyRate = 2000;
+
+            while (currentDate <= todayDate) {
+                const dayOfWeek = currentDate.getDay(); 
+                if (dayOfWeek !== 1 && dayOfWeek !== 2) {
+                    totalAdded += dailyRate;
+                    if (getLocalDateStr(currentDate) === todayStr) {
+                        earnedToday += dailyRate;
+                    }
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            if (totalAdded > 0) {
+                const newBalance = (userData.balance || 0) + totalAdded;
+                const newRevenue = (userData.totalRevenue || 0) + totalAdded;
+                const newTodayEarnings = earnedToday;
+
+                await updateDoc(docRef, {
+                    balance: newBalance,
+                    totalRevenue: newRevenue,
+                    todayEarnings: newTodayEarnings,
+                    lastEarnedDate: todayStr
+                });
+
+                userData.balance = newBalance;
+                userData.totalRevenue = newRevenue;
+                userData.todayEarnings = newTodayEarnings;
+                userData.lastEarnedDate = todayStr;
+            } else {
+                await updateDoc(docRef, { lastEarnedDate: todayStr });
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            const myLabel = document.getElementById("nav-my-label");
+
+            if (user) {
+                if (myLabel) myLabel.innerText = "My";
+                
+                document.getElementById("user-phone").innerText = user.email ? user.email.split('@')[0] : "Partner";
+                document.getElementById("user-balance").innerText = "0.00";
+
+                userDocRef = doc(db, "users", user.uid);
+                try {
+                    let userDocSnap = await getDoc(userDocRef);
+                    
+                    if (!userDocSnap.exists()) {
+                        const uniqueRefCode = "ANP" + user.uid.substring(0, 6).toUpperCase();
+                        currentUserData = {
+                            fullName: user.displayName || "Partner",
+                            phone: user.phoneNumber || "",
+                            email: user.email || "",
+                            balance: 0,
+                            partnerLevel: "VIP1",
+                            todayEarnings: 0,
+                            referralRebate: 0,
+                            deliveryRebate: 0,
+                            totalRevenue: 0,
+                            referralCode: uniqueRefCode,
+                            referredBy: "",
+                            lastEarnedDate: getLocalDateStr(),
+                            startDate: new Date().toLocaleDateString('en-IN')
+                        };
+                        await setDoc(userDocRef, currentUserData);
+                    } else {
+                        currentUserData = userDocSnap.data();
+                        await checkAndProcessDailyEarnings(currentUserData, userDocRef);
+                    }
+
+                    document.getElementById("user-fullname").innerText = currentUserData.fullName || "Partner";
+                    document.getElementById("user-phone").innerText = currentUserData.phone ? currentUserData.phone.slice(-4).padStart(currentUserData.phone.length, '*') : (currentUserData.email ? currentUserData.email.split('@')[0] : "Partner");
+                    document.getElementById("user-balance").innerText = (currentUserData.balance || 0).toLocaleString();
+                    document.getElementById("partner-level").innerText = currentUserData.partnerLevel || "VIP1";
+                    document.getElementById("stat-today").innerText = (currentUserData.todayEarnings || 0).toLocaleString();
+                    document.getElementById("stat-referral").innerText = (currentUserData.referralRebate || 0).toLocaleString();
+                    document.getElementById("stat-delivery").innerText = (currentUserData.deliveryRebate || 0).toLocaleString();
+                    document.getElementById("stat-revenue").innerText = (currentUserData.totalRevenue || 0).toLocaleString();
+                    if (currentUserData.startDate) {
+                        document.getElementById("start-date-text").innerText = `Start date: ${currentUserData.startDate}`;
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            } else {
+                if (myLabel) myLabel.innerText = "Register";
+                document.getElementById("user-phone").innerText = "Guest Mode";
+                document.getElementById("user-balance").innerText = "0.00";
+                document.getElementById("partner-level").innerText = "VIP1";
+            }
+        });
+
+        window.handleAuthAction = function(callback) {
+            if (!currentUser) {
+                document.getElementById("auth-modal").classList.remove("hidden");
+            } else {
+                if (callback) callback();
+            }
+        }
+
+        window.openWithdrawalModal = function() {
+            handleAuthAction(() => {
+                const bankContainer = document.getElementById("bank-details-container");
+                if (currentUserData && currentUserData.bankAccount) {
+                    bankContainer.innerHTML = `
+                        <div class="bg-white/10 border border-white/20 rounded-xl p-3 text-xs text-gray-200">
+                            <p class="text-green-300 font-bold mb-1"><i class="fas fa-check-circle mr-1"></i> Saved Bank Account:</p>
+                            <p>A/C: <span class="text-white font-mono">${currentUserData.bankAccount}</span></p>
+                            <p>IFSC: <span class="text-white font-mono">${currentUserData.ifsc || 'N/A'}</span></p>
+                        </div>
+                    `;
+                } else {
+                    bankContainer.innerHTML = `
+                        <label class="text-[10px] text-green-300 font-semibold mb-1 block">Bank Account Number</label>
+                        <input type="text" id="withdraw-account-num" placeholder="Enter 9 to 18 digit A/C No" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-green-400 mb-2 font-mono">
+                        
+                        <label class="text-[10px] text-green-300 font-semibold mb-1 block">IFSC Code</label>
+                        <input type="text" id="withdraw-ifsc" placeholder="e.g. SBIN0001234" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-green-400 uppercase font-mono">
+                    `;
+                }
+                document.getElementById("withdrawal-modal").classList.remove("hidden");
+            });
+        }
+
+        window.closeWithdrawalModal = function() {
+            document.getElementById("withdrawal-modal").classList.add("hidden");
+            document.getElementById("withdraw-amount").value = "";
+            document.getElementById("withdraw-error-note").classList.add("hidden");
+        }
+
+        window.validateWithdrawalAmount = function(input) {
+            const val = parseFloat(input.value);
+            const errNote = document.getElementById("withdraw-error-note");
+            
+            if (val > 200) {
+                errNote.innerText = "We can only process amount upto 200 , dont exceed limit if you want your money be safe .";
+                errNote.classList.remove("hidden");
+                input.style.borderColor = "red";
+            } else {
+                errNote.classList.add("hidden");
+                input.style.borderColor = "rgba(255,255,255,0.2)";
+            }
+        }
+
+        window.submitWithdrawalRequest = async function() {
+            const amount = parseFloat(document.getElementById("withdraw-amount").value);
+            const errNote = document.getElementById("withdraw-error-note");
+
+            if (!amount || amount <= 0) {
+                await showSuccessModal("Please enter a valid withdrawal amount.");
+                return;
+            }
+            if (amount > 200) {
+                errNote.innerText = "We can only process amount upto 200 , dont exceed limit if you want your money be safe .";
+                errNote.classList.remove("hidden");
+                return;
+            }
+
+            const currentBalance = currentUserData && currentUserData.balance ? currentUserData.balance : 0;
+            if (currentBalance <= 0) {
+                await showSuccessModal("Your balance is 0.00! You cannot make a withdrawal request.");
+                return;
+            }
+            if (amount > currentBalance) {
+                await showSuccessModal(`Insufficient balance! Your available balance is ₹${currentBalance.toLocaleString()}.`);
+                return;
+            }
+
+            try {
+                const todayDateStr = getLocalDateStr();
+                const wdrQuery = query(collection(db, "withdrawals"), where("uid", "==", currentUser.uid));
+                const wdrSnap = await getDocs(wdrQuery);
+                let todayCount = 0;
+                wdrSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.createdAt && data.createdAt.startsWith(todayDateStr)) {
+                        todayCount++;
+                    }
+                });
+
+                if (todayCount >= 3) {
+                    await showSuccessModal("Daily withdrawal limit reached! You can only submit up to 3 withdrawal requests per day.");
+                    return;
+                }
+            } catch (e) {
+                console.error("Error checking daily withdrawal limit:", e);
+            }
+
+            let bankAccount = "";
+            let ifsc = "";
+
+            const accInput = document.getElementById("withdraw-account-num");
+            const ifscInput = document.getElementById("withdraw-ifsc");
+
+            if (accInput && ifscInput) {
+                bankAccount = accInput.value.trim();
+                ifsc = ifscInput.value.trim().toUpperCase();
+
+                const accountRegex = /^\d{9,18}$/;
+                const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+
+                if (!accountRegex.test(bankAccount)) {
+                    await showSuccessModal("Invalid Bank Account Number! Please enter a valid 9 to 18 digit account number.");
+                    return;
+                }
+                if (!ifscRegex.test(ifsc)) {
+                    await showSuccessModal("Invalid IFSC Code! Format should be 4 letters, '0', and 6 alphanumeric chars (e.g. SBIN0001234).");
+                    return;
+                }
+
+                await updateDoc(userDocRef, {
+                    bankAccount: bankAccount,
+                    ifsc: ifsc
+                });
+                currentUserData.bankAccount = bankAccount;
+                currentUserData.ifsc = ifsc;
+            } else if (currentUserData && currentUserData.bankAccount) {
+                bankAccount = currentUserData.bankAccount;
+                ifsc = currentUserData.ifsc || "";
+            } else {
+                await showSuccessModal("Please enter your bank account details.");
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "withdrawals"), {
+                    uid: currentUser.uid,
+                    email: currentUser.email,
+                    amount: amount,
+                    bankAccount: bankAccount,
+                    ifsc: ifsc,
+                    status: "pending",
+                    createdAt: new Date().toISOString()
+                });
+
+                closeWithdrawalModal();
+                await showSuccessModal("Withdrawal request submitted successfully!");
+
+            } catch (error) {
+                await showSuccessModal("Error submitting withdrawal: " + error.message);
+            }
+        }
+
+        window.handleVIPClick = function(amount, title, description) {
+            handleAuthAction(() => {
+                selectedVIPAmount = amount;
+                document.getElementById("modal-vip-title").innerText = title;
+                document.getElementById("modal-vip-price").innerText = `Package Price: ₹${amount.toLocaleString()}`;
+                document.getElementById("modal-vip-desc").innerText = description;
+                document.getElementById("vip-details-modal").classList.remove("hidden");
+            });
+        }
+
+        window.closeVIPDetailsModal = function() {
+            document.getElementById("vip-details-modal").classList.add("hidden");
+        }
+
+        window.proceedToPaymentFromModal = function() {
+            closeVIPDetailsModal();
+            document.getElementById("deposit-modal").classList.remove("hidden");
+            document.getElementById("display-amount").innerText = `₹${selectedVIPAmount.toLocaleString()}`;
+
+            const activeUpi = getActiveMerchantUPI();
+            document.getElementById("active-upi-text").innerText = activeUpi;
+            startUpiCountdown();
+
+            const upiString = `upi://pay?pa=${activeUpi}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${selectedVIPAmount.toFixed(2)}&cu=INR`;
+
+            document.getElementById("gpay-btn").href = upiString;
+            document.getElementById("paytm-btn").href = upiString;
+            document.getElementById("phonepe-btn").href = upiString;
+
+            document.getElementById("upi-qr-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(upiString)}`;
+        }
+
+        window.closeDepositModal = function() {
+            document.getElementById("deposit-modal").classList.add("hidden");
+            document.getElementById("utr-number").value = "";
+            if (upiTimerInterval) clearInterval(upiTimerInterval);
+        }
+
+        window.submitPaymentProof = async function() {
+            const utrInput = document.getElementById("utr-number").value.trim();
+
+            if (!utrInput || utrInput.length < 6) {
+                await showSuccessModal("Please enter a valid 12-digit UPI Reference (UTR) number to verify your payment.");
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "deposits"), {
+                    uid: currentUser.uid,
+                    email: currentUser.email,
+                    amount: selectedVIPAmount,
+                    utr: utrInput,
+                    status: "pending",
+                    createdAt: new Date().toISOString()
+                });
+
+                closeDepositModal();
+                await showSuccessModal("Payment proof submitted! Pending admin verification.");
+                window.location.href = "delivery.html";
+
+            } catch (error) {
+                await showSuccessModal("Error submitting payment: " + error.message);
+            }
+        }
+
+        window.handleMyButton = function() {
+            if (!currentUser) {
+                window.location.href = 'anpregister.html';
+            } else {
+                window.location.href = 'my.html';
+            }
+        }
+
+        window.closeAuthModal = function() {
+            document.getElementById("auth-modal").classList.add("hidden");
+        }
+
+        // Universal Tactile Ripple Effect Listener
+        document.addEventListener('click', function (e) {
+            const target = e.target.closest('.tactile-btn');
+            if (!target) return;
+            const existingRipple = target.querySelector('.ripple');
+            if (existingRipple) existingRipple.remove();
+            const circle = document.createElement('span');
+            const rect = target.getBoundingClientRect();
+            const diameter = Math.max(rect.width, rect.height);
+            const radius = diameter / 2;
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${e.clientX - rect.left - radius}px`;
+            circle.style.top = `${e.clientY - rect.top - radius}px`;
+            circle.classList.add('ripple');
+            target.appendChild(circle);
+            setTimeout(() => circle.remove(), 600);
+        });
+    </script>
+</body>
+</html>
