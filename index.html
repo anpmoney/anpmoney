@@ -263,7 +263,7 @@
 
             <main class="bg-white rounded-t-[24px] -mt-4 relative z-10 px-5 pt-7 pb-8 shadow-[0_-4px_15px_rgba(0,0,0,0.05)]">
                 
-                <!-- DIWALI FESTIVE CANDLE & COUNTDOWN BANNER -->
+                <!-- DIWALI FESTIVE CANDLE & GLOBAL COUNTDOWN BANNER -->
                 <div class="relative overflow-hidden rounded-3xl p-4 mb-6 bg-gradient-to-r from-amber-950 via-gray-900 to-yellow-950 border-2 border-yellow-400 shadow-[0_0_25px_rgba(234,179,8,0.3)] animate-gold-aura">
                     <div class="absolute -top-10 -right-10 w-28 h-28 bg-yellow-500/25 rounded-full blur-2xl pointer-events-none"></div>
                     <div class="flex items-center justify-between mb-3">
@@ -281,7 +281,7 @@
                         </span>
                     </div>
 
-                    <!-- Real-Time Countdown Grid -->
+                    <!-- Real-Time Global Firestore Countdown Grid -->
                     <div class="grid grid-cols-3 gap-2 text-center">
                         <div class="bg-black/50 border border-yellow-500/30 rounded-2xl p-2">
                             <span id="cd-hours" class="text-sm font-black text-white font-mono block">00</span>
@@ -296,6 +296,13 @@
                             <span class="text-[8px] text-yellow-400 font-bold uppercase block">Secs</span>
                         </div>
                     </div>
+                </div>
+
+                <!-- TRY YOUR LUCK LUCKY DRAW BUTTON (Disappears after one use) -->
+                <div class="mb-6" id="lucky-draw-container">
+                    <button onclick="openLuckyDrawModal()" class="w-full py-3.5 px-4 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 text-gray-950 font-black rounded-2xl text-xs shadow-lg tactile-btn flex items-center justify-center gap-2 border border-yellow-200">
+                        <i class="fas fa-gift text-sm animate-bounce"></i> Try Your Luck (Special Lucky Draw!)
+                    </button>
                 </div>
 
                 <div class="grid grid-cols-2 gap-y-8 gap-x-4">
@@ -330,7 +337,7 @@
                         <i class="fas fa-crown text-yellow-500"></i> Select VIP Partner Pack (Diwali Pricing)
                     </h3>
                     <div class="grid grid-cols-2 gap-3">
-                        <!-- VIP 1 (499 cut to 399) -->
+                        <!-- VIP 1 -->
                         <div onclick="handleVIPClick(399, 'VIP 1 (Diwali Offer)', '₹50 daily earnings (Except Monday & Tuesday)')" class="bg-gradient-to-br from-green-50 to-emerald-100 border border-green-200 rounded-2xl p-3 text-center cursor-pointer shadow-sm hover:shadow-md transition-all active:scale-95 tactile-btn relative overflow-hidden">
                             <div class="absolute top-0 right-0 bg-yellow-500 text-[8px] font-extrabold text-gray-950 px-2 py-0.5 rounded-bl-xl shadow">DIWALI</div>
                             <span class="text-[11px] font-bold text-green-700 block mb-1">VIP 1</span>
@@ -341,7 +348,7 @@
                             <span class="bg-green-600 text-white text-[10px] font-bold py-1 px-3 rounded-full inline-block">View Details</span>
                         </div>
                         
-                        <!-- VIP 2 (1299 cut to 1000) -->
+                        <!-- VIP 2 -->
                         <div onclick="handleVIPClick(1000, 'VIP 2 (Diwali Offer)', '₹130 daily earnings (Except Monday & Tuesday)')" class="bg-gradient-to-br from-emerald-100 to-green-200 border border-green-300 rounded-2xl p-3 text-center cursor-pointer shadow-sm hover:shadow-md transition-all active:scale-95 relative overflow-hidden tactile-btn">
                             <div class="absolute top-0 right-0 bg-yellow-500 text-[8px] font-bold text-gray-950 px-2.5 py-0.5 rounded-bl-xl shadow">HOT</div>
                             <span class="text-[11px] font-bold text-green-800 block mb-1">VIP 2</span>
@@ -352,7 +359,7 @@
                             <span class="bg-green-700 text-white text-[10px] font-bold py-1 px-3 rounded-full inline-block">View Details</span>
                         </div>
                         
-                        <!-- VIP 3 (Diwali Dhamaka 4999) -->
+                        <!-- VIP 3 -->
                         <div onclick="handleVIPClick(4999, 'VIP 3 (Diwali Dhamaka)', '₹500 daily earnings (Except Monday & Tuesday)')" id="vip-card-3" class="bg-gradient-to-br from-red-950 via-amber-900 to-yellow-950 border-2 border-yellow-400 rounded-2xl p-3 text-center cursor-pointer shadow-xl hover:shadow-2xl transition-all active:scale-95 relative overflow-hidden animate-gold-aura tactile-btn">
                             <div class="absolute top-0 right-0 bg-yellow-400 text-[7px] font-extrabold text-red-950 px-2.5 py-0.5 rounded-bl-xl shadow flex items-center gap-0.5">
                                 <i class="fas fa-fire text-[8px]"></i> DIWALI
@@ -365,17 +372,17 @@
                             <span class="bg-gradient-to-r from-yellow-400 to-amber-500 text-red-950 text-[9px] font-black py-0.5 px-2.5 rounded-full inline-block shadow uppercase tracking-wide">View Details</span>
                         </div>
                         
-                        <!-- VIP 4 (20000 cut to 19500) -->
-                        <div onclick="handleVIPClick(19500, 'VIP 4 Elite (Diwali Offer)', '₹2,000 daily earnings (Except Monday & Tuesday)')" id="vip-card-4" class="bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-950 border-2 border-purple-400 rounded-2xl p-3 text-center cursor-pointer shadow-xl hover:shadow-2xl transition-all active:scale-95 relative overflow-hidden animate-purple-aura tactile-btn">
-                            <div class="absolute top-0 right-0 bg-purple-400 text-[7px] font-extrabold text-indigo-950 px-2.5 py-0.5 rounded-bl-xl shadow flex items-center gap-0.5">
+                        <!-- VIP 4 (Dynamic 2-Day Event Clock & Border when won via Luck) -->
+                        <div onclick="handleVIPClick(window.hasVip4Discount ? 18000 : 19500, 'VIP 4 Elite (Diwali Offer)', '₹2,000 daily earnings (Except Monday & Tuesday)')" id="vip-card-4" class="bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-950 border-2 border-purple-400 rounded-2xl p-3 text-center cursor-pointer shadow-xl hover:shadow-2xl transition-all active:scale-95 relative overflow-hidden animate-purple-aura tactile-btn">
+                            <div class="absolute top-0 right-0 bg-purple-400 text-[7px] font-extrabold text-indigo-950 px-2.5 py-0.5 rounded-bl-xl shadow flex items-center gap-0.5" id="vip4-badge-label">
                                 <i class="fas fa-gem text-[8px]"></i> ELITE
                             </div>
                             <span class="text-[11px] font-extrabold text-purple-300 block mb-0.5 tracking-wider">VIP 4 PACK</span>
                             <div class="mb-1.5">
-                                <span class="line-through text-purple-300 text-[10px] block">₹20,000</span>
-                                <span class="text-base font-black text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.9)]">₹19,500</span>
+                                <span class="line-through text-purple-300 text-[10px] block" id="vip4-old-price">₹20,000</span>
+                                <span class="text-base font-black text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.9)]" id="vip4-price-display">₹19,500</span>
                             </div>
-                            <span class="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-[9px] font-black py-0.5 px-2.5 rounded-full inline-block shadow uppercase tracking-wide">View Details</span>
+                            <span class="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-[9px] font-black py-0.5 px-2.5 rounded-full inline-block shadow uppercase tracking-wide" id="vip4-btn-text">View Details</span>
                         </div>
                     </div>
                 </div>
@@ -411,7 +418,7 @@
             </main>
         </div>
 
-        <!-- Fully Linked Bottom Navigation Bar (5 Standard Tabs: Home, Delivery, Bike Logo/Promotion, Map, My) -->
+        <!-- Fully Linked Bottom Navigation Bar -->
         <nav class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between items-center px-6 pt-2 pb-5 z-40 shadow-lg">
             <button onclick="window.location.href='index.html'" class="flex flex-col items-center text-green-600 group tactile-btn">
                 <i class="fas fa-home text-lg mb-1"></i>
@@ -420,6 +427,10 @@
             <button onclick="window.location.href='delivery.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600 transition-colors tactile-btn">
                 <i class="fas fa-box text-lg mb-1"></i>
                 <span class="text-[10px] font-medium">Delivery</span>
+            </button>
+            <button onclick="window.location.href='games.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600 transition-colors tactile-btn">
+                <i class="fas fa-gamepad text-lg mb-1"></i>
+                <span class="text-[10px] font-medium">Games</span>
             </button>
             <div class="relative -top-6">
                 <button onclick="window.location.href='referral.html'" class="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white border-4 border-white shadow-[0_5px_15px_rgba(74,222,128,0.4)] tactile-btn" title="Promotion">
@@ -459,6 +470,30 @@
                 </button>
                 <button onclick="closeVIPDetailsModal()" class="w-full py-2.5 px-4 bg-transparent hover:bg-white/10 text-gray-300 font-medium rounded-2xl text-xs border border-white/10 tactile-btn">
                     Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lucky Draw Modal -->
+    <div id="luck-modal" class="fixed inset-0 bg-black bg-opacity-85 z-50 flex items-center justify-center hidden px-4 backdrop-blur-md">
+        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-center text-white">
+            <div class="w-16 h-16 bg-yellow-500/30 border border-yellow-400 rounded-full flex items-center justify-center mx-auto mb-3 text-yellow-300 text-3xl animate-bounce">
+                <i class="fas fa-gift"></i>
+            </div>
+            <h3 class="text-xl font-extrabold mb-1 text-yellow-300">Diwali Lucky Draw!</h3>
+            <p class="text-xs text-gray-300 mb-4">Try your luck to win instant cash or massive VIP 4 discount!</p>
+            
+            <div id="luck-result-box" class="bg-black/40 border border-yellow-500/40 rounded-2xl p-4 mb-5">
+                <p class="text-sm font-bold text-white" id="luck-result-text">Tap below to spin & test your luck!</p>
+            </div>
+
+            <div class="flex flex-col gap-2.5">
+                <button id="spin-luck-btn" onclick="executeLuckyDraw()" class="w-full py-3.5 px-4 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-gray-950 font-black rounded-2xl text-xs shadow-lg tactile-btn flex items-center justify-center gap-2">
+                    <i class="fas fa-star text-sm"></i> Spin / Try Luck Now!
+                </button>
+                <button onclick="closeLuckyDrawModal()" class="w-full py-2.5 px-4 bg-transparent hover:bg-white/10 text-gray-300 font-medium rounded-2xl text-xs border border-white/10 tactile-btn">
+                    Close
                 </button>
             </div>
         </div>
@@ -567,7 +602,7 @@
     </div>
 
     <!-- Guest Auth Modal -->
-    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center hidden px-4 backdrop-blur-sm">
+    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center hidden px-4 backdrop-blur-md">
         <div class="glass-modal rounded-3xl max-w-sm w-full p-7 text-center text-white">
             <div class="w-14 h-14 bg-green-500 bg-opacity-30 border border-green-400 rounded-full flex items-center justify-center mx-auto mb-4 text-green-300 text-2xl">
                 <i class="fas fa-user-plus"></i>
@@ -591,7 +626,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, query, where, increment } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -613,8 +648,8 @@
         let userDocRef = null;
         let selectedVIPAmount = 0;
         let upiTimerInterval = null;
+        window.hasVip4Discount = false;
 
-        // Hourly Rotating UPI Pool
         const MERCHANT_UPIS = ["anpadarshanp@fam", "8115898176@ibl"];
         const MERCHANT_NAME = "ANP Green Ride";
 
@@ -650,27 +685,46 @@
             });
         }
 
-        // Real Diwali Countdown Timer Logic (Targeting Nov 8, 2026)
-        function startDiwaliCountdown() {
-            const targetTime = new Date("2026-11-08T00:00:00+05:30").getTime();
-            setInterval(() => {
-                const now = new Date().getTime();
-                const distance = targetTime - now;
-                if (distance > 0) {
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    
-                    const h = document.getElementById("cd-hours");
-                    const m = document.getElementById("cd-mins");
-                    const s = document.getElementById("cd-secs");
-                    if (h) h.innerText = String(hours).padStart(2, '0');
-                    if (m) m.innerText = String(minutes).padStart(2, '0');
-                    if (s) s.innerText = String(seconds).padStart(2, '0');
+        // Persistent Global 2-Day Countdown Synchronized via Firestore
+        async function initGlobalDiwaliCountdown() {
+            const countdownRef = doc(db, "globalSettings", "diwaliCountdown");
+            try {
+                let snap = await getDoc(countdownRef);
+                let targetTime;
+                const now = Date.now();
+                
+                if (!snap.exists()) {
+                    targetTime = now + (2 * 24 * 60 * 60 * 1000);
+                    await setDoc(countdownRef, { targetTime: targetTime });
+                } else {
+                    targetTime = snap.data().targetTime;
+                    if (targetTime <= now) {
+                        targetTime = now + (2 * 24 * 60 * 60 * 1000);
+                        await updateDoc(countdownRef, { targetTime: targetTime });
+                    }
                 }
-            }, 1000);
+
+                setInterval(() => {
+                    const currentTime = Date.now();
+                    const distance = targetTime - currentTime;
+                    if (distance > 0) {
+                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                        
+                        const h = document.getElementById("cd-hours");
+                        const m = document.getElementById("cd-mins");
+                        const s = document.getElementById("cd-secs");
+                        if (h) h.innerText = String(hours).padStart(2, '0');
+                        if (m) m.innerText = String(minutes).padStart(2, '0');
+                        if (s) s.innerText = String(seconds).padStart(2, '0');
+                    }
+                }, 1000);
+            } catch (err) {
+                console.error("Error initializing global countdown:", err);
+            }
         }
-        startDiwaliCountdown();
+        initGlobalDiwaliCountdown();
 
         function getLocalDateStr(date = new Date()) {
             const y = date.getFullYear();
@@ -703,7 +757,7 @@
             let dailyRate = 50;
             if (level === "VIP2") dailyRate = 130;
             if (level === "VIP3") dailyRate = 500;
-            if (level === "VIP4") dailyRate = 2000;
+            if (level === "VIP4") dailyRate = 2000; // Corrected VIP4 daily rate to 2000
 
             while (currentDate <= todayDate) {
                 const dayOfWeek = currentDate.getDay(); 
@@ -763,12 +817,29 @@
                             referralCode: uniqueRefCode,
                             referredBy: "",
                             lastEarnedDate: getLocalDateStr(),
-                            startDate: new Date().toLocaleDateString('en-IN')
+                            startDate: new Date().toLocaleDateString('en-IN'),
+                            hasUsedLuckyDraw: false,
+                            vip4DiscountExpiry: null
                         };
                         await setDoc(userDocRef, currentUserData);
                     } else {
                         currentUserData = userDocSnap.data();
                         await checkAndProcessDailyEarnings(currentUserData, userDocRef);
+                    }
+
+                    // Check One-Time Lucky Draw status
+                    if (currentUserData.hasUsedLuckyDraw) {
+                        const luckContainer = document.getElementById("lucky-draw-container");
+                        if (luckContainer) luckContainer.style.display = "none";
+                    }
+
+                    // Check VIP 4 Discount Event Timer Status
+                    if (currentUserData.vip4DiscountExpiry) {
+                        const expiryTime = new Date(currentUserData.vip4DiscountExpiry).getTime();
+                        if (expiryTime > Date.now()) {
+                            window.hasVip4Discount = true;
+                            applyVip4DiscountUI(expiryTime);
+                        }
                     }
 
                     const displayName = currentUserData.fullName || user.displayName || user.email.split('@')[0] || "Partner";
@@ -794,12 +865,94 @@
             }
         });
 
+        function applyVip4DiscountUI(expiryTime) {
+            const card4 = document.getElementById("vip-card-4");
+            const priceDisp = document.getElementById("vip4-price-display");
+            const oldPrice = document.getElementById("vip4-old-price");
+            const badgeLabel = document.getElementById("vip4-badge-label");
+
+            if (card4) {
+                card4.classList.add("border-4", "border-yellow-400", "shadow-[0_0_25px_rgba(234,179,8,0.7)]");
+            }
+            if (priceDisp) priceDisp.innerText = "₹18,000";
+            if (oldPrice) oldPrice.innerText = "₹19,500";
+            if (badgeLabel) {
+                badgeLabel.innerHTML = `<i class="fas fa-clock text-[8px] animate-pulse text-yellow-300"></i> EVENT ACTIVE`;
+                badgeLabel.className = "absolute top-0 right-0 bg-yellow-500 text-[7px] font-extrabold text-gray-950 px-2.5 py-0.5 rounded-bl-xl shadow flex items-center gap-1";
+            }
+        }
+
         window.handleAuthAction = function(callback) {
             if (!currentUser) {
                 document.getElementById("auth-modal").classList.remove("hidden");
             } else {
                 if (callback) callback();
             }
+        }
+
+        // Try Your Luck Lucky Draw Logic (Rarer 50 Rs, Easier VIP 4 Discount to 18,000)
+        window.openLuckyDrawModal = function() {
+            handleAuthAction(() => {
+                if (currentUserData && currentUserData.hasUsedLuckyDraw) {
+                    document.getElementById("lucky-draw-container").style.display = "none";
+                    return;
+                }
+                document.getElementById("luck-result-text").innerText = "Tap below to spin & test your luck!";
+                document.getElementById("spin-luck-btn").disabled = false;
+                document.getElementById("luck-modal").classList.remove("hidden");
+            });
+        }
+
+        window.closeLuckyDrawModal = function() {
+            document.getElementById("luck-modal").classList.add("hidden");
+        }
+
+        window.executeLuckyDraw = async function() {
+            const btn = document.getElementById("spin-luck-btn");
+            const resultText = document.getElementById("luck-result-text");
+            btn.disabled = true;
+            resultText.innerText = "Spinning the wheel of fortune...";
+
+            setTimeout(async () => {
+                // Probabilities: 75% VIP 4 Discount (Easier), 25% ₹50 Cash Balance (Rarer)
+                const roll = Math.random();
+                let prizeMsg = "";
+                const expiryDate = new Date(Date.now() + (2 * 24 * 60 * 60 * 1000)).toISOString();
+
+                if (roll < 0.25) {
+                    // Rarer: ₹50 Free Wallet Balance
+                    const bonus = 50;
+                    await updateDoc(userDocRef, {
+                        balance: increment(bonus),
+                        totalRevenue: increment(bonus),
+                        hasUsedLuckyDraw: true
+                    });
+                    currentUserData.balance += bonus;
+                    currentUserData.totalRevenue += bonus;
+                    currentUserData.hasUsedLuckyDraw = true;
+                    
+                    document.getElementById("user-balance").innerText = currentUserData.balance.toLocaleString();
+                    document.getElementById("stat-revenue").innerText = currentUserData.totalRevenue.toLocaleString();
+                    prizeMsg = `💎 RARE WIN! You won ₹${bonus} Free Wallet Balance added directly to your account!`;
+                } else {
+                    // Easier: VIP 4 Discount to ₹18,000 (Active for 2 days with clock icon & border)
+                    await updateDoc(userDocRef, {
+                        hasUsedLuckyDraw: true,
+                        vip4DiscountExpiry: expiryDate
+                    });
+                    currentUserData.hasUsedLuckyDraw = true;
+                    currentUserData.vip4DiscountExpiry = expiryDate;
+                    window.hasVip4Discount = true;
+                    applyVip4DiscountUI(new Date(expiryDate).getTime());
+
+                    prizeMsg = `🌟 AMAZING! You unlocked the VIP 4 Special Event! Get VIP 4 for just ₹18,000 (Active for 2 days with event clock)!`;
+                }
+
+                // Hide button forever (one-time use)
+                document.getElementById("lucky-draw-container").style.display = "none";
+                resultText.innerText = prizeMsg;
+                btn.disabled = false;
+            }, 1200);
         }
 
         window.openWithdrawalModal = function() {
@@ -867,10 +1020,6 @@
                 errNote.innerText = `! Cannot exceed your balance or ₹20,000 limit (Max allowed: ₹${maxAllowed.toLocaleString()}).`;
                 errNote.classList.remove("hidden");
                 await showSuccessModal(`! Cannot withdraw ₹${amount.toLocaleString()}. Max allowed limit is ₹${maxAllowed.toLocaleString()}.`);
-                return;
-            }
-            if (amount > currentBalance) {
-                await showSuccessModal(`! Insufficient balance! Your available balance is ₹${currentBalance.toLocaleString()}.`);
                 return;
             }
 
@@ -957,6 +1106,10 @@
 
         window.handleVIPClick = function(amount, title, description) {
             handleAuthAction(() => {
+                // If VIP 4 is clicked and user won the lucky draw discount, charge 18000 instead of 19500
+                if (amount === 19500 && window.hasVip4Discount) {
+                    amount = 18000;
+                }
                 selectedVIPAmount = amount;
                 document.getElementById("modal-vip-title").innerText = title;
                 document.getElementById("modal-vip-price").innerText = `Package Price: ₹${amount.toLocaleString()}`;
@@ -1032,12 +1185,10 @@
             document.getElementById("auth-modal").classList.add("hidden");
         }
 
-        // Universal Tactile Ripple & Button-Internal Sparkle Effect Listener
         document.addEventListener('click', function (e) {
             const target = e.target.closest('.tactile-btn, button');
             if (!target) return;
             
-            // Internal Sparkle Dots
             for (let i = 0; i < 5; i++) {
                 const sparkle = document.createElement('span');
                 sparkle.className = 'absolute w-1.5 h-1.5 bg-yellow-300 rounded-full pointer-events-none z-50 animate-ping';
