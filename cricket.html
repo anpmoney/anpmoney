@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ANP MONEY - Live Cricket Betting</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+        .bg-wave-pattern {
+            background: linear-gradient(135deg, #2da45a 0%, #3f8e43 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 430px;
+            height: 100dvh;
+            background: #f8fafc;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(45, 164, 90, 0.25);
+        }
+        @media (min-width: 640px) {
+            .app-container {
+                height: 880px;
+                max-height: 92vh;
+                border-radius: 36px;
+                border: 8px solid rgba(45, 164, 90, 0.3);
+            }
+        }
+        .classic-card {
+            background: #ffffff;
+            border: 1px solid rgba(45, 164, 90, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+        .glass-modal {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid rgba(45, 164, 90, 0.4);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 30px rgba(45,164,90,0.15);
+        }
+        .tactile-btn {
+            position: relative; overflow: hidden; transform: translateZ(0);
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease, filter 0.15s ease;
+            cursor: pointer; -webkit-user-select: none; user-select: none;
+        }
+        .tactile-btn:hover { filter: brightness(1.05); }
+        .tactile-btn:active { transform: scale(0.94) translateY(1px) !important; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="bg-wave-pattern pt-4 px-4 pb-4 text-white relative flex-shrink-0 shadow-md">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <button onclick="window.location.href='games.html'" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs hover:bg-white/30 transition-all tactile-btn">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-sm font-black tracking-tight">Live Cricket Hub</h1>
+                </div>
+                <span class="text-[9px] bg-white text-emerald-800 font-bold px-2.5 py-0.5 rounded-full uppercase shadow">Match Center</span>
+            </div>
+
+            <!-- Gaming Wallet Card -->
+            <div class="bg-white/10 border border-white/20 rounded-xl p-2.5 flex justify-between items-center backdrop-blur-sm">
+                <div>
+                    <span class="text-[9px] text-emerald-100 uppercase tracking-wider block font-semibold">Gaming Balance</span>
+                    <span class="text-base font-black text-white font-mono" id="game-wallet-balance">₹0.00</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-[10px] text-emerald-100 font-mono font-bold" id="active-bets-count">Active Bets: 0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Matches View -->
+        <main class="flex-1 relative z-10 flex flex-col p-4 overflow-y-auto hide-scrollbar gap-3.5">
+            
+            <div class="flex items-center justify-between">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-emerald-800"><i class="fas fa-shield-alt mr-1 text-emerald-600"></i> Match Schedule & Odds</h2>
+                <span class="text-[10px] text-slate-500">Firestore Secure</span>
+            </div>
+
+            <!-- Match 1: LIVE MATCH -->
+            <div class="classic-card rounded-2xl p-4 flex flex-col gap-3" id="match-ind-nz">
+                <div class="flex justify-between items-center text-[10px] text-emerald-700 font-semibold border-b border-slate-100 pb-2">
+                    <span><i class="fas fa-trophy mr-1"></i> India Tour of New Zealand, 3rd ODI</span>
+                    <span class="bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold animate-pulse">● LIVE</span>
+                </div>
+
+                <div class="flex items-center justify-between px-2">
+                    <div class="flex flex-col items-center flex-1">
+                        <span class="text-xs font-bold text-slate-900">New Zealand</span>
+                        <span class="text-[10px] text-slate-600 font-mono" id="nz-score">245/6 (42.3 ov)</span>
+                    </div>
+                    <span class="text-xs font-black text-emerald-600 px-3">VS</span>
+                    <div class="flex flex-col items-center flex-1">
+                        <span class="text-xs font-bold text-slate-900">India</span>
+                        <span class="text-[10px] text-slate-600 font-mono" id="ind-score">198/3 (32.1 ov)</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-1" id="btns-ind-nz">
+                    <button onclick="openBetSlip('match_ind_nz', 'India Tour of New Zealand', 'New Zealand', 2.15)" class="py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl flex justify-between items-center text-xs text-slate-900 tactile-btn">
+                        <span class="font-semibold">NZ Win</span>
+                        <span class="font-mono font-bold text-emerald-700">2.15x</span>
+                    </button>
+                    <button onclick="openBetSlip('match_ind_nz', 'India Tour of New Zealand', 'India', 1.70)" class="py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl flex justify-between items-center text-xs text-slate-900 tactile-btn">
+                        <span class="font-semibold">IND Win</span>
+                        <span class="font-mono font-bold text-emerald-700">1.70x</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Match 2: UPCOMING MATCH -->
+            <div class="classic-card rounded-2xl p-4 flex flex-col gap-3" id="match-sa-aus">
+                <div class="flex justify-between items-center text-[10px] text-emerald-700 font-semibold border-b border-slate-100 pb-2">
+                    <span><i class="fas fa-trophy mr-1"></i> Australia Tour of South Africa, 1st T20I</span>
+                    <span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold">Upcoming (Today, 7:30 PM)</span>
+                </div>
+
+                <div class="flex items-center justify-between px-2 py-1">
+                    <div class="flex flex-col items-center flex-1">
+                        <span class="text-xs font-bold text-slate-900">South Africa</span>
+                    </div>
+                    <span class="text-xs font-black text-emerald-600 px-3">VS</span>
+                    <div class="flex flex-col items-center flex-1">
+                        <span class="text-xs font-bold text-slate-900">Australia</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-1" id="btns-sa-aus">
+                    <button onclick="openBetSlip('match_sa_aus', 'South Africa vs Australia', 'South Africa', 1.85)" class="py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl flex justify-between items-center text-xs text-slate-900 tactile-btn">
+                        <span class="font-semibold">SA Win</span>
+                        <span class="font-mono font-bold text-emerald-700">1.85x</span>
+                    </button>
+                    <button onclick="openBetSlip('match_sa_aus', 'South Africa vs Australia', 'Australia', 1.95)" class="py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl flex justify-between items-center text-xs text-slate-900 tactile-btn">
+                        <span class="font-semibold">AUS Win</span>
+                        <span class="font-mono font-bold text-emerald-700">1.95x</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Match 3: MATCH END -->
+            <div class="classic-card rounded-2xl p-4 flex flex-col gap-3 opacity-90">
+                <div class="flex justify-between items-center text-[10px] text-slate-500 font-semibold border-b border-slate-100 pb-2">
+                    <span><i class="fas fa-trophy mr-1"></i> Sri Lanka Tour of Pakistan, 1st Test</span>
+                    <span class="bg-slate-200 text-slate-700 px-2.5 py-0.5 rounded-full font-bold">Match End</span>
+                </div>
+
+                <div class="flex items-center justify-between px-2">
+                    <div class="flex flex-col items-center flex-1">
+                        <span class="text-xs font-bold text-slate-900">Pakistan</span>
+                        <span class="text-[10px] text-slate-500 font-mono">310 & 245/8 dec</span>
+                    </div>
+                    <span class="text-xs font-black text-slate-400 px-3">VS</span>
+                    <div class="flex flex-col items-center flex-1">
+                        <span class="text-xs font-bold text-slate-900">Sri Lanka</span>
+                        <span class="text-[10px] text-slate-500 font-mono">275 & 220 all out</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-100 py-1.5 px-3 rounded-lg text-center">
+                    <p class="text-[11px] font-semibold text-emerald-800">Result: Pakistan won by 60 runs</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Bet Slip Modal -->
+    <div id="bet-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden px-4 backdrop-blur-sm">
+        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-slate-900 shadow-2xl">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-sm font-bold text-emerald-800"><i class="fas fa-ticket-alt mr-1"></i> Place Match Bet</h3>
+                <button onclick="closeBetModal()" class="text-slate-400 hover:text-slate-700 text-xs"><i class="fas fa-times text-base"></i></button>
+            </div>
+            
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-4 text-xs">
+                <p class="text-slate-600 mb-1" id="slip-match-name">Match: IND vs NZ</p>
+                <p class="font-bold text-emerald-800 text-sm mb-1" id="slip-selection">Selection: India (Win)</p>
+                <p class="text-emerald-600 font-mono font-bold" id="slip-odds">Odds: 1.70x</p>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-[11px] text-slate-600 mb-1.5 font-medium">Enter Bet Amount (₹):</label>
+                <input type="number" id="bet-amount-input" value="100" min="10" class="w-full bg-white border border-emerald-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 font-mono outline-none focus:border-emerald-500">
+            </div>
+
+            <div class="flex justify-between items-center text-xs mb-5 px-1 bg-slate-100 py-2 rounded-lg">
+                <span class="text-slate-500">Estimated Payout:</span>
+                <span class="font-mono font-bold text-emerald-700 text-sm" id="payout-preview">₹170.00</span>
+            </div>
+
+            <button onclick="confirmBet()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-extrabold rounded-xl text-xs shadow-lg tactile-btn">
+                Confirm & Place Bet
+            </button>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden px-4 backdrop-blur-sm">
+        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-center text-slate-900 shadow-2xl">
+            <div id="modal-icon" class="w-14 h-14 bg-emerald-100 border border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl text-emerald-600">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h3 id="modal-title" class="text-lg font-bold mb-1">Bet Placed!</h3>
+            <p id="modal-desc" class="text-xs text-slate-600 mb-5 leading-relaxed">Your bet has been recorded successfully.</p>
+            <button onclick="closeResultModal()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-xl text-xs tactile-btn">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <!-- Firebase & Firestore Bet Validation Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAoXMQtogVuO8O_OXO62JthLagGeqGSPHg",
+            authDomain: "anpmoney-290eb.firebaseapp.com",
+            projectId: "anpmoney-290eb",
+            storageBucket: "anpmoney-290eb.firebasestorage.app",
+            messagingSenderId: "609571923036",
+            appId: "1:609571923036:web:45544e187ce63adec0f299",
+            measurementId: "G-HCW4DY6E6J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let userDocRef = null;
+        let userBalance = 0;
+        let activeBets = {}; // Store matchId -> boolean placed status from Firebase
+
+        let currentSlip = { matchId: '', matchName: '', team: '', odds: 1.0 };
+
+        // Live Score Simulation
+        let indRuns = 198, indWickets = 3, indBalls = 1;
+        setInterval(() => {
+            if (Math.random() > 0.3) {
+                indRuns += Math.floor(Math.random() * 3);
+                indBalls++;
+                if (indBalls > 5) {
+                    indBalls = 0;
+                    indWickets += Math.random() < 0.1 ? 1 : 0;
+                }
+                const overDisplay = `${Math.floor(indWickets >= 10 ? 50 : 32)}.${indBalls}`;
+                document.getElementById('ind-score').innerText = `${indRuns}/${indWickets} (${overDisplay} ov)`;
+            }
+        }, 4000);
+
+        const betInput = document.getElementById('bet-amount-input');
+        betInput.addEventListener('input', updatePayoutPreview);
+
+        function updatePayoutPreview() {
+            const amt = parseFloat(betInput.value) || 0;
+            const payout = amt * currentSlip.odds;
+            document.getElementById('payout-preview').innerText = `₹${payout.toFixed(2)}`;
+        }
+
+        window.openErrorModal = function(title, desc) {
+            document.getElementById("modal-title").innerText = title;
+            document.getElementById("modal-desc").innerText = desc;
+            const el = document.getElementById("modal-icon");
+            el.className = `w-14 h-14 bg-red-100 border border-red-300 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl text-red-600`;
+            el.innerHTML = `<i class="fas fa-exclamation-triangle"></i>`;
+            document.getElementById("game-modal").classList.remove("hidden");
+        }
+
+        window.openSuccessModal = function(title, desc) {
+            document.getElementById("modal-title").innerText = title;
+            document.getElementById("modal-desc").innerText = desc;
+            const el = document.getElementById("modal-icon");
+            el.className = `w-14 h-14 bg-emerald-100 border border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl text-emerald-600`;
+            el.innerHTML = `<i class="fas fa-check-circle"></i>`;
+            document.getElementById("game-modal").classList.remove("hidden");
+        }
+
+        window.closeResultModal = function() {
+            document.getElementById("game-modal").classList.add("hidden");
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'ANP.HTML';
+                return;
+            }
+            currentUser = user;
+            userDocRef = doc(db, "users", user.uid);
+            await fetchUserData();
+        });
+
+        async function fetchUserData() {
+            try {
+                const snap = await getDoc(userDocRef);
+                if (snap.exists()) {
+                    userBalance = snap.data().balance || 0;
+                    document.getElementById("game-wallet-balance").innerText = `₹${userBalance.toLocaleString()}`;
+                }
+
+                // Fetch user's active bets from Firestore subcollection
+                const betsSnap = await getDocs(collection(db, "users", currentUser.uid, "bets"));
+                activeBets = {};
+                let count = 0;
+                betsSnap.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    activeBets[docSnap.id] = data;
+                    count++;
+                    
+                    // Lock buttons for already betted matches in UI
+                    lockMatchButtons(docSnap.id);
+                });
+                document.getElementById("active-bets-count").innerText = `Active Bets: ${count}`;
+            } catch (e) {
+                console.error("Data fetch error:", e);
+            }
+        }
+
+        function lockMatchButtons(matchId) {
+            const btnContainer = document.getElementById(`btns-${matchId.replace('match_', '')}`);
+            if (btnContainer) {
+                btnContainer.innerHTML = `<div class="col-span-2 py-2 bg-slate-100 text-center rounded-xl text-xs font-bold text-emerald-800"><i class="fas fa-check-circle mr-1"></i> Bet Placed on this Match</div>`;
+            }
+        }
+
+        window.openBetSlip = function(matchId, matchName, team, odds) {
+            // Check if user already bet on this match in Firebase state
+            if (activeBets[matchId]) {
+                openErrorModal("Already Betted", "You have already placed a bet on this match. Only 1 bet per match is allowed!");
+                return;
+            }
+
+            currentSlip = { matchId, matchName, team, odds };
+            document.getElementById('slip-match-name').innerText = `Match: ${matchName}`;
+            document.getElementById('slip-selection').innerText = `Selection: ${team} (Win)`;
+            document.getElementById('slip-odds').innerText = `Odds: ${odds}x`;
+            updatePayoutPreview();
+            document.getElementById('bet-modal').classList.remove('hidden');
+        }
+
+        window.closeBetModal = function() {
+            document.getElementById('bet-modal').classList.add('hidden');
+        }
+
+        window.confirmBet = async function() {
+            const amt = parseFloat(betInput.value);
+            if (!amt || amt <= 0) {
+                openErrorModal("Invalid Bet", "Please enter a valid bet amount.");
+                return;
+            }
+            if (amt > userBalance) {
+                openErrorModal("Insufficient Balance", "Your gaming balance is too low to place this bet.");
+                return;
+            }
+
+            // Double check Firestore before writing
+            if (activeBets[currentSlip.matchId]) {
+                closeBetModal();
+                openErrorModal("Already Betted", "You have already placed a bet on this match.");
+                return;
+            }
+
+            closeBetModal();
+
+            // 1. Deduct balance from user doc
+            await updateDoc(userDocRef, { balance: increment(-amt) });
+            userBalance -= amt;
+            document.getElementById("game-wallet-balance").innerText = `₹${userBalance.toLocaleString()}`;
+
+            // 2. Save bet in Firebase subcollection users/{uid}/bets/{matchId}
+            const betRef = doc(db, "users", currentUser.uid, "bets", currentSlip.matchId);
+            await setDoc(betRef, {
+                matchName: currentSlip.matchName,
+                team: currentSlip.team,
+                odds: currentSlip.odds,
+                amount: amt,
+                status: 'active',
+                timestamp: new Date().toISOString()
+            });
+
+            activeBets[currentSlip.matchId] = { team: currentSlip.team, amount: amt };
+            lockMatchButtons(currentSlip.matchId);
+            document.getElementById("active-bets-count").innerText = `Active Bets: ${Object.keys(activeBets).length}`;
+
+            openSuccessModal("Bet Saved to Firebase!", `₹${amt.toLocaleString()} placed on ${currentSlip.team} (${currentSlip.odds}x).`);
+        }
+
+        document.addEventListener('click', function (e) {
+            const target = e.target.closest('.tactile-btn');
+            if (!target) return;
+            const circle = document.createElement('span');
+            const rect = target.getBoundingClientRect();
+            const d = Math.max(rect.width, rect.height);
+            circle.style.width = circle.style.height = `${d}px`;
+            circle.style.left = `${e.clientX - rect.left - d/2}px`;
+            circle.style.top = `${e.clientY - rect.top - d/2}px`;
+            circle.classList.add('ripple');
+            target.appendChild(circle);
+            setTimeout(() => circle.remove(), 600);
+        });
+    </script>
+</body>
+</html>

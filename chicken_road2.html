@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ANP MONEY - Chicken Road 2</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a1f12 0%, #000000 100%);
+            -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at 20% 20%, rgba(45,164,90,0.15), transparent 40%), 
+                        radial-gradient(circle at 80% 80%, rgba(0,255,150,0.08), transparent 45%);
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .bg-wave-pattern {
+            background: linear-gradient(to bottom, #5cb45c, #3f8e43);
+            position: relative;
+            overflow: hidden;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 430px;
+            height: 100dvh;
+            background: #1e1b18;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+        @media (min-width: 640px) {
+            .app-container {
+                height: 880px;
+                max-height: 92vh;
+                border-radius: 36px;
+                border: 8px solid rgba(255, 255, 255, 0.12);
+            }
+        }
+
+        .glass-modal {
+            background: rgba(10, 26, 16, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid rgba(234, 179, 8, 0.5);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 25px rgba(234,179,8,0.25);
+        }
+
+        /* Tactile Button & Ripple Physics */
+        .tactile-btn {
+            position: relative; overflow: hidden; transform: translateZ(0);
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease, filter 0.15s ease;
+            cursor: pointer; -webkit-user-select: none; user-select: none;
+        }
+        .tactile-btn:hover { filter: brightness(1.05); }
+        .tactile-btn:active { transform: scale(0.94) translateY(1px) !important; box-shadow: 0 2px 6px rgba(63, 142, 67, 0.25) !important; }
+
+        .ripple {
+            position: absolute; background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%; transform: scale(0); animation: rippleEffect 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards; pointer-events: none;
+        }
+        @keyframes rippleEffect {
+            0% { transform: scale(0); opacity: 0.8; }
+            100% { transform: scale(4.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="bg-wave-pattern pt-4 px-4 pb-4 text-white relative flex-shrink-0 shadow-md">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <button onclick="window.location.href='games.html'" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs hover:bg-white/30 transition-all tactile-btn">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-sm font-black tracking-tight">Chicken Road 2</h1>
+                </div>
+                <span class="text-[9px] bg-yellow-400 text-gray-950 font-bold px-2 py-0.5 rounded-full uppercase shadow">Live Arcade</span>
+            </div>
+
+            <!-- Gaming Wallet Card -->
+            <div class="bg-black/30 border border-white/20 rounded-xl p-2.5 flex justify-between items-center backdrop-blur-sm">
+                <div>
+                    <span class="text-[9px] text-green-100 uppercase tracking-wider block font-semibold">Gaming Balance</span>
+                    <span class="text-base font-black text-white font-mono" id="game-wallet-balance">₹0.00</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-[10px] text-yellow-300 font-mono font-bold" id="live-multiplier">Multiplier: 1.0x</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Canvas Game View -->
+        <main class="flex-1 relative z-10 flex flex-col justify-between overflow-hidden bg-[#2b2520]">
+            
+            <div class="relative flex-1 w-full flex items-center justify-center overflow-hidden">
+                <canvas id="gameCanvas" class="w-full h-full object-cover"></canvas>
+                
+                <!-- Overlay instructions badge -->
+                <div class="absolute top-3 left-3 bg-black/60 border border-white/10 px-3 py-1.5 rounded-xl backdrop-blur-md pointer-events-none">
+                    <p class="text-[10px] text-emerald-300 font-medium"><i class="fas fa-info-circle mr-1"></i> Time your hops through safe gaps to win!</p>
+                </div>
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="p-4 bg-[#181412] border-t border-[#3a322b] flex flex-col gap-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-slate-300 font-medium">Select Bet (₹):</span>
+                    <div class="flex gap-1.5">
+                        <button onclick="setBet(50)" class="px-3 py-1 bg-[#2b2520] text-emerald-400 rounded-lg text-xs font-mono font-bold border border-emerald-700 tactile-btn">₹50</button>
+                        <button onclick="setBet(100)" class="px-3 py-1 bg-[#2b2520] text-yellow-400 rounded-lg text-xs font-mono font-bold border border-yellow-700 tactile-btn">₹100</button>
+                        <button onclick="setBet(500)" class="px-3 py-1 bg-[#2b2520] text-red-400 rounded-lg text-xs font-mono font-bold border border-red-700 tactile-btn">₹500</button>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <input type="number" id="bet-input" value="50" min="10" class="w-28 bg-[#0d0a09] border border-[#4a4038] rounded-xl px-3 py-2.5 text-xs text-white font-mono outline-none focus:border-emerald-500">
+                    
+                    <button id="main-action-btn" onclick="handleActionButton()" class="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-extrabold rounded-xl text-xs shadow-lg tactile-btn">
+                        Start Run (Hop)
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden px-4 backdrop-blur-md">
+        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-center text-white shadow-2xl">
+            <div id="modal-icon" class="w-14 h-14 bg-emerald-500/20 border border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 text-emerald-300 text-2xl">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h3 id="modal-title" class="text-lg font-bold mb-1">Run Complete!</h3>
+            <p id="modal-desc" class="text-xs text-gray-300 mb-5 leading-relaxed">Great job!</p>
+            <button onclick="closeModal()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold rounded-xl text-xs tactile-btn">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <!-- Firebase & Game Engine Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAoXMQtogVuO8O_OXO62JthLagGeqGSPHg",
+            authDomain: "anpmoney-290eb.firebaseapp.com",
+            projectId: "anpmoney-290eb",
+            storageBucket: "anpmoney-290eb.firebasestorage.app",
+            messagingSenderId: "609571923036",
+            appId: "1:609571923036:web:45544e187ce63adec0f299",
+            measurementId: "G-HCW4DY6E6J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let userDocRef = null;
+        let userBalance = 0;
+        let currentBet = 50;
+
+        // Game State Variables
+        let gameState = 'IDLE'; // IDLE, RUNNING, WON, LOST
+        let chicken = { row: 0, x: 200, y: 0, radius: 14 };
+        let rows = [];
+        const multipliers = [1.0, 1.2, 1.5, 2.2, 3.5, 5.0];
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            initLanes();
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        function getSpeedMultiplier(bet) {
+            if (bet <= 50) return 1.0;
+            if (bet <= 100) return 1.4;
+            return 2.0; // For ₹500 and above
+        }
+
+        window.setBet = function(amt) {
+            if (gameState === 'RUNNING') return;
+            document.getElementById("bet-input").value = amt;
+            currentBet = amt;
+        }
+
+        function initLanes() {
+            rows = [];
+            const rowHeight = canvas.height / 6;
+            const speedMult = getSpeedMultiplier(currentBet);
+
+            for (let i = 0; i < 6; i++) {
+                let obstacles = [];
+                if (i > 0 && i < 5) {
+                    const carCount = 2;
+                    const spacing = canvas.width / carCount;
+                    // Uniform speed per lane prevents cars from overtaking or bunching up
+                    const laneSpeed = (Math.random() * 0.4 + 1.4) * speedMult;
+                    
+                    for (let c = 0; c < carCount; c++) {
+                        obstacles.push({
+                            x: (c * spacing) + 40,
+                            speed: laneSpeed,
+                            width: 68,
+                            height: 34,
+                            color: i % 2 === 0 ? '#ef4444' : '#3b82f6',
+                            roofColor: i % 2 === 0 ? '#b91c1c' : '#1d4ed8'
+                        });
+                    }
+                }
+                rows.push({
+                    index: i,
+                    y: canvas.height - (i + 0.5) * rowHeight,
+                    height: rowHeight,
+                    obstacles: obstacles,
+                    multiplier: multipliers[i]
+                });
+            }
+            if (gameState === 'IDLE' || gameState === 'WON' || gameState === 'LOST') {
+                chicken.y = rows[0].y;
+                chicken.x = canvas.width / 2;
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'ANP.HTML';
+                return;
+            }
+            currentUser = user;
+            userDocRef = doc(db, "users", user.uid);
+            await fetchBalance();
+            resizeCanvas();
+            requestAnimationFrame(gameLoop);
+        });
+
+        async function fetchBalance() {
+            try {
+                const snap = await getDoc(userDocRef);
+                if (snap.exists()) {
+                    userBalance = snap.data().balance || 0;
+                    document.getElementById("game-wallet-balance").innerText = `₹${userBalance.toLocaleString()}`;
+                }
+            } catch (e) {
+                console.error("Balance fetch error:", e);
+            }
+        }
+
+        window.handleActionButton = async function() {
+            const btn = document.getElementById("main-action-btn");
+            const betInput = parseFloat(document.getElementById("bet-input").value);
+
+            if (gameState === 'IDLE' || gameState === 'WON' || gameState === 'LOST') {
+                if (!betInput || betInput <= 0) {
+                    showModal("Invalid Bet", "Please enter a valid amount.", "fas fa-exclamation-triangle", "text-yellow-400");
+                    return;
+                }
+                if (betInput > userBalance) {
+                    showModal("Insufficient Balance", "Your gaming balance is too low.", "fas fa-lock", "text-red-400");
+                    return;
+                }
+
+                currentBet = betInput;
+                initLanes();
+
+                await updateDoc(userDocRef, { balance: increment(-currentBet) });
+                userBalance -= currentBet;
+                document.getElementById("game-wallet-balance").innerText = `₹${userBalance.toLocaleString()}`;
+
+                gameState = 'RUNNING';
+                chicken.row = 0;
+                chicken.x = canvas.width / 2;
+                chicken.y = rows[0].y;
+                document.getElementById("live-multiplier").innerText = `Multiplier: 1.0x`;
+                btn.innerText = "Hop Forward! (Next Row)";
+                btn.className = "flex-1 py-3 bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-gray-950 font-extrabold rounded-xl text-xs shadow-lg tactile-btn";
+            } else if (gameState === 'RUNNING') {
+                // Hop forward safely to the next row (Collision detection handles safety in real-time)
+                if (chicken.row < 5) {
+                    chicken.row++;
+                    chicken.y = rows[chicken.row].y;
+                    document.getElementById("live-multiplier").innerText = `Multiplier: ${multipliers[chicken.row]}x`;
+
+                    if (chicken.row === 5) {
+                        const winnings = currentBet * multipliers[5];
+                        await updateDoc(userDocRef, { balance: increment(winnings) });
+                        gameState = 'WON';
+                        btn.innerText = "Start Run (Hop)";
+                        btn.className = "flex-1 py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-extrabold rounded-xl text-xs shadow-lg tactile-btn";
+                        showModal("Victory! 🎉", `Amazing! You won ₹${winnings.toLocaleString()} (5.0x)!`, "fas fa-trophy", "text-yellow-400");
+                        await fetchBalance();
+                    } else {
+                        btn.innerText = `Hop (${multipliers[chicken.row]}x) / Cash Out`;
+                    }
+                }
+            }
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            rows.forEach((row, idx) => {
+                if (idx === 0 || idx === 5) {
+                    ctx.fillStyle = idx === 0 ? '#382d26' : '#2b3826';
+                    ctx.fillRect(0, row.y - row.height / 2, canvas.width, row.height);
+                    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+                    for (let d = 0; d < canvas.width; d += 40) {
+                        ctx.fillRect(d + (idx * 10), row.y, 12, 4);
+                    }
+                } else {
+                    ctx.fillStyle = '#1e2229';
+                    ctx.fillRect(0, row.y - row.height / 2, canvas.width, row.height);
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([12, 12]);
+                    ctx.beginPath();
+                    ctx.moveTo(0, row.y);
+                    ctx.lineTo(canvas.width, row.y);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+
+                ctx.fillStyle = idx === 5 ? '#facc15' : 'rgba(255,255,255,0.5)';
+                ctx.font = 'bold 10px JetBrains Mono, monospace';
+                ctx.fillText(`L${idx} (${multipliers[idx]}x)`, 10, row.y - row.height / 2 + 14);
+
+                row.obstacles.forEach(obs => {
+                    if (gameState === 'RUNNING') {
+                        obs.x += obs.speed;
+                        if (obs.x > canvas.width + 80) obs.x = -100;
+
+                        if (idx === chicken.row) {
+                            // Precise 2D AABB Bounding Box Collision Check (X and Y overlap)
+                            const cLeft = chicken.x - 7;
+                            const cRight = chicken.x + 7;
+                            const cTop = chicken.y - 7;
+                            const cBottom = chicken.y + 7;
+
+                            const carLeft = obs.x + 4;
+                            const carRight = obs.x + obs.width - 4;
+                            const carTop = row.y - row.height / 2 + 4;
+                            const carBottom = row.y + row.height / 2 - 4;
+
+                            if (cRight > carLeft && cLeft < carRight && cBottom > carTop && cTop < carBottom) {
+                                gameState = 'LOST';
+                                document.getElementById("main-action-btn").innerText = "Start Run (Hop)";
+                                document.getElementById("main-action-btn").className = "flex-1 py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-extrabold rounded-xl text-xs shadow-lg tactile-btn";
+                                showModal("Crash! 🚗", `Oh no! You got hit by a car on Lane ${chicken.row}. Lost ₹${currentBet.toLocaleString()}.`, "fas fa-car-crash", "text-red-400");
+                                fetchBalance();
+                            }
+                        }
+                    }
+
+                    // Render Clean Car
+                    ctx.save();
+                    ctx.translate(obs.x + obs.width / 2, row.y);
+
+                    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                    ctx.beginPath();
+                    ctx.roundRect ? ctx.roundRect(-obs.width/2 + 2, -obs.height/2 + 4, obs.width, obs.height, 8) : ctx.fillRect(-obs.width/2 + 2, -obs.height/2 + 4, obs.width, obs.height);
+                    ctx.fill();
+
+                    ctx.fillStyle = obs.color;
+                    ctx.beginPath();
+                    ctx.roundRect ? ctx.roundRect(-obs.width/2, -obs.height/2, obs.width, obs.height, 8) : ctx.fillRect(-obs.width/2, -obs.height/2, obs.width, obs.height);
+                    ctx.fill();
+
+                    ctx.fillStyle = obs.roofColor;
+                    ctx.beginPath();
+                    ctx.roundRect ? ctx.roundRect(-8, -11, 28, 22, 5) : ctx.fillRect(-8, -11, 28, 22);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#bae6fd';
+                    ctx.fillRect(10, -8, 6, 16);
+                    ctx.fillStyle = '#334155';
+                    ctx.fillRect(-6, -8, 4, 16);
+
+                    ctx.shadowBlur = 6;
+                    ctx.shadowColor = '#fef08a';
+                    ctx.fillStyle = '#fef08a';
+                    ctx.fillRect(obs.width/2 - 4, -obs.height/2 + 5, 4, 5);
+                    ctx.fillRect(obs.width/2 - 4, obs.height/2 - 9, 4, 5);
+
+                    ctx.restore();
+                });
+            });
+
+            // Draw Chicken
+            ctx.save();
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#fde047';
+
+            ctx.fillStyle = '#fef08a';
+            ctx.beginPath();
+            ctx.arc(chicken.x, chicken.y, chicken.radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#fde047';
+            ctx.beginPath();
+            ctx.ellipse(chicken.x - 6, chicken.y, 5, 8, 0, 0, Math.PI * 2);
+            ctx.ellipse(chicken.x + 6, chicken.y, 5, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(chicken.x, chicken.y - 12, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#f97316';
+            ctx.beginPath();
+            ctx.moveTo(chicken.x + 12, chicken.y - 2);
+            ctx.lineTo(chicken.x + 18, chicken.y + 1);
+            ctx.lineTo(chicken.x + 12, chicken.y + 4);
+            ctx.fill();
+
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(chicken.x + 6, chicken.y - 6, 3, 3);
+            ctx.restore();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function showModal(title, desc, iconClass, colorClass) {
+            document.getElementById("modal-title").innerText = title;
+            document.getElementById("modal-desc").innerText = desc;
+            const el = document.getElementById("modal-icon");
+            el.className = `w-14 h-14 bg-emerald-500/20 border border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl ${colorClass}`;
+            el.innerHTML = `<i class="${iconClass}"></i>`;
+            document.getElementById("game-modal").classList.remove("hidden");
+        }
+
+        window.closeModal = function() {
+            document.getElementById("game-modal").classList.add("hidden");
+            gameState = 'IDLE';
+            chicken.row = 0;
+            chicken.y = rows[0].y;
+            chicken.x = canvas.width / 2;
+            document.getElementById("live-multiplier").innerText = "Multiplier: 1.0x";
+            const btn = document.getElementById("main-action-btn");
+            btn.innerText = "Start Run (Hop)";
+            btn.className = "flex-1 py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-extrabold rounded-xl text-xs shadow-lg tactile-btn";
+        }
+
+        document.addEventListener('click', function (e) {
+            const target = e.target.closest('.tactile-btn');
+            if (!target) return;
+            const circle = document.createElement('span');
+            const rect = target.getBoundingClientRect();
+            const d = Math.max(rect.width, rect.height);
+            circle.style.width = circle.style.height = `${d}px`;
+            circle.style.left = `${e.clientX - rect.left - d/2}px`;
+            circle.style.top = `${e.clientY - rect.top - d/2}px`;
+            circle.classList.add('ripple');
+            target.appendChild(circle);
+            setTimeout(() => circle.remove(), 600);
+        });
+    </script>
+</body>
+</html>
