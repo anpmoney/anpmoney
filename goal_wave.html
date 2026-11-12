@@ -1,479 +1,567 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ANP MONEY - Goal Wave</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a1f12 0%, #000000 100%);
-            -webkit-tap-highlight-color: transparent;
-            min-height: 100vh;
-            min-height: 100dvh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-x: hidden;
-        }
-        body::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            background: radial-gradient(circle at 20% 20%, rgba(45,164,90,0.15), transparent 40%), 
-                        radial-gradient(circle at 80% 80%, rgba(0,255,150,0.08), transparent 45%);
-        }
-        .bg-wave-pattern {
-            background: linear-gradient(to bottom, #0e4c25, #063117);
-            position: relative;
-            overflow: hidden;
-        }
-        .app-container {
-            width: 100%;
-            max-width: 430px;
-            height: 100dvh;
-            background: #0f172a;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-        }
-        @media (min-width: 640px) {
-            .app-container {
-                height: 880px;
-                max-height: 92vh;
-                border-radius: 36px;
-                border: 8px solid rgba(255, 255, 255, 0.12);
-            }
-        }
-        .glass-modal {
-            background: rgba(10, 26, 16, 0.96);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 2px solid rgba(234, 179, 8, 0.5);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 25px rgba(234,179,8,0.25);
-        }
-        .tactile-btn {
-            position: relative; overflow: hidden; transform: translateZ(0);
-            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease, filter 0.15s ease;
-            cursor: pointer; -webkit-user-select: none; user-select: none;
-        }
-        .tactile-btn:hover { filter: brightness(1.05); }
-        .tactile-btn:active { transform: scale(0.94) translateY(1px) !important; }
-        .ripple {
-            position: absolute; background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
-            border-radius: 50%; transform: scale(0); animation: rippleEffect 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards; pointer-events: none;
-        }
-        @keyframes rippleEffect {
-            0% { transform: scale(0); opacity: 0.8; }
-            100% { transform: scale(4.5); opacity: 0; }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#08141a">
+<title>Goal Wave</title>
+<style>
+:root{--bg:#07131a;--panel:#10242b;--panel2:#173540;--line:#23596a;--g:#3ddc84;--g2:#1fae5f;--gold:#ffc83d;--gold2:#ff9f1c;--red:#ff4d5a;--cy:#38e8ff;--txt:#eafaff;--mut:#8fb7c4}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
+#app{max-width:520px;height:100dvh;margin:0 auto;display:flex;flex-direction:column;background:radial-gradient(120% 60% at 50% 0,#124a52 0,var(--bg) 70%);padding-top:env(safe-area-inset-top)}
+header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px}
+.logo{font-weight:900;letter-spacing:1.5px;font-size:20px;color:#fff}
+.logo b{background:linear-gradient(90deg,var(--g),var(--cy));-webkit-background-clip:text;background-clip:text;color:transparent;margin-left:6px}
+.hr{display:flex;gap:8px;align-items:center}
+.ib{width:40px;height:40px;border-radius:12px;background:var(--panel2);font-size:18px}
+.bal{display:flex;flex-direction:column;align-items:flex-end;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:4px 12px;min-width:112px}
+.bal small{font-size:9px;letter-spacing:1.5px;color:var(--mut)}
+.bal span{font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}
+.bal span:before{content:"₹";color:var(--gold);margin-right:3px}
+.bal.up{animation:fu .7s}.bal.dn{animation:fd .7s}
+@keyframes fu{30%{background:#1f7a46;transform:scale(1.05)}}
+@keyframes fd{30%{background:#6b2530}}
+#wrap{position:relative;flex:1;min-height:270px;margin:0 8px;border-radius:18px;overflow:hidden;border:2px solid var(--line);background:#06100c;box-shadow:0 10px 30px #0009,0 0 24px #38e8ff22}
+#wrap.shake{animation:shake .42s}
+@keyframes shake{20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-4px)}60%{transform:translate(-4px,-2px)}80%{transform:translate(3px,3px)}}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+#hud{position:absolute;left:10px;top:8px;pointer-events:none;text-shadow:0 2px 8px #000,0 0 14px #000}
+#mult{font-size:clamp(30px,9.5vw,42px);font-weight:900;line-height:1;color:#fff;font-variant-numeric:tabular-nums;transition:color .2s}
+#mult.hot{color:var(--gold)}#mult.lose{color:var(--red)}#mult.win{color:var(--g)}
+#pot{font-size:12px;color:#e3f6ff;margin-top:4px}
+#pips{position:absolute;right:10px;top:12px;display:flex;gap:4px;pointer-events:none}
+#pips i{width:11px;height:11px;border-radius:50%;background:#0008;border:1.5px solid #ffffff55;transition:background .2s,transform .2s}
+#pips i.on{background:var(--g);border-color:#b6ffd4;transform:scale(1.15);box-shadow:0 0 8px var(--g)}
+#toast{position:absolute;left:50%;top:74%;transform:translate(-50%,-50%) scale(.6);z-index:9;opacity:0;pointer-events:none;text-align:center;font-weight:900;font-size:24px;padding:9px 20px;border-radius:16px;background:#000c;transition:.2s;white-space:nowrap}
+#toast small{display:block;font-size:13px;font-weight:600;opacity:.85;margin-top:2px}
+#toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#toast.win{color:var(--g);border:2px solid var(--g)}
+#toast.lose{color:var(--red);border:2px solid var(--red)}
+#ctl{padding:10px 10px calc(10px + env(safe-area-inset-bottom))}
+.row{display:flex;gap:6px;margin-bottom:8px}
+.row.chips button{flex:1;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;font-weight:900;font-size:21px;background:var(--panel2);border:2px solid transparent;transition:transform .06s}
+.chips small{font-size:11px;font-weight:700;color:var(--mut)}
+.row.chips button.on{border-color:var(--g);background:#1b4a3c}
+.chips button.on small{color:var(--g)}
+.row.chips button:active{transform:scale(.96)}
+.row.chips button:disabled{opacity:.45}
+.act{margin:0;gap:8px}
+.big{flex:1;height:58px;font-size:18px;border-radius:14px;font-weight:900;letter-spacing:.5px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;transition:transform .06s,opacity .1s}
+.big small{font-size:11px;font-weight:700;opacity:.85}
+.big.g{background:linear-gradient(180deg,var(--g),var(--g2));color:#05250f;box-shadow:0 4px 0 #137a40}
+.big.y{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#3a2200;box-shadow:0 4px 0 #b36b00}
+.big:active{transform:translateY(3px);box-shadow:none}
+.big.wait{opacity:.6}
+.big:disabled{opacity:.45;pointer-events:none}
+#msg{margin:6px 0 0;min-height:16px;text-align:center;font-size:12px;color:var(--red)}
+#back{position:fixed;inset:0;background:#000a;opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}
+#back.on{opacity:1;pointer-events:auto}
+#sheet{position:fixed;left:50%;bottom:0;width:100%;max-width:520px;max-height:82dvh;overflow:auto;z-index:21;background:var(--panel);border-radius:22px 22px 0 0;padding:14px 16px calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);will-change:transform}
+#sheet.on{transform:translate(-50%,0)}
+.sh{display:flex;justify-content:space-between;align-items:center}
+.sh h2{margin:0;font-size:18px}
+.bigbal{font-size:38px;font-weight:900;color:var(--gold);margin:6px 0 12px;font-variant-numeric:tabular-nums}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stats div{background:var(--panel2);border-radius:12px;padding:10px 12px}
+.stats small{display:block;color:var(--mut);font-size:11px;margin-bottom:2px}
+.stats b{font-size:16px;font-variant-numeric:tabular-nums}
+.pos{color:var(--g)}.neg{color:var(--red)}
+#sheet h3{margin:16px 0 6px;font-size:14px;color:var(--mut)}
+#hist{list-style:none;margin:0;padding:0}
+#hist li{display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid #1e4452;font-size:14px}
+#hist li small{display:block;color:var(--mut);font-size:11px}
+#hist li b{font-variant-numeric:tabular-nums}
+.empty{color:var(--mut);font-size:13px;padding:10px 0}
+#auth{position:fixed;inset:0;z-index:30;background:radial-gradient(120% 60% at 50% 0,#124a52 0,var(--bg) 75%);display:flex;align-items:center;justify-content:center;padding:20px}
+#auth[hidden]{display:none!important}
+#auth .card{width:100%;max-width:360px;text-align:center}
+#auth .logo{font-size:28px;margin-bottom:6px}
+#authMsg{color:var(--mut);font-size:14px;margin:8px 0 16px}
+#authForm{display:flex;flex-direction:column;gap:10px}
+#authForm input{height:48px;border-radius:12px;border:2px solid var(--line);background:#0b1b21;color:#fff;font-size:16px;padding:0 14px;outline:0}
+#authForm input:focus{border-color:var(--g)}
+#authForm .two{display:flex;gap:8px}
+#authForm button{height:50px;border-radius:12px;font-weight:800;font-size:15px;flex:none}
+#authForm .two button{flex:1}
+#authForm .w{background:#fff;color:#222}
+#authForm .g{background:linear-gradient(180deg,var(--g),var(--g2));color:#05250f}
+#authForm .y{background:var(--panel2);color:var(--txt)}
+#authForm button:disabled{opacity:.5}
+#authErr{color:var(--red);font-size:13px;min-height:18px;margin:10px 0 0}
+#who{color:var(--mut);font-size:12px;margin:-6px 0 10px;word-break:break-all}
+.outbtn{margin-top:16px;width:100%;height:44px;border-radius:12px;background:var(--panel2);color:var(--mut);font-weight:700}
+</style>
 </head>
 <body>
-
-    <div class="app-container">
-        
-        <!-- Header -->
-        <header class="bg-wave-pattern pt-4 px-4 pb-4 text-white relative flex-shrink-0 shadow-md border-b border-emerald-800/50">
-            <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2">
-                    <button onclick="window.location.href='games.html'" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs hover:bg-white/30 transition-all tactile-btn">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <h1 class="text-sm font-black tracking-tight">Goal Wave (Penalty Shootout)</h1>
-                </div>
-                <span class="text-[9px] bg-yellow-400 text-gray-950 font-bold px-2 py-0.5 rounded-full uppercase shadow">Live</span>
-            </div>
-
-            <!-- Gaming Wallet Card -->
-            <div class="bg-black/40 border border-emerald-500/30 rounded-xl p-2.5 flex justify-between items-center backdrop-blur-sm">
-                <div>
-                    <span class="text-[9px] text-emerald-200 uppercase tracking-wider block font-semibold">Gaming Balance</span>
-                    <span class="text-base font-black text-white font-mono" id="game-wallet-balance">₹0.00</span>
-                </div>
-                <div class="text-right">
-                    <span class="text-[10px] text-yellow-300 font-mono font-bold" id="live-multiplier">Multiplier: 1.0x</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Canvas Game View -->
-        <main class="flex-1 relative z-10 flex flex-col justify-between overflow-hidden bg-slate-950">
-            
-            <div class="relative flex-1 w-full flex items-center justify-center overflow-hidden">
-                <canvas id="gameCanvas" class="w-full h-full object-cover"></canvas>
-                
-                <!-- Overlay instructions badge -->
-                <div class="absolute top-3 left-3 bg-black/60 border border-emerald-500/20 px-3 py-1.5 rounded-xl backdrop-blur-md pointer-events-none">
-                    <p class="text-[10px] text-emerald-300 font-medium" id="game-status-tip"><i class="fas fa-futbol mr-1"></i> Select bet & shoot to score goals!</p>
-                </div>
-            </div>
-
-            <!-- Target Selection Pad (Active during shootout) -->
-            <div id="target-pad" class="hidden absolute inset-x-4 bottom-24 z-30 grid grid-cols-2 gap-3 p-3 bg-black/80 border border-emerald-500/40 rounded-2xl backdrop-blur-md">
-                <button onclick="shootBall('TL')" class="py-3 bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200 font-bold text-xs rounded-xl border border-emerald-600 tactile-btn">
-                    <i class="fas fa-crosshairs mr-1"></i> Top-Left
-                </button>
-                <button onclick="shootBall('TR')" class="py-3 bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200 font-bold text-xs rounded-xl border border-emerald-600 tactile-btn">
-                    <i class="fas fa-crosshairs mr-1"></i> Top-Right
-                </button>
-                <button onclick="shootBall('BL')" class="py-3 bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200 font-bold text-xs rounded-xl border border-emerald-600 tactile-btn">
-                    <i class="fas fa-crosshairs mr-1"></i> Bottom-Left
-                </button>
-                <button onclick="shootBall('BR')" class="py-3 bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200 font-bold text-xs rounded-xl border border-emerald-600 tactile-btn">
-                    <i class="fas fa-crosshairs mr-1"></i> Bottom-Right
-                </button>
-            </div>
-
-            <!-- Controls Panel -->
-            <div class="p-4 bg-slate-900 border-t border-slate-800 flex flex-col gap-3">
-                <div class="flex justify-between items-center">
-                    <span class="text-xs text-slate-300 font-medium">Select Bet (₹):</span>
-                    <div class="flex gap-1.5">
-                        <button onclick="setBet(50)" class="px-3 py-1 bg-slate-800 text-emerald-400 rounded-lg text-xs font-mono font-bold border border-slate-700 tactile-btn">₹50</button>
-                        <button onclick="setBet(100)" class="px-3 py-1 bg-slate-800 text-yellow-400 rounded-lg text-xs font-mono font-bold border border-slate-700 tactile-btn">₹100</button>
-                        <button onclick="setBet(500)" class="px-3 py-1 bg-slate-800 text-red-400 rounded-lg text-xs font-mono font-bold border border-slate-700 tactile-btn">₹500</button>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <input type="number" id="bet-input" value="50" min="10" class="w-28 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white font-mono outline-none focus:border-emerald-500">
-                    
-                    <button id="main-action-btn" onclick="startShootout()" class="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-extrabold rounded-xl text-xs shadow-lg tactile-btn">
-                        Start Shootout
-                    </button>
-                </div>
-            </div>
-
-        </main>
+<div id="app">
+  <header>
+    <div class="logo">GOAL<b>WAVE</b></div>
+    <div class="hr">
+      <button id="snd" class="ib" aria-label="Sound">🔊</button>
+      <button id="balBtn" class="bal" aria-label="Open balance menu"><small>BALANCE ▾</small><span id="balTop">0.00</span></button>
     </div>
+  </header>
 
-    <!-- Result Modal -->
-    <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden px-4 backdrop-blur-md">
-        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-center text-white shadow-2xl">
-            <div id="modal-icon" class="w-14 h-14 bg-emerald-500/20 border border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 text-emerald-300 text-2xl">
-                <i class="fas fa-trophy"></i>
-            </div>
-            <h3 id="modal-title" class="text-lg font-bold mb-1">Shootout Complete!</h3>
-            <p id="modal-desc" class="text-xs text-gray-300 mb-5 leading-relaxed">Great job!</p>
-            <button onclick="closeModal()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold rounded-xl text-xs tactile-btn">
-                Continue
-            </button>
-        </div>
+  <div id="wrap">
+    <canvas id="cv"></canvas>
+    <div id="hud"><div id="mult">x1.00</div><div id="pot">Place a bet to start</div></div>
+    <div id="pips"></div>
+    <div id="toast"></div>
+  </div>
+
+  <section id="ctl">
+    <div class="row chips" id="chips">
+      <button data-a="50" class="on">₹50<small>EASY</small></button>
+      <button data-a="100">₹100<small>MEDIUM</small></button>
+      <button data-a="500">₹500<small>EXTREME</small></button>
     </div>
+    <div class="row act">
+      <button id="play" class="big g">PLAY</button>
+      <button id="shoot" class="big g" hidden>SHOOT ⚽<small id="nextM"></small></button>
+      <button id="cash" class="big y" hidden>CASH OUT<small id="cashAmt"></small></button>
+    </div>
+    <p id="msg"></p>
+  </section>
+</div>
 
-    <!-- Firebase & Game Engine Script -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+<div id="back"></div>
+<aside id="sheet" aria-hidden="true">
+  <div class="sh"><h2>My Balance</h2><button id="close" class="ib" aria-label="Close">✕</button></div>
+  <div class="bigbal" id="balBig">0.00</div>
+  <div id="who"></div>
+  <div class="stats">
+    <div><small>Rounds played</small><b id="stR">0</b></div>
+    <div><small>Net result</small><b id="stN">0.00</b></div>
+    <div><small>Total won</small><b id="stW" class="pos">0.00</b></div>
+    <div><small>Total lost</small><b id="stL" class="neg">0.00</b></div>
+  </div>
+  <h3>RECENT ROUNDS</h3>
+  <ul id="hist"></ul>
+  <button id="out" class="outbtn">Sign out</button>
+</aside>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAoXMQtogVuO8O_OXO62JthLagGeqGSPHg",
-            authDomain: "anpmoney-290eb.firebaseapp.com",
-            projectId: "anpmoney-290eb",
-            storageBucket: "anpmoney-290eb.firebasestorage.app",
-            messagingSenderId: "609571923036",
-            appId: "1:609571923036:web:45544e187ce63adec0f299",
-            measurementId: "G-HCW4DY6E6J"
-        };
+<div id="auth">
+  <div class="card">
+    <div class="logo">GOAL<b>WAVE</b></div>
+    <p id="authMsg">Connecting…</p>
+    <div id="authForm" hidden>
+      <button id="gBtn" class="w">Continue with Google</button>
+      <input id="em" type="email" placeholder="Email" autocomplete="email" inputmode="email">
+      <input id="pw" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
+      <div class="two"><button id="siBtn" class="g">Sign in</button><button id="suBtn" class="y">Create account</button></div>
+    </div>
+    <p id="authErr"></p>
+  </div>
+</div>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+<script>
+(()=>{
+"use strict";
+/* ===== settings you may want to tweak ===== */
+const CUR="₹",EDGE=0.97,MAXG=8;
+// p = chance a shot is a goal, sp = speed of the aiming wave, mx = goals in a row that pays out automatically.
+// Multiplier after n goals = 0.97 / p^n  (so the house edge stays 3% however hard you make it).
+const TIERS={50:{p:.65,sp:1.7,mx:8},100:{p:.50,sp:2.4,mx:7},500:{p:.35,sp:3.3,mx:5}};
+// Firebase project (these values are public identifiers; Firestore rules are what protect the data)
+const firebaseConfig={apiKey:"AIzaSyAoXMQtogVuO8O_OXO62JthLagGeqGSPHg",authDomain:"anpmoney-290eb.firebaseapp.com",projectId:"anpmoney-290eb",storageBucket:"anpmoney-290eb.firebasestorage.app",messagingSenderId:"609571923036",appId:"1:609571923036:web:45544e187ce63adec0f299",measurementId:"G-HCW4DY6E6J"};
+const START_BALANCE=1000; // rupees given to a brand-new account (1000 = ₹1000 for testing). Set to 0 for real money and update firestore.rules to match.
+const FBV="https://www.gstatic.com/firebasejs/10.12.2/";
+const $=id=>document.getElementById(id);
 
-        let currentUser = null;
-        let userDocRef = null;
-        let userBalance = 0;
-        let currentBet = 50;
+/* ===== state & storage ===== */
+const S={bal:0,hist:[],won:0,lost:0,rounds:0}; // mirrors the player's Firestore document (money is kept in paise)
+let FB=null,uid=null,userRef=null,unsub=null,ready=false;
+const G={phase:"idle",amt:50,bet:0,n:0,rid:0,busy:false,q:0,qc:0,betP:null};
+const fmt=c=>(c/100).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+function rnd(){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]/4294967296}
+const mult=n=>n<=0?1:Math.floor(EDGE/Math.pow(TIERS[G.amt].p,n)*100)/100;
 
-        // Game State Variables
-        let gameState = 'IDLE'; // IDLE, SHOOTING, WON, LOST
-        let currentRound = 0; // 0 to 4 (5 rounds total)
-        const multipliers = [1.2, 1.5, 2.2, 3.5, 5.0];
+/* ===== sound ===== */
+let ac,muted=false;try{muted=localStorage.getItem("cr_mute")==="1"}catch(e){}
+function tone(f,d,t,v,s){if(muted)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime+(s||0);o.type=t||"sine";o.frequency.value=f;g.gain.setValueAtTime(v||.05,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);o.connect(g);g.connect(ac.destination);o.start(n);o.stop(n+d)}catch(e){}}
+const sfx={
+  kick:()=>{tone(130,.09,"sine",.14);tone(240,.05,"square",.04)},
+  goal:()=>[523,659,784,1046].forEach((f,i)=>tone(f,.16,"triangle",.06,i*.07)),
+  save:()=>{tone(190,.22,"square",.07);tone(90,.3,"sawtooth",.06,.05)},
+  win:()=>[660,830,990,1320].forEach((f,i)=>tone(f,.18,"triangle",.07,i*.09)),
+  start:()=>{tone(320,.1,"triangle",.05);tone(480,.1,"triangle",.05,.07)}
+};
+const sndBtn=$("snd");sndBtn.textContent=muted?"🔇":"🔊";
+sndBtn.onclick=()=>{muted=!muted;sndBtn.textContent=muted?"🔇":"🔊";try{localStorage.setItem("cr_mute",muted?"1":"0")}catch(e){}};
 
-        let ball = { x: 0, y: 0, targetX: 0, targetY: 0, moving: false, progress: 1 };
-        let goalkeeper = { x: 0, targetX: 0, y: 0 };
+/* ===== canvas scene ===== */
+const wrap=$("wrap"),cv=$("cv"),ctx=cv.getContext("2d");
+let W=300,H=300,dpr=1,bg=null;
+let gx,gy,gw,gh,lineY,spotX,spotY,waveY,R1,R2,KH,cols=20;
+const CROWD=["#ff4d5a","#38e8ff","#ffc83d","#b06cff","#3ddc84","#f4f4ff"];
+const fx=[],ripples=[];
+let aimT=0,wavePh=0,boost=0,sway=0,shot=null,lastBusy=false;
+const K={x:0,tx:0,dir:0,dive:0,dt:0,rate:6,drate:8};
+const B={mode:"spot",x:0,y:0,r:14,ang:0,fade:1,vy:0};
 
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+function sprite(c1,c2){const s=64,k=document.createElement("canvas");k.width=k.height=s;const x=k.getContext("2d"),g=x.createRadialGradient(32,32,0,32,32,32);
+  g.addColorStop(0,"#fff");g.addColorStop(.18,c1);g.addColorStop(.5,c2);g.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=g;x.fillRect(0,0,s,s);return k}
+const GLOW=sprite("#8ff3ff","rgba(56,232,255,.35)");
+const BALL=(()=>{const s=64,k=document.createElement("canvas");k.width=k.height=s;const x=k.getContext("2d");
+  const g=x.createRadialGradient(24,22,4,32,32,31);g.addColorStop(0,"#fff");g.addColorStop(1,"#cfd6dc");
+  x.fillStyle=g;x.beginPath();x.arc(32,32,30,0,6.2832);x.fill();
+  x.fillStyle="#1a1d24";
+  function pent(cx,cy,r,rot){x.beginPath();for(let i=0;i<5;i++){const a=rot+i*1.2566;x.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r)}x.closePath();x.fill()}
+  pent(32,32,10,-1.5708);
+  for(let i=0;i<5;i++){const a=-1.5708+i*1.2566+.628;pent(32+Math.cos(a)*24,32+Math.sin(a)*24,6.5,a)}
+  x.strokeStyle="#9aa3ab";x.lineWidth=1.5;x.beginPath();x.arc(32,32,30,0,6.2832);x.stroke();return k})();
 
-        function resizeCanvas() {
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
-            resetPositions();
-        }
-        window.addEventListener('resize', resizeCanvas);
+function layout(){
+  gw=Math.min(W*.76,H*.25*3);gh=gw/3;gx=(W-gw)/2;gy=H*.27;lineY=gy+gh;
+  spotX=W/2;spotY=lineY+(H-lineY)*.74;waveY=lineY+(H-lineY)*.30;
+  R1=Math.max(13,W*.045);R2=R1*.55;KH=gh*.9;cols=Math.ceil(W/13)+1;
+}
+function buildBg(){ // everything that never changes is painted once into an image
+  bg=document.createElement("canvas");bg.width=Math.round(W*dpr);bg.height=Math.round(H*dpr);
+  const x=bg.getContext("2d");x.scale(dpr,dpr);
+  let g=x.createLinearGradient(0,0,0,H*.3);g.addColorStop(0,"#080620");g.addColorStop(1,"#1c1650");x.fillStyle=g;x.fillRect(0,0,W,H*.3);
+  x.globalCompositeOperation="lighter";
+  for(const px of [W*.08,W*.92]){const lg=x.createRadialGradient(px,0,0,px,0,W*.6);lg.addColorStop(0,"rgba(255,244,205,.6)");lg.addColorStop(1,"rgba(255,244,205,0)");x.fillStyle=lg;x.fillRect(0,0,W,H*.55)}
+  x.globalCompositeOperation="source-over";
+  const by=H*.255,bh=H*.042,bc=["#6a3dff","#14a8c8","#ffb11f","#d6336c"];
+  for(let i=0;i<8;i++){x.fillStyle=bc[i%4];x.globalAlpha=.85;x.fillRect(i*W/8,by,W/8-2,bh)}x.globalAlpha=1;
+  const y0=H*.297;
+  for(let i=0;i<12;i++){const ya=y0+(H-y0)*Math.pow(i/12,1.35),yb=y0+(H-y0)*Math.pow((i+1)/12,1.35);x.fillStyle=i%2?"#2b8a43":"#32964b";x.fillRect(0,ya,W,yb-ya+1)}
+  x.strokeStyle="rgba(255,255,255,.55)";x.lineWidth=2;
+  const b1=lineY+(H-lineY)*.2,b2=lineY+(H-lineY)*.9;
+  x.beginPath();x.moveTo(0,lineY);x.lineTo(W,lineY);x.stroke();
+  x.beginPath();x.moveTo(gx-gw*.1,lineY);x.lineTo(gx-gw*.18,b1);x.lineTo(gx+gw*1.18,b1);x.lineTo(gx+gw*1.1,lineY);x.stroke();
+  x.beginPath();x.moveTo(gx-gw*.4,lineY);x.lineTo(gx-gw*.62,b2);x.lineTo(gx+gw*1.62,b2);x.lineTo(gx+gw*1.4,lineY);x.stroke();
+  x.fillStyle="rgba(255,255,255,.85)";x.beginPath();x.arc(spotX,spotY+R1*.85,3,0,6.2832);x.fill();
+  // goal net + posts
+  x.fillStyle="rgba(4,12,8,.6)";x.fillRect(gx,gy,gw,gh);
+  x.strokeStyle="rgba(255,255,255,.2)";x.lineWidth=1;
+  for(let i=0;i<=gw;i+=9){x.beginPath();x.moveTo(gx+i,gy);x.lineTo(gx+i,gy+gh);x.stroke()}
+  for(let j=0;j<=gh;j+=9){x.beginPath();x.moveTo(gx,gy+j);x.lineTo(gx+gw,gy+j);x.stroke()}
+  x.fillStyle="#fff";x.shadowColor="rgba(255,255,255,.8)";x.shadowBlur=8;
+  x.fillRect(gx-3,gy-3,gw+6,5);x.fillRect(gx-3,gy-3,5,gh+3);x.fillRect(gx+gw-2,gy-3,5,gh+3);x.shadowBlur=0;
+  g=x.createRadialGradient(W/2,H*.5,H*.3,W/2,H*.5,H*.85);g.addColorStop(0,"rgba(0,0,0,0)");g.addColorStop(1,"rgba(0,0,0,.45)");x.fillStyle=g;x.fillRect(0,0,W,H);
+}
+function resize(){
+  const b=wrap.getBoundingClientRect();if(b.width<10||b.height<10)return;
+  dpr=Math.min(window.devicePixelRatio||1,2);
+  W=b.width;H=b.height;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  layout();buildBg();
+  if(!G.busy&&B.mode==="spot"){B.x=spotX;B.y=spotY;B.r=R1}
+  if(!shot&&G.phase==="idle"){K.x=K.tx=W/2}
+}
+if(window.ResizeObserver)new ResizeObserver(resize).observe(wrap);else addEventListener("resize",resize);
 
-        function resetPositions() {
-            ball.x = canvas.width / 2;
-            ball.y = canvas.height - 70;
-            ball.targetX = ball.x;
-            ball.targetY = ball.y;
-            goalkeeper.x = canvas.width / 2;
-            goalkeeper.targetX = canvas.width / 2;
-            goalkeeper.y = canvas.height / 2 - 20;
-        }
+const zoneX=z=>gx+gw*(z+.5)/5;
+const markerX=()=>gx+gw*(.5+.5*Math.sin(aimT));
+const zoneOf=x=>Math.min(4,Math.max(0,Math.floor((x-gx)/gw*5)));
+const lerp=(a,b,t)=>a+(b-a)*t;
+function burst(x,y,n,cols,sp,up){for(let i=0;i<n;i++){const a=Math.random()*6.2832,v=(.3+Math.random())*sp;fx.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-(up||0),l:1,c:cols[i%cols.length]})}}
 
-        window.setBet = function(amt) {
-            if (gameState === 'SHOOTING' || gameState === 'ROUND_ACTIVE') return;
-            document.getElementById("bet-input").value = amt;
-            currentBet = amt;
-        }
+/* ===== update ===== */
+function update(dt){
+  aimT+=dt*TIERS[G.amt].sp;sway+=dt;
+  wavePh+=dt*(1.1+Math.min(G.n,MAXG)*.3+boost);boost=Math.max(0,boost-dt*1.4);
+  if(!shot&&K.dt===0)K.tx=W/2+(markerX()-W/2)*.3+Math.sin(sway*1.5)*gw*.025; // he shuffles to follow your aim
+  K.x+=(K.tx-K.x)*(1-Math.exp(-K.rate*dt));
+  K.dive+=(K.dt-K.dive)*(1-Math.exp(-K.drate*dt));
 
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = 'ANP.HTML';
-                return;
-            }
-            currentUser = user;
-            userDocRef = doc(db, "users", user.uid);
-            await fetchBalance();
-            resizeCanvas();
-            requestAnimationFrame(gameLoop);
-        });
+  if(shot){
+    shot.t+=dt;
+    if(!shot.dived&&shot.t>=.04){shot.dived=true;K.tx=shot.kx;K.dt=1;K.dir=shot.kdir;K.rate=13;K.drate=12}
+    if(B.mode==="fly"){
+      const k=Math.min(1,shot.t/.42),e=1-Math.pow(1-k,2);
+      B.x=lerp(spotX,shot.tx,e);B.y=lerp(spotY,shot.ty,e)-Math.sin(Math.PI*k)*H*.06;B.r=lerp(R1,R2,e);B.ang+=dt*14;
+    }
+    if(!shot.resolved&&shot.t>=.42)resolve();
+    if(shot&&shot.t>=.78){
+      K.dt=0;K.rate=5;K.drate=6;
+      if(G.phase==="round"){B.mode="spot";B.x=spotX;B.y=spotY;B.r=R1;B.fade=0}
+      shot=null;G.busy=false;
+      if(G.q&&G.phase==="round"){G.q=0;shoot()}
+    }
+  }
+  if(B.mode==="spot")B.fade=Math.min(1,B.fade+dt*3.5);
+  if(B.mode==="save"){B.vy+=H*2.4*dt;B.y+=B.vy*dt;if(B.y>lineY-4){B.y=lineY-4;B.vy*=-.35;if(Math.abs(B.vy)<20)B.vy=0}B.ang+=dt*3}
+  for(let i=ripples.length-1;i>=0;i--){ripples[i].t+=dt;if(ripples[i].t>.7)ripples.splice(i,1)}
+  for(let i=fx.length-1;i>=0;i--){const f=fx[i];f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=260*dt;f.vx*=.99;f.l-=dt*1.1;if(f.l<=0)fx.splice(i,1)}
+  if(lastBusy!==G.busy){lastBusy=G.busy;shootBtn.classList.toggle("wait",G.busy)}
+}
 
-        async function fetchBalance() {
-            try {
-                const snap = await getDoc(userDocRef);
-                if (snap.exists()) {
-                    userBalance = snap.data().balance || 0;
-                    document.getElementById("game-wallet-balance").innerText = `₹${userBalance.toLocaleString()}`;
-                }
-            } catch (e) {
-                console.error("Balance fetch error:", e);
-            }
-        }
+/* ===== drawing ===== */
+function drawCrowd(){
+  const amp=2.5+G.n*1.2+boost*4;
+  for(let r=0;r<4;r++){
+    const y=H*(.06+r*.048),s=.72+r*.16;
+    for(let c=0;c<cols;c++){
+      const x=(c+.5+(r&1)*.5)*W/cols,lift=Math.max(0,Math.sin(c*.45-wavePh*3+r*.35))*amp*s;
+      ctx.fillStyle=CROWD[(c*7+r*3)%6];ctx.fillRect(x-3.6*s,y+2*s-lift,7.2*s,7*s);
+      ctx.fillStyle="#f1c9a5";ctx.beginPath();ctx.arc(x,y-lift,3.1*s,0,6.2832);ctx.fill();
+    }
+  }
+}
+function drawAim(){
+  const mx=markerX(),a=G.phase==="round"?1:.45;
+  ctx.globalAlpha=a;
+  const z=zoneOf(mx);
+  ctx.fillStyle="rgba(56,232,255,.16)";ctx.fillRect(gx+gw*z/5,gy,gw/5,gh);
+  ctx.strokeStyle="rgba(56,232,255,.7)";ctx.lineWidth=1.5;ctx.strokeRect(gx+gw*z/5,gy,gw/5,gh);
+  // wave line under the goal
+  ctx.lineCap="round";
+  for(let pass=0;pass<2;pass++){
+    ctx.beginPath();
+    for(let x=gx;x<=gx+gw;x+=5){const y=waveY+Math.sin(x*.05+aimT*2.2)*5;if(x===gx)ctx.moveTo(x,y);else ctx.lineTo(x,y)}
+    ctx.strokeStyle=pass?"rgba(200,250,255,.95)":"rgba(56,232,255,.28)";ctx.lineWidth=pass?2.5:8;ctx.stroke();
+  }
+  const my=waveY+Math.sin(mx*.05+aimT*2.2)*5;
+  ctx.setLineDash([3,5]);ctx.strokeStyle="rgba(200,250,255,.5)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,lineY+4);ctx.stroke();ctx.setLineDash([]);
+  ctx.globalCompositeOperation="lighter";ctx.drawImage(GLOW,mx-17,my-17,34,34);ctx.globalCompositeOperation="source-over";
+  ctx.strokeStyle="rgba(255,255,255,.8)";ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(mx,gy+gh*.5,9,0,6.2832);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(mx-14,gy+gh*.5);ctx.lineTo(mx-5,gy+gh*.5);ctx.moveTo(mx+5,gy+gh*.5);ctx.lineTo(mx+14,gy+gh*.5);ctx.stroke();
+  ctx.globalAlpha=1;
+}
+function drawKeeper(){
+  const h=KH,feet=lineY-3,tilt=K.dir*K.dive*1.1,jump=K.dive*h*.12;
+  ctx.fillStyle="rgba(0,0,0,.3)";ctx.beginPath();ctx.ellipse(K.x,feet+2,h*.28,h*.05,0,0,6.2832);ctx.fill();
+  ctx.save();ctx.translate(K.x,feet-h*.45-jump);ctx.rotate(tilt);
+  ctx.lineCap="round";
+  ctx.strokeStyle="#1b2040";ctx.lineWidth=h*.12;
+  ctx.beginPath();ctx.moveTo(-h*.07,0);ctx.lineTo(-h*.1,h*.45);ctx.moveTo(h*.07,0);ctx.lineTo(h*.1,h*.45);ctx.stroke();
+  ctx.fillStyle="#ffd23f";ctx.beginPath();ctx.roundRect?ctx.roundRect(-h*.16,-h*.42,h*.32,h*.48,h*.08):ctx.rect(-h*.16,-h*.42,h*.32,h*.48);ctx.fill();
+  ctx.fillStyle="#e8a400";ctx.fillRect(-h*.16,-h*.2,h*.32,h*.05);
+  ctx.fillStyle="#f2c29b";ctx.beginPath();ctx.arc(0,-h*.53,h*.105,0,6.2832);ctx.fill();
+  const d=K.dive,lx=lerp(-.31,-.12,d),ly=lerp(-.12,-.98,d);
+  ctx.strokeStyle="#ffd23f";ctx.lineWidth=h*.09;
+  ctx.beginPath();ctx.moveTo(-h*.16,-h*.36);ctx.lineTo(lx*h,ly*h);ctx.moveTo(h*.16,-h*.36);ctx.lineTo(-lx*h,ly*h);ctx.stroke();
+  ctx.fillStyle="#3ddc84";ctx.beginPath();ctx.arc(lx*h,ly*h,h*.08,0,6.2832);ctx.arc(-lx*h,ly*h,h*.08,0,6.2832);ctx.fill();
+  ctx.restore();
+}
+function draw(now){
+  ctx.globalAlpha=1;ctx.drawImage(bg,0,0,W,H);
+  drawCrowd();
+  if(!G.busy)drawAim();
+  for(const r of ripples){const k=r.t/.7;ctx.strokeStyle="rgba(255,255,255,"+(1-k)*.9+")";ctx.lineWidth=3*(1-k)+1;ctx.beginPath();ctx.arc(r.x,r.y,8+k*42,0,6.2832);ctx.stroke()}
+  drawKeeper();
+  // ball (+ ground shadow)
+  if(B.mode!=="spot"||B.fade>0){
+    const a=B.mode==="spot"?B.fade:1;
+    const sy=B.mode==="fly"?lerp(spotY,lineY,Math.min(1,(shot?shot.t:0)/.42)):(B.mode==="save"?lineY:B.y);
+    ctx.globalAlpha=.3*a;ctx.fillStyle="#000";ctx.beginPath();ctx.ellipse(B.x,sy+B.r*.9,B.r*.9,B.r*.28,0,0,6.2832);ctx.fill();
+    ctx.globalAlpha=a;ctx.save();ctx.translate(B.x,B.y);ctx.rotate(B.ang);ctx.drawImage(BALL,-B.r,-B.r,B.r*2,B.r*2);ctx.restore();ctx.globalAlpha=1;
+  }
+  for(const f of fx){ctx.globalAlpha=Math.max(0,f.l);ctx.fillStyle=f.c;ctx.fillRect(f.x-1.5,f.y-1.5,3,3)}
+  ctx.globalAlpha=1;
+}
+let last=0;
+function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000||0);last=now;update(dt);draw(now)}
 
-        window.startShootout = async function() {
-            const betInput = parseFloat(document.getElementById("bet-input").value);
-            if (!betInput || betInput <= 0) {
-                showModal("Invalid Bet", "Please enter a valid amount.", "fas fa-exclamation-triangle", "text-yellow-400");
-                return;
-            }
-            if (betInput > userBalance) {
-                showModal("Insufficient Balance", "Your gaming balance is too low.", "fas fa-lock", "text-red-400");
-                return;
-            }
+/* ===== ui helpers ===== */
+const multEl=$("mult"),potEl=$("pot"),toastEl=$("toast"),shootBtn=$("shoot"),cashBtn=$("cash"),cashAmt=$("cashAmt"),nextM=$("nextM"),pipsEl=$("pips");
+pipsEl.innerHTML=new Array(MAXG+1).join("<i></i>");
+const pips=[...pipsEl.children];
+function applyPips(){const mx=TIERS[G.amt].mx;pips.forEach((p,i)=>p.style.display=i<mx?"":"none")}
+let tid,mt;
+function toast(a,b,c,ms){toastEl.className="show "+c;toastEl.innerHTML=a+(b?"<small>"+b+"</small>":"");clearTimeout(tid);if(ms)tid=setTimeout(hideToast,ms)}
+function hideToast(){clearTimeout(tid);toastEl.className=""}
+function msg(t){$("msg").textContent=t;clearTimeout(mt);mt=setTimeout(()=>$("msg").textContent="",2600)}
+function flash(c){const e=$("balBtn");e.classList.remove("up","dn");void e.offsetWidth;e.classList.add(c)}
+function shake(){wrap.classList.remove("shake");void wrap.offsetWidth;wrap.classList.add("shake");setTimeout(()=>wrap.classList.remove("shake"),450)}
+function render(){
+  $("balTop").textContent=fmt(S.bal);$("balBig").textContent=CUR+fmt(S.bal);
+  $("stR").textContent=S.rounds;$("stW").textContent="+"+fmt(S.won);$("stL").textContent="-"+fmt(S.lost);
+  const n=S.won-S.lost;$("stN").textContent=(n<0?"-":"+")+fmt(Math.abs(n));$("stN").className=n<0?"neg":"pos";
+}
+function hudRound(){
+  const m=mult(G.n),pay=CUR+fmt(Math.floor(G.bet*m+1e-6));
+  multEl.textContent="x"+m.toFixed(2);multEl.className=G.n?"hot":"";
+  potEl.textContent=G.n?"Win "+pay:"Score to raise the multiplier";
+  cashAmt.textContent=G.n?pay:"";cashBtn.disabled=G.n<1;
+  nextM.textContent="next x"+mult(G.n+1).toFixed(2);
+  pips.forEach((p,i)=>p.classList.toggle("on",i<G.n));applyPips();
+}
+function idleHud(){multEl.textContent="x1.00";multEl.className="";potEl.textContent=ready&&S.bal<5000?"Balance too low to play":"Place a bet to start";pips.forEach(p=>p.classList.remove("on"));applyPips()}
+function setUI(){
+  const idle=G.phase==="idle";
+  $("play").hidden=!idle;shootBtn.hidden=idle;cashBtn.hidden=idle;
+  document.querySelectorAll("#chips button").forEach(e=>e.disabled=!ready||!idle||+e.dataset.a*100>S.bal);
+}
+/* ===== Firebase: sign-in + balance ===== */
+const authEl=$("auth"),authMsg=$("authMsg"),authForm=$("authForm"),authErr=$("authErr");
+function showAuth(text,form,err){authEl.hidden=false;authMsg.textContent=text;authForm.hidden=!form;authErr.textContent=err||""}
+function hideAuth(){authEl.hidden=true}
+function authText(e){
+  const c=e&&e.code||"";
+  return({"auth/invalid-credential":"Wrong email or password.","auth/wrong-password":"Wrong email or password.","auth/user-not-found":"No account with this email. Tap Create account.",
+    "auth/email-already-in-use":"This email already has an account. Tap Sign in.","auth/weak-password":"Password needs at least 6 characters.","auth/invalid-email":"That email address doesn't look right.",
+    "auth/network-request-failed":"No internet connection.","auth/too-many-requests":"Too many attempts. Wait a minute and try again.","auth/popup-closed-by-user":"",
+    "auth/operation-not-allowed":"This sign-in method is not enabled in Firebase (Authentication → Sign-in method).",
+    "auth/unauthorized-domain":"Add this website's domain in Firebase → Authentication → Settings → Authorized domains."})[c]
+    ??("Sign-in failed"+(c?" ("+c+")":"")+".");
+}
+async function initFirebase(){
+  try{
+    const [app,auth,fs]=await Promise.all([import(FBV+"firebase-app.js"),import(FBV+"firebase-auth.js"),import(FBV+"firebase-firestore.js")]);
+    const a=app.initializeApp(firebaseConfig);let db;
+    try{db=fs.initializeFirestore(a,{localCache:fs.persistentLocalCache({tabManager:fs.persistentMultipleTabManager()})})}catch(e){db=fs.getFirestore(a)}
+    FB={A:auth,F:fs,auth:auth.getAuth(a),db:db};
+    auth.onAuthStateChanged(FB.auth,onUser);
+  }catch(e){showAuth("Could not connect to the server. Check your internet and reload the page.",false)}
+}
+function onUser(u){
+  if(unsub){unsub();unsub=null}
+  ready=false;setUI();
+  if(!u){uid=null;userRef=null;$("who").textContent="";showAuth("Sign in to play",true);return}
+  uid=u.uid;userRef=FB.F.doc(FB.db,"users",uid);$("who").textContent=u.email||u.displayName||"";
+  showAuth("Loading your balance…",false);
+  unsub=FB.F.onSnapshot(userRef,snap=>{
+    if(!snap.exists()){ // first visit: create the player's document
+      FB.F.setDoc(userRef,{balance:START_BALANCE,won:0,lost:0,rounds:0,email:u.email||"",name:u.displayName||"",createdAt:Date.now(),updatedAt:Date.now()})
+        .catch(e=>showAuth("Could not set up your account ("+(e.code||e.message)+"). Check the Firestore rules.",false));
+      return;
+    }
+    const d=snap.data(),n=v=>Math.round(+v||0);
+    S.bal=n(d.balance*100);S.won=n(d.won*100);S.lost=n(d.lost*100);S.rounds=n(d.rounds); // Firestore stores rupees; the game counts in paise
+    if(!ready){ready=true;hideAuth();if(G.phase==="idle")idleHud()}
+    render();setUI();
+  },e=>showAuth("Could not load your balance ("+(e.code||e.message)+").",false));
+}
+function dbWrite(inc){ // every money change is an atomic increment on the player's own document
+  const F=FB.F,o={updatedAt:Date.now()};for(const k in inc)o[k]=F.increment(k==="rounds"?inc[k]:inc[k]/100);return F.updateDoc(userRef,o);
+}
+function log(e){
+  e.t=Date.now();e.g="w";S.hist.unshift(e);if(S.hist.length>30)S.hist.length=30;
+  try{FB.F.addDoc(FB.F.collection(FB.db,"users",uid,"bets"),Object.assign({},e,{a:e.a/100,b:e.b/100})).catch(()=>{})}catch(x){}
+}
+async function loadHist(){
+  if(!FB||!uid)return;
+  try{const F=FB.F,q=F.query(F.collection(FB.db,"users",uid,"bets"),F.orderBy("t","desc"),F.limit(30)),r=await F.getDocs(q);S.hist=r.docs.map(d=>{const x=d.data();x.a=Math.round(x.a*100);return x});renderHist()}catch(e){}
+}
+$("gBtn").onclick=async()=>{
+  authErr.textContent="";
+  try{await FB.A.signInWithPopup(FB.auth,new FB.A.GoogleAuthProvider())}
+  catch(e){if(e.code==="auth/popup-blocked"||e.code==="auth/operation-not-supported-in-this-environment"){try{await FB.A.signInWithRedirect(FB.auth,new FB.A.GoogleAuthProvider())}catch(x){authErr.textContent=authText(x)}}else authErr.textContent=authText(e)}
+};
+async function emailAuth(create){
+  const em=$("em").value.trim(),pw=$("pw").value;
+  if(!em||!pw){authErr.textContent="Enter your email and password.";return}
+  authErr.textContent="";const bs=authForm.querySelectorAll("button");bs.forEach(b=>b.disabled=true);
+  try{await(create?FB.A.createUserWithEmailAndPassword:FB.A.signInWithEmailAndPassword)(FB.auth,em,pw)}
+  catch(e){authErr.textContent=authText(e)}
+  bs.forEach(b=>b.disabled=false);
+}
+$("siBtn").onclick=()=>emailAuth(false);$("suBtn").onclick=()=>emailAuth(true);
+$("out").onclick=()=>{sheet(false);if(G.phase==="idle"&&FB)FB.A.signOut(FB.auth);else msg("Finish your round before signing out")};
 
-            currentBet = betInput;
-            await updateDoc(userDocRef, { balance: increment(-currentBet) });
-            userBalance -= currentBet;
-            document.getElementById("game-wallet-balance").innerText = `₹${userBalance.toLocaleString()}`;
+/* ===== game flow ===== */
+let rt;
+function autoReset(){ // ~1.6s after a round ends everything returns to the start
+  const id=G.rid;clearTimeout(rt);
+  rt=setTimeout(()=>{if(G.rid!==id||G.phase!=="idle")return;
+    G.n=0;shot=null;G.busy=false;fx.length=0;ripples.length=0;
+    B.mode="spot";B.x=spotX;B.y=spotY;B.r=R1;B.fade=0;K.dt=0;K.dir=0;K.rate=5;K.drate=6;
+    hideToast();idleHud()},1600);
+}
+function play(){
+  if(G.phase!=="idle")return;
+  const bet=G.amt*100;
+  if(!ready){msg("Connecting to the server…");return}
+  if(!navigator.onLine){msg("No internet connection");return}
+  if(bet>S.bal){msg("Not enough balance for "+CUR+G.amt);return}
+  const id=++G.rid; // the balance on screen comes from the database (it already includes this pending bet)
+  G.betP=dbWrite({balance:-bet,rounds:1}); // charged on the server first; a payout is only ever sent after this succeeds
+  G.betP.catch(()=>{if(G.rid===id&&G.phase!=="idle"){abortRound();toast("Bet failed","Nothing was charged","lose",2800)}});
+  G.bet=bet;G.n=0;G.q=0;G.qc=0;G.busy=false;G.phase="round";shot=null;
+  B.mode="spot";B.x=spotX;B.y=spotY;B.r=R1;B.fade=1;K.dt=0;K.dir=0;fx.length=0;ripples.length=0;
+  hideToast();hudRound();render();flash("dn");setUI();sfx.start();
+}
+function abortRound(){ // the server refused the bet: put everything back to the start
+  clearTimeout(rt);G.phase="idle";G.n=0;G.q=0;G.qc=0;G.busy=false;shot=null;fx.length=0;ripples.length=0;
+  B.mode="spot";B.x=spotX;B.y=spotY;B.r=R1;B.fade=1;K.dt=0;K.dir=0;idleHud();render();setUI();
+}
+function shoot(){
+  if(G.phase!=="round")return;
+  if(G.busy){G.q=1;return}
+  G.busy=true;
+  const mx=markerX(),tz=zoneOf(mx),goal=rnd()<TIERS[G.amt].p;
+  let kz=tz;
+  if(goal){const c=[],near=[];for(let z=0;z<5;z++){if(Math.abs(z-tz)>=2)c.push(z);if(Math.abs(z-tz)===2)near.push(z)}
+    kz=near.length&&rnd()<.65?near[Math.floor(rnd()*near.length)]:c[Math.floor(rnd()*c.length)]} // when he is beaten it is a close one
+  const kx=zoneX(kz);
+  shot={t:0,goal,tx:Math.min(gx+gw*.96,Math.max(gx+gw*.04,mx)),ty:gy+gh*(.2+.55*rnd()),kx,kdir:Math.sign(Math.round(kx-W/2)),dived:false,resolved:false};
+  B.mode="fly";B.x=spotX;B.y=spotY;B.r=R1;B.fade=1;B.ang=0;
+  sfx.kick();
+}
+function resolve(){
+  shot.resolved=true;
+  if(shot.goal){
+    G.n++;B.mode="net";B.x=shot.tx;B.y=shot.ty;B.r=R2;
+    ripples.push({x:shot.tx,y:shot.ty,t:0});
+    burst(shot.tx,shot.ty,26,["#fff","#ffd45a","#38e8ff","#3ddc84"],190,60);
+    boost=2.2;sfx.goal();
+    hudRound();
+    if(G.n>=TIERS[G.amt].mx){cashOut(true);return}
+    toast("⚽ GOAL!","x"+mult(G.n).toFixed(2),"win",750);
+    if(G.qc){G.qc=0;cashOut(false)}
+  }else{lose()}
+}
+function lose(){
+  G.phase="idle";G.q=0;G.qc=0;B.mode="save";B.x=shot.tx;B.y=shot.ty;B.r=R2*1.2;B.vy=0;
+  const bet=G.bet;S.lost+=bet;log({w:false,a:-bet,n:G.n,b:bet});
+  G.betP.then(()=>dbWrite({lost:bet})).catch(()=>{});
+  multEl.textContent="SAVED!";multEl.className="lose";potEl.textContent="Keeper wins this one";
+  toast("🧤 Saved!","-"+CUR+fmt(G.bet),"lose");
+  sfx.save();shake();try{navigator.vibrate&&navigator.vibrate(140)}catch(e){}
+  render();setUI();autoReset();
+}
+function cashOut(auto){
+  if(G.phase!=="round"||G.n<1)return;
+  if(shot&&!shot.resolved){G.qc=1;return} // shot still in the air: cash out the moment it lands
+  const m=mult(G.n),pay=Math.floor(G.bet*m+1e-6),net=pay-G.bet;
+  G.phase="idle";G.q=0;G.qc=0;
+  S.bal+=pay;S.won+=net;log({w:true,a:net,m:m,n:G.n,b:G.bet});
+  G.betP.then(()=>dbWrite({balance:pay,won:net})).catch(e=>{potEl.textContent="⚠ Payout not saved ("+(e.code||"error")+") — contact support"});
+  burst(W/2,H*.12,40,["#ffd45a","#fff","#3ddc84","#38e8ff","#ff4d5a"],230,40);boost=3;
+  multEl.textContent="x"+m.toFixed(2);multEl.className="win";potEl.textContent="Cashed out!";
+  toast("🏆 +"+CUR+fmt(net),"x"+m.toFixed(2)+(auto?" · perfect streak!":""),"win");
+  sfx.win();render();flash("up");setUI();autoReset();
+}
 
-            gameState = 'ROUND_ACTIVE';
-            currentRound = 0;
-            document.getElementById("live-multiplier").innerText = `Multiplier: 1.0x`;
-            document.getElementById("main-action-btn").innerText = "Choose Target Zone Above ⬆️";
-            document.getElementById("main-action-btn").disabled = true;
-            document.getElementById("target-pad").classList.remove("hidden");
-            document.getElementById("game-status-tip").innerHTML = `<i class="fas fa-crosshairs mr-1"></i> Round 1: Choose where to shoot!`;
-            resetPositions();
-        }
+/* ===== controls (fire on touch-down for instant response) ===== */
+function fast(el,fn){
+  el.addEventListener("pointerdown",e=>{if(e.button>0)return;e.preventDefault();fn(e)});
+  el.addEventListener("click",e=>{if(e.detail===0)fn(e)}); // keyboard
+}
+fast($("play"),play);fast(shootBtn,shoot);fast(cashBtn,()=>cashOut(false));
+fast($("chips"),e=>{
+  const b=e.target.closest("button");if(!b||G.phase!=="idle"||b.disabled)return;
+  G.amt=+b.dataset.a;[...$("chips").children].forEach(x=>x.classList.toggle("on",x===b));applyPips();
+});
 
-        window.shootBall = async function(zone) {
-            if (gameState !== 'ROUND_ACTIVE' || ball.moving) return;
-
-            document.getElementById("target-pad").classList.add("hidden");
-            ball.moving = true;
-            ball.progress = 0;
-
-            const goalWidth = 220;
-            const goalLeft = (canvas.width - goalWidth) / 2;
-            const goalTop = canvas.height / 2 - 50;
-
-            // Determine target coordinates based on zone
-            if (zone === 'TL') {
-                ball.targetX = goalLeft + 35;
-                ball.targetY = goalTop + 20;
-            } else if (zone === 'TR') {
-                ball.targetX = goalLeft + goalWidth - 35;
-                ball.targetY = goalTop + 20;
-            } else if (zone === 'BL') {
-                ball.targetX = goalLeft + 35;
-                ball.targetY = goalTop + 65;
-            } else if (zone === 'BR') {
-                ball.targetX = goalLeft + goalWidth - 35;
-                ball.targetY = goalTop + 65;
-            }
-
-            // Goalkeeper dives randomly (AI difficulty scales with round)
-            const keeperZones = ['TL', 'TR', 'BL', 'BR'];
-            // Higher rounds make the keeper guess correctly more often
-            const blockChance = 0.3 + (currentRound * 0.1);
-            let keeperZone = keeperZones[Math.floor(Math.random() * keeperZones.length)];
-            if (Math.random() < blockChance) {
-                keeperZone = zone; // Keeper blocks!
-            }
-
-            if (keeperZone === 'TL') goalkeeper.targetX = goalLeft + 45;
-            else if (keeperZone === 'TR') goalkeeper.targetX = goalLeft + goalWidth - 45;
-            else if (keeperZone === 'BL') goalkeeper.targetX = goalLeft + 55;
-            else if (keeperZone === 'BR') goalkeeper.targetX = goalLeft + goalWidth - 55;
-
-            // Wait for animation to finish then check result
-            setTimeout(async () => {
-                ball.moving = false;
-                const scored = (zone !== keeperZone);
-
-                if (!scored) {
-                    // SAVED BY KEEPER!
-                    gameState = 'LOST';
-                    document.getElementById("target-pad").classList.add("hidden");
-                    document.getElementById("main-action-btn").innerText = "Start Shootout";
-                    document.getElementById("main-action-btn").disabled = false;
-                    showModal("Saved! 🧤", `The goalkeeper blocked your shot on Round ${currentRound + 1}. Lost ₹${currentBet.toLocaleString()}.`, "fas fa-hand-paper", "text-red-400");
-                    await fetchBalance();
-                } else {
-                    // GOAL!
-                    currentRound++;
-                    document.getElementById("live-multiplier").innerText = `Multiplier: ${multipliers[currentRound - 1]}x`;
-
-                    if (currentRound === 5) {
-                        // WON ALL 5 ROUNDS!
-                        const winnings = currentBet * multipliers[4];
-                        await updateDoc(userDocRef, { balance: increment(winnings) });
-                        gameState = 'WON';
-                        document.getElementById("target-pad").classList.add("hidden");
-                        document.getElementById("main-action-btn").innerText = "Start Shootout";
-                        document.getElementById("main-action-btn").disabled = false;
-                        showModal("Victory! 🏆", `Incredible! You scored all 5 goals and won ₹${winnings.toLocaleString()} (5.0x)!`, "fas fa-trophy", "text-yellow-400");
-                        await fetchBalance();
-                    } else {
-                        // Next Round
-                        gameState = 'ROUND_ACTIVE';
-                        document.getElementById("target-pad").classList.remove("hidden");
-                        document.getElementById("game-status-tip").innerHTML = `<i class="fas fa-futbol mr-1"></i> Goal! Round ${currentRound + 1} (${multipliers[currentRound]}x): Choose target!`;
-                        resetPositions();
-                    }
-                }
-            }, 600);
-        }
-
-        function gameLoop() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // 1. Draw Pitch / Grass Background
-            ctx.fillStyle = '#0a2314';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Pitch pattern lines
-            ctx.strokeStyle = 'rgba(255,255,255,0.12)';
-            ctx.lineWidth = 2;
-            const goalWidth = 220;
-            const goalLeft = (canvas.width - goalWidth) / 2;
-            const goalTop = canvas.height / 2 - 50;
-            const goalHeight = 100;
-
-            // Penalty Box & Arc
-            ctx.strokeRect(goalLeft - 40, goalTop, goalWidth + 80, goalHeight + 80);
-
-            // 2. Draw Football Goal Net
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-            ctx.fillRect(goalLeft, goalTop, goalWidth, goalHeight);
-            
-            // Net Grid Lines
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-            ctx.lineWidth = 1;
-            for (let gx = goalLeft; gx <= goalLeft + goalWidth; gx += 18) {
-                ctx.beginPath(); ctx.moveTo(gx, goalTop); ctx.lineTo(gx, goalTop + goalHeight); ctx.stroke();
-            }
-            for (let gy = goalTop; gy <= goalTop + goalHeight; gy += 18) {
-                ctx.beginPath(); ctx.moveTo(goalLeft, gy); ctx.lineTo(goalLeft + goalWidth, gy); ctx.stroke();
-            }
-
-            // Goal Posts (White frame)
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 6;
-            ctx.strokeRect(goalLeft, goalTop, goalWidth, goalHeight);
-
-            // 3. Smooth Goalkeeper Movement Animation
-            goalkeeper.x += (goalkeeper.targetX - goalkeeper.x) * 0.15;
-            ctx.save();
-            ctx.fillStyle = '#38bdf8'; // Blue keeper jersey
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = '#38bdf8';
-            ctx.beginPath();
-            ctx.roundRect ? ctx.roundRect(goalkeeper.x - 18, goalkeeper.y - 25, 36, 50, 8) : ctx.fillRect(goalkeeper.x - 18, goalkeeper.y - 25, 36, 50);
-            ctx.fill();
-            // Keeper head & gloves
-            ctx.fillStyle = '#fde047';
-            ctx.beginPath(); ctx.arc(goalkeeper.x, goalkeeper.y - 34, 10, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = '#ef4444';
-            ctx.fillRect(goalkeeper.x - 26, goalkeeper.y - 10, 10, 14); // Left glove
-            ctx.fillRect(goalkeeper.x + 16, goalkeeper.y - 10, 10, 14); // Right glove
-            ctx.restore();
-
-            // 4. Ball Animation
-            if (ball.moving) {
-                ball.progress += 0.08;
-                if (ball.progress > 1) ball.progress = 1;
-                ball.x += (ball.targetX - ball.x) * 0.25;
-                ball.y += (ball.targetY - ball.y) * 0.25;
-            }
-
-            // Draw Football
-            ctx.save();
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#ffffff';
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.arc(ball.x, ball.y, 12, 0, Math.PI * 2);
-            ctx.fill();
-            // Ball pentagon pattern dot
-            ctx.fillStyle = '#000000';
-            ctx.beginPath();
-            ctx.arc(ball.x + 3, ball.y - 3, 4, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-
-            requestAnimationFrame(gameLoop);
-        }
-
-        function showModal(title, desc, iconClass, colorClass) {
-            document.getElementById("modal-title").innerText = title;
-            document.getElementById("modal-desc").innerText = desc;
-            const el = document.getElementById("modal-icon");
-            el.className = `w-14 h-14 bg-emerald-500/20 border border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl ${colorClass}`;
-            el.innerHTML = `<i class="${iconClass}"></i>`;
-            document.getElementById("game-modal").classList.remove("hidden");
-        }
-
-        window.closeModal = function() {
-            document.getElementById("game-modal").classList.add("hidden");
-            gameState = 'IDLE';
-            currentRound = 0;
-            resetPositions();
-            document.getElementById("live-multiplier").innerText = "Multiplier: 1.0x";
-            document.getElementById("main-action-btn").innerText = "Start Shootout";
-            document.getElementById("main-action-btn").disabled = false;
-            document.getElementById("game-status-tip").innerHTML = `<i class="fas fa-futbol mr-1"></i> Select bet & shoot to score goals!`;
-        }
-
-        // Tactile ripple listener
-        document.addEventListener('click', function (e) {
-            const target = e.target.closest('.tactile-btn');
-            if (!target) return;
-            const circle = document.createElement('span');
-            const rect = target.getBoundingClientRect();
-            const d = Math.max(rect.width, rect.height);
-            circle.style.width = circle.style.height = `${d}px`;
-            circle.style.left = `${e.clientX - rect.left - d/2}px`;
-            circle.style.top = `${e.clientY - rect.top - d/2}px`;
-            circle.classList.add('ripple');
-            target.appendChild(circle);
-            setTimeout(() => circle.remove(), 600);
-        });
-    </script>
+/* ===== balance menu ===== */
+function histText(e){
+  const m=e.m!=null?(+e.m).toFixed(2):"";
+  if(e.g==="c")return["Cricket",e.w?"Win x"+m+" ("+(e.r||0)+" runs)":"Out after "+(e.n||0)+" ball"+(e.n===1?"":"s")+" ("+(e.r||0)+" runs)"];
+  if(e.g==="w")return["Goal Wave",e.w?"Win x"+m:(e.n?"Saved after "+e.n+" goal"+(e.n>1?"s":""):"Saved on first shot")];
+  if(e.g==="v")return["Vortex",e.w?"Win x"+m:"Collapsed at x"+m];
+  return["Chicken Road",e.w?"Win x"+m:"Lost at lane "+e.l];
+}
+function renderHist(){
+  const ul=$("hist");
+  if(!S.hist.length){ul.innerHTML='<div class="empty">No rounds yet. Your wins and losses will show here.</div>';return}
+  ul.innerHTML=S.hist.map(e=>{
+    const d=new Date(e.t).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),t=histText(e);
+    return '<li><div>'+t[0]+' · '+t[1]+'<small>'+d+'</small></div><b class="'+(e.w?"pos":"neg")+'">'+(e.a<0?"-":"+")+CUR+fmt(Math.abs(e.a))+'</b></li>';
+  }).join("");
+}
+function sheet(on){if(on){renderHist();render();setUI();loadHist()}$("sheet").classList.toggle("on",on);$("back").classList.toggle("on",on);$("sheet").setAttribute("aria-hidden",!on)}
+$("balBtn").onclick=()=>sheet(true);$("close").onclick=()=>sheet(false);$("back").onclick=()=>sheet(false);
+resize();K.x=K.tx=W/2;B.x=spotX;B.y=spotY;B.r=R1;idleHud();render();setUI();requestAnimationFrame(frame);
+requestAnimationFrame(()=>setTimeout(initFirebase,0)); // load Firebase after the first frame so the page appears instantly
+})();
+</script>
 </body>
 </html>
