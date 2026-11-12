@@ -1,433 +1,570 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ANP MONEY - Live Cricket Betting</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            -webkit-tap-highlight-color: transparent;
-            min-height: 100vh;
-            min-height: 100dvh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-x: hidden;
-        }
-        .bg-wave-pattern {
-            background: linear-gradient(135deg, #2da45a 0%, #3f8e43 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        .app-container {
-            width: 100%;
-            max-width: 430px;
-            height: 100dvh;
-            background: #f8fafc;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(45, 164, 90, 0.25);
-        }
-        @media (min-width: 640px) {
-            .app-container {
-                height: 880px;
-                max-height: 92vh;
-                border-radius: 36px;
-                border: 8px solid rgba(45, 164, 90, 0.3);
-            }
-        }
-        .classic-card {
-            background: #ffffff;
-            border: 1px solid rgba(45, 164, 90, 0.2);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-        }
-        .glass-modal {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 2px solid rgba(45, 164, 90, 0.4);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 30px rgba(45,164,90,0.15);
-        }
-        .tactile-btn {
-            position: relative; overflow: hidden; transform: translateZ(0);
-            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease, filter 0.15s ease;
-            cursor: pointer; -webkit-user-select: none; user-select: none;
-        }
-        .tactile-btn:hover { filter: brightness(1.05); }
-        .tactile-btn:active { transform: scale(0.94) translateY(1px) !important; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0a1624">
+<title>ANP MONEY - Cricket Blitz</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#08121f;--panel:#12243a;--panel2:#1a3556;--line:#2a5688;--g:#3ddc84;--g2:#1fae5f;--gold:#ffc83d;--gold2:#ff9f1c;--red:#ff4d5a;--cy:#5ec8ff;--txt:#eaf3ff;--mut:#8fa9c7}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-serif;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
+#app{max-width:520px;height:100dvh;margin:0 auto;display:flex;flex-direction:column;background:radial-gradient(120% 60% at 50% 0,#173f6e 0,var(--bg) 70%);padding-top:env(safe-area-inset-top)}
+header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px}
+.logo{font-weight:900;letter-spacing:1.5px;font-size:20px;color:#fff}
+.logo b{background:linear-gradient(90deg,var(--gold),#ff8a3d);-webkit-background-clip:text;background-clip:text;color:transparent;margin-left:6px}
+.hr{display:flex;gap:8px;align-items:center}
+.ib{width:40px;height:40px;border-radius:12px;background:var(--panel2);font-size:18px;display:flex;align-items:center;justify-content:center}
+.bal{display:flex;flex-direction:column;align-items:flex-end;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:4px 12px;min-width:112px;cursor:pointer}
+.bal small{font-size:9px;letter-spacing:1.5px;color:var(--mut)}
+.bal span{font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}
+.bal span:before{content:"₹";color:var(--gold);margin-right:3px}
+.bal.up{animation:fu .7s}.bal.dn{animation:fd .7s}
+@keyframes fu{30%{background:#1f7a46;transform:scale(1.05)}}
+@keyframes fd{30%{background:#6b2530}}
+#wrap{position:relative;flex:1;min-height:270px;margin:0 8px;border-radius:18px;overflow:hidden;border:2px solid var(--line);background:#06100c;box-shadow:0 10px 30px #0009,0 0 24px #5ec8ff22}
+#wrap.shake{animation:shake .42s}
+@keyframes shake{20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-4px)}60%{transform:translate(-4px,-2px)}80%{transform:translate(3px,3px)}}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+#hud{position:absolute;left:10px;top:8px;pointer-events:none;text-shadow:0 2px 8px #000,0 0 14px #000}
+#mult{font-size:clamp(30px,9.5vw,42px);font-weight:900;line-height:1;color:#fff;font-variant-numeric:tabular-nums;transition:color .2s}
+#mult.hot{color:var(--gold)}#mult.lose{color:var(--red)}#mult.win{color:var(--g)}
+#pot{font-size:12px;color:#e3f1ff;margin-top:4px}
+#pips{position:absolute;right:8px;top:12px;display:flex;gap:3px;pointer-events:none}
+#pips i{width:9px;height:9px;border-radius:50%;background:#0008;border:1.5px solid #ffffff55;transition:background .2s,transform .2s}
+#pips i.on{background:var(--gold);border-color:#ffe9a8;transform:scale(1.12);box-shadow:0 0 7px var(--gold)}
+#toast{position:absolute;left:50%;top:33%;transform:translate(-50%,-50%) scale(.6);z-index:9;opacity:0;pointer-events:none;text-align:center;font-weight:900;font-size:26px;padding:9px 20px;border-radius:16px;background:#000c;transition:.18s;white-space:nowrap}
+#toast small{display:block;font-size:13px;font-weight:600;opacity:.85;margin-top:2px}
+#toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#toast.win{color:var(--g);border:2px solid var(--g)}
+#toast.six{color:var(--gold);border:2px solid var(--gold)}
+#toast.lose{color:var(--red);border:2px solid var(--red)}
+#ctl{padding:10px 10px calc(10px + env(safe-area-inset-bottom))}
+.row{display:flex;gap:6px;margin-bottom:8px}
+.row.chips button{flex:1;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;font-weight:900;font-size:21px;background:var(--panel2);border:2px solid transparent;transition:transform .06s}
+.chips small{font-size:11px;font-weight:700;color:var(--mut)}
+.row.chips button.on{border-color:var(--gold);background:#3a3a28}
+.chips button.on small{color:var(--gold)}
+.row.chips button:active{transform:scale(.96)}
+.row.chips button:disabled{opacity:.45}
+.act{margin:0;gap:8px}
+.big{flex:1;height:58px;font-size:18px;border-radius:14px;font-weight:900;letter-spacing:.5px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;transition:transform .06s,opacity .1s}
+.big small{font-size:11px;font-weight:700;opacity:.85}
+.big.g{background:linear-gradient(180deg,var(--g),var(--g2));color:#05250f;box-shadow:0 4px 0 #137a40}
+.big.y{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#3a2200;box-shadow:0 4px 0 #b36b00}
+.big:active{transform:translateY(3px);box-shadow:none}
+.big.wait{opacity:.6}
+.big:disabled{opacity:.45;pointer-events:none}
+#msg{margin:6px 0 0;min-height:16px;text-align:center;font-size:12px;color:var(--red)}
+.sidebar-container {padding: 0 10px 10px; flex: 1; max-height: 220px; overflow-y: auto;}
+</style>
 </head>
 <body>
-
-    <div class="app-container">
-        
-        <!-- Header -->
-        <header class="bg-wave-pattern pt-4 px-4 pb-4 text-white relative flex-shrink-0 shadow-md">
-            <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2">
-                    <button onclick="window.location.href='games.html'" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs hover:bg-white/30 transition-all tactile-btn">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <h1 class="text-sm font-black tracking-tight">Live Cricket Hub</h1>
-                </div>
-                <span class="text-[9px] bg-white text-emerald-800 font-bold px-2.5 py-0.5 rounded-full uppercase shadow">Match Center</span>
-            </div>
-
-            <!-- Gaming Wallet Card -->
-            <div class="bg-white/10 border border-white/20 rounded-xl p-2.5 flex justify-between items-center backdrop-blur-sm">
-                <div>
-                    <span class="text-[9px] text-emerald-100 uppercase tracking-wider block font-semibold">Gaming Balance</span>
-                    <span class="text-base font-black text-white font-mono" id="game-wallet-balance">₹0.00</span>
-                </div>
-                <div class="text-right">
-                    <span class="text-[10px] text-emerald-100 font-mono font-bold" id="active-bets-count">Active Bets: 0</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Matches View -->
-        <main class="flex-1 relative z-10 flex flex-col p-4 overflow-y-auto hide-scrollbar gap-3.5">
-            
-            <div class="flex items-center justify-between">
-                <h2 class="text-xs font-bold uppercase tracking-wider text-emerald-800"><i class="fas fa-shield-alt mr-1 text-emerald-600"></i> Match Schedule & Odds</h2>
-                <span class="text-[10px] text-slate-500">Firestore Secure</span>
-            </div>
-
-            <!-- Match 1: LIVE MATCH -->
-            <div class="classic-card rounded-2xl p-4 flex flex-col gap-3" id="match-ind-nz">
-                <div class="flex justify-between items-center text-[10px] text-emerald-700 font-semibold border-b border-slate-100 pb-2">
-                    <span><i class="fas fa-trophy mr-1"></i> India Tour of New Zealand, 3rd ODI</span>
-                    <span class="bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold animate-pulse">● LIVE</span>
-                </div>
-
-                <div class="flex items-center justify-between px-2">
-                    <div class="flex flex-col items-center flex-1">
-                        <span class="text-xs font-bold text-slate-900">New Zealand</span>
-                        <span class="text-[10px] text-slate-600 font-mono" id="nz-score">245/6 (42.3 ov)</span>
-                    </div>
-                    <span class="text-xs font-black text-emerald-600 px-3">VS</span>
-                    <div class="flex flex-col items-center flex-1">
-                        <span class="text-xs font-bold text-slate-900">India</span>
-                        <span class="text-[10px] text-slate-600 font-mono" id="ind-score">198/3 (32.1 ov)</span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2 pt-1" id="btns-ind-nz">
-                    <button onclick="openBetSlip('match_ind_nz', 'India Tour of New Zealand', 'New Zealand', 2.15)" class="py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl flex justify-between items-center text-xs text-slate-900 tactile-btn">
-                        <span class="font-semibold">NZ Win</span>
-                        <span class="font-mono font-bold text-emerald-700">2.15x</span>
-                    </button>
-                    <button onclick="openBetSlip('match_ind_nz', 'India Tour of New Zealand', 'India', 1.70)" class="py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl flex justify-between items-center text-xs text-slate-900 tactile-btn">
-                        <span class="font-semibold">IND Win</span>
-                        <span class="font-mono font-bold text-emerald-700">1.70x</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Match 2: UPCOMING MATCH -->
-            <div class="classic-card rounded-2xl p-4 flex flex-col gap-3" id="match-sa-aus">
-                <div class="flex justify-between items-center text-[10px] text-emerald-700 font-semibold border-b border-slate-100 pb-2">
-                    <span><i class="fas fa-trophy mr-1"></i> Australia Tour of South Africa, 1st T20I</span>
-                    <span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold">Upcoming (Today, 7:30 PM)</span>
-                </div>
-
-                <div class="flex items-center justify-between px-2 py-1">
-                    <div class="flex flex-col items-center flex-1">
-                        <span class="text-xs font-bold text-slate-900">South Africa</span>
-                    </div>
-                    <span class="text-xs font-black text-emerald-600 px-3">VS</span>
-                    <div class="flex flex-col items-center flex-1">
-                        <span class="text-xs font-bold text-slate-900">Australia</span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2 pt-1" id="btns-sa-aus">
-                    <button onclick="openBetSlip('match_sa_aus', 'South Africa vs Australia', 'South Africa', 1.85)" class="py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl flex justify-between items-center text-xs text-slate-900 tactile-btn">
-                        <span class="font-semibold">SA Win</span>
-                        <span class="font-mono font-bold text-emerald-700">1.85x</span>
-                    </button>
-                    <button onclick="openBetSlip('match_sa_aus', 'South Africa vs Australia', 'Australia', 1.95)" class="py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl flex justify-between items-center text-xs text-slate-900 tactile-btn">
-                        <span class="font-semibold">AUS Win</span>
-                        <span class="font-mono font-bold text-emerald-700">1.95x</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Match 3: MATCH END -->
-            <div class="classic-card rounded-2xl p-4 flex flex-col gap-3 opacity-90">
-                <div class="flex justify-between items-center text-[10px] text-slate-500 font-semibold border-b border-slate-100 pb-2">
-                    <span><i class="fas fa-trophy mr-1"></i> Sri Lanka Tour of Pakistan, 1st Test</span>
-                    <span class="bg-slate-200 text-slate-700 px-2.5 py-0.5 rounded-full font-bold">Match End</span>
-                </div>
-
-                <div class="flex items-center justify-between px-2">
-                    <div class="flex flex-col items-center flex-1">
-                        <span class="text-xs font-bold text-slate-900">Pakistan</span>
-                        <span class="text-[10px] text-slate-500 font-mono">310 & 245/8 dec</span>
-                    </div>
-                    <span class="text-xs font-black text-slate-400 px-3">VS</span>
-                    <div class="flex flex-col items-center flex-1">
-                        <span class="text-xs font-bold text-slate-900">Sri Lanka</span>
-                        <span class="text-[10px] text-slate-500 font-mono">275 & 220 all out</span>
-                    </div>
-                </div>
-
-                <div class="bg-slate-100 py-1.5 px-3 rounded-lg text-center">
-                    <p class="text-[11px] font-semibold text-emerald-800">Result: Pakistan won by 60 runs</p>
-                </div>
-            </div>
-
-        </main>
+<div id="app">
+  <header>
+    <div class="logo">CRICKET<b>BLITZ</b></div>
+    <div class="hr">
+      <button id="snd" class="ib" aria-label="Sound">🔊</button>
+      <button onclick="window.location.href='index.html'" class="bal" aria-label="VIP Dashboard"><small>VIP WALLET ▾</small><span id="balTop">0.00</span></button>
     </div>
+  </header>
 
-    <!-- Bet Slip Modal -->
-    <div id="bet-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden px-4 backdrop-blur-sm">
-        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-slate-900 shadow-2xl">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-sm font-bold text-emerald-800"><i class="fas fa-ticket-alt mr-1"></i> Place Match Bet</h3>
-                <button onclick="closeBetModal()" class="text-slate-400 hover:text-slate-700 text-xs"><i class="fas fa-times text-base"></i></button>
-            </div>
-            
-            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-4 text-xs">
-                <p class="text-slate-600 mb-1" id="slip-match-name">Match: IND vs NZ</p>
-                <p class="font-bold text-emerald-800 text-sm mb-1" id="slip-selection">Selection: India (Win)</p>
-                <p class="text-emerald-600 font-mono font-bold" id="slip-odds">Odds: 1.70x</p>
-            </div>
+  <div id="wrap">
+    <canvas id="cv"></canvas>
+    <div id="hud"><div id="mult">x1.00</div><div id="pot">Place a bet to start</div></div>
+    <div id="pips"></div>
+    <div id="toast"></div>
+  </div>
 
-            <div class="mb-4">
-                <label class="block text-[11px] text-slate-600 mb-1.5 font-medium">Enter Bet Amount (₹):</label>
-                <input type="number" id="bet-amount-input" value="100" min="10" class="w-full bg-white border border-emerald-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 font-mono outline-none focus:border-emerald-500">
-            </div>
-
-            <div class="flex justify-between items-center text-xs mb-5 px-1 bg-slate-100 py-2 rounded-lg">
-                <span class="text-slate-500">Estimated Payout:</span>
-                <span class="font-mono font-bold text-emerald-700 text-sm" id="payout-preview">₹170.00</span>
-            </div>
-
-            <button onclick="confirmBet()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-extrabold rounded-xl text-xs shadow-lg tactile-btn">
-                Confirm & Place Bet
-            </button>
-        </div>
+  <!-- Real Live Bets Sidebar Section -->
+  <div class="sidebar-container">
+    <div style="background:var(--panel); border-radius:12px; overflow:hidden; border:1px solid var(--line);">
+      <div style="padding:6px 10px; background:var(--panel2); display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:800;">
+        <span><i class="fas fa-circle text-emerald-400 text-[8px] mr-1 animate-pulse"></i> LIVE FIRESTORE BETS</span>
+        <span id="online-count" style="color:var(--mut);">Synced</span>
+      </div>
+      <div style="display:grid; grid-template-columns:5fr 3fr 2fr 2fr; padding:4px 10px; font-size:10px; color:var(--mut); border-bottom:1px solid var(--line);">
+        <div>Player</div><div style="text-align:right;">Bet</div><div style="text-align:center;">Mult</div><div style="text-align:right;">Win</div>
+      </div>
+      <div id="live-bets-list" style="max-height:80px; overflow-y:auto; font-size:11px;">
+        <div style="padding:8px; text-align:center; color:var(--mut);">Waiting for live bets...</div>
+      </div>
     </div>
+  </div>
 
-    <!-- Result Modal -->
-    <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden px-4 backdrop-blur-sm">
-        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-center text-slate-900 shadow-2xl">
-            <div id="modal-icon" class="w-14 h-14 bg-emerald-100 border border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl text-emerald-600">
-                <i class="fas fa-trophy"></i>
-            </div>
-            <h3 id="modal-title" class="text-lg font-bold mb-1">Bet Placed!</h3>
-            <p id="modal-desc" class="text-xs text-slate-600 mb-5 leading-relaxed">Your bet has been recorded successfully.</p>
-            <button onclick="closeResultModal()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-xl text-xs tactile-btn">
-                Continue
-            </button>
-        </div>
+  <section id="ctl">
+    <div class="row chips" id="chips">
+      <button data-a="50" class="on">₹50<small>EASY</small></button>
+      <button data-a="100">₹100<small>MEDIUM</small></button>
+      <button data-a="500">₹500<small>EXTREME</small></button>
     </div>
+    <div class="row act">
+      <button id="play" class="big g">PLAY</button>
+      <button id="hit" class="big g" hidden>HIT 🏏<small id="ballNo"></small></button>
+      <button id="cash" class="big y" hidden>CASH OUT<small id="cashAmt"></small></button>
+    </div>
+    <p id="msg"></p>
+  </section>
+</div>
 
-    <!-- Firebase & Firestore Bet Validation Script -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, increment, collection, addDoc, onSnapshot, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAoXMQtogVuO8O_OXO62JthLagGeqGSPHg",
-            authDomain: "anpmoney-290eb.firebaseapp.com",
-            projectId: "anpmoney-290eb",
-            storageBucket: "anpmoney-290eb.firebasestorage.app",
-            messagingSenderId: "609571923036",
-            appId: "1:609571923036:web:45544e187ce63adec0f299",
-            measurementId: "G-HCW4DY6E6J"
-        };
+const firebaseConfig = {
+    apiKey: "AIzaSyAoXMQtogVuO8O_OXO62JthLagGeqGSPHg",
+    authDomain: "anpmoney-290eb.firebaseapp.com",
+    projectId: "anpmoney-290eb",
+    storageBucket: "anpmoney-290eb.firebasestorage.app",
+    messagingSenderId: "609571923036",
+    appId: "1:609571923036:web:45544e187ce63adec0f299",
+    measurementId: "G-HCW4DY6E6J"
+};
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-        let currentUser = null;
-        let userDocRef = null;
-        let userBalance = 0;
-        let activeBets = {}; // Store matchId -> boolean placed status from Firebase
+let currentUser = null;
+let userDocRef = null;
+let userFirestoreBalance = 0;
+let currentUserName = "VIP Partner";
+let myActiveBetDocId = null;
 
-        let currentSlip = { matchId: '', matchName: '', team: '', odds: 1.0 };
+const CUR="₹",EDGE=0.97,BALLS=12;
+const TIERS={50:{w:.10,d:.85},100:{w:.18,d:.70},500:{w:.30,d:.55}};
+const PW=[.22,.30,.16,.19,.13],RUNS=[0,1,2,4,6];
+const EH=PW.reduce((s,p,i)=>s+p*RUNS[i],0);
+for(const k in TIERS)TIERS[k].c=(EDGE/(1-TIERS[k].w)-1)/EH;
+const $=id=>document.getElementById(id);
 
-        // Live Score Simulation
-        let indRuns = 198, indWickets = 3, indBalls = 1;
-        setInterval(() => {
-            if (Math.random() > 0.3) {
-                indRuns += Math.floor(Math.random() * 3);
-                indBalls++;
-                if (indBalls > 5) {
-                    indBalls = 0;
-                    indWickets += Math.random() < 0.1 ? 1 : 0;
-                }
-                const overDisplay = `${Math.floor(indWickets >= 10 ? 50 : 32)}.${indBalls}`;
-                document.getElementById('ind-score').innerText = `${indRuns}/${indWickets} (${overDisplay} ov)`;
-            }
-        }, 4000);
+let S={bal:0,hist:[],won:0,lost:0,rounds:0};
 
-        const betInput = document.getElementById('bet-amount-input');
-        betInput.addEventListener('input', updatePayoutPreview);
-
-        function updatePayoutPreview() {
-            const amt = parseFloat(betInput.value) || 0;
-            const payout = amt * currentSlip.odds;
-            document.getElementById('payout-preview').innerText = `₹${payout.toFixed(2)}`;
+async function fetchBalance() {
+    if (!userDocRef) return;
+    try {
+        const snap = await getDoc(userDocRef);
+        if (snap.exists()) {
+            const data = snap.data();
+            userFirestoreBalance = data.balance || 0;
+            currentUserName = data.fullName || data.email?.split('@')[0] || "VIP Partner";
+            S.bal = userFirestoreBalance;
+            render();
+            setUI();
         }
+    } catch (e) {
+        console.error("Balance fetch error:", e);
+    }
+}
 
-        window.openErrorModal = function(title, desc) {
-            document.getElementById("modal-title").innerText = title;
-            document.getElementById("modal-desc").innerText = desc;
-            const el = document.getElementById("modal-icon");
-            el.className = `w-14 h-14 bg-red-100 border border-red-300 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl text-red-600`;
-            el.innerHTML = `<i class="fas fa-exclamation-triangle"></i>`;
-            document.getElementById("game-modal").classList.remove("hidden");
-        }
+async function updateFirestoreBalance(delta) {
+    if (!userDocRef) return;
+    try {
+        await updateDoc(userDocRef, { balance: increment(delta) });
+        await fetchBalance();
+    } catch (e) {
+        console.error("Balance update error:", e);
+    }
+}
 
-        window.openSuccessModal = function(title, desc) {
-            document.getElementById("modal-title").innerText = title;
-            document.getElementById("modal-desc").innerText = desc;
-            const el = document.getElementById("modal-icon");
-            el.className = `w-14 h-14 bg-emerald-100 border border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl text-emerald-600`;
-            el.innerHTML = `<i class="fas fa-check-circle"></i>`;
-            document.getElementById("game-modal").classList.remove("hidden");
-        }
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = 'index.html';
+        return;
+    }
+    currentUser = user;
+    userDocRef = doc(db, "users", user.uid);
+    await fetchBalance();
+    initRealLiveBetsListener();
+});
 
-        window.closeResultModal = function() {
-            document.getElementById("game-modal").classList.add("hidden");
-        }
-
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = 'ANP.HTML';
-                return;
-            }
-            currentUser = user;
-            userDocRef = doc(db, "users", user.uid);
-            await fetchUserData();
+// Real-time Firestore live bets listener
+let unsubLiveBets = null;
+function initRealLiveBetsListener() {
+    if (unsubLiveBets) unsubLiveBets();
+    const q = query(collection(db, "cricket_live_bets"), where("roundId", "==", G.rid));
+    unsubLiveBets = onSnapshot(q, (snapshot) => {
+        const bets = [];
+        snapshot.forEach((docSnap) => {
+            bets.push({ id: docSnap.id, ...docSnap.data() });
         });
+        bets.sort((a, b) => (b.win || b.amount) - (a.win || a.amount));
+        renderLiveBetsFromFirestore(bets);
+    });
+}
 
-        async function fetchUserData() {
-            try {
-                const snap = await getDoc(userDocRef);
-                if (snap.exists()) {
-                    userBalance = snap.data().balance || 0;
-                    document.getElementById("game-wallet-balance").innerText = `₹${userBalance.toLocaleString()}`;
-                }
-
-                // Fetch user's active bets from Firestore subcollection
-                const betsSnap = await getDocs(collection(db, "users", currentUser.uid, "bets"));
-                activeBets = {};
-                let count = 0;
-                betsSnap.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    activeBets[docSnap.id] = data;
-                    count++;
-                    
-                    // Lock buttons for already betted matches in UI
-                    lockMatchButtons(docSnap.id);
-                });
-                document.getElementById("active-bets-count").innerText = `Active Bets: ${count}`;
-            } catch (e) {
-                console.error("Data fetch error:", e);
-            }
-        }
-
-        function lockMatchButtons(matchId) {
-            const btnContainer = document.getElementById(`btns-${matchId.replace('match_', '')}`);
-            if (btnContainer) {
-                btnContainer.innerHTML = `<div class="col-span-2 py-2 bg-slate-100 text-center rounded-xl text-xs font-bold text-emerald-800"><i class="fas fa-check-circle mr-1"></i> Bet Placed on this Match</div>`;
-            }
-        }
-
-        window.openBetSlip = function(matchId, matchName, team, odds) {
-            // Check if user already bet on this match in Firebase state
-            if (activeBets[matchId]) {
-                openErrorModal("Already Betted", "You have already placed a bet on this match. Only 1 bet per match is allowed!");
-                return;
-            }
-
-            currentSlip = { matchId, matchName, team, odds };
-            document.getElementById('slip-match-name').innerText = `Match: ${matchName}`;
-            document.getElementById('slip-selection').innerText = `Selection: ${team} (Win)`;
-            document.getElementById('slip-odds').innerText = `Odds: ${odds}x`;
-            updatePayoutPreview();
-            document.getElementById('bet-modal').classList.remove('hidden');
-        }
-
-        window.closeBetModal = function() {
-            document.getElementById('bet-modal').classList.add('hidden');
-        }
-
-        window.confirmBet = async function() {
-            const amt = parseFloat(betInput.value);
-            if (!amt || amt <= 0) {
-                openErrorModal("Invalid Bet", "Please enter a valid bet amount.");
-                return;
-            }
-            if (amt > userBalance) {
-                openErrorModal("Insufficient Balance", "Your gaming balance is too low to place this bet.");
-                return;
-            }
-
-            // Double check Firestore before writing
-            if (activeBets[currentSlip.matchId]) {
-                closeBetModal();
-                openErrorModal("Already Betted", "You have already placed a bet on this match.");
-                return;
-            }
-
-            closeBetModal();
-
-            // 1. Deduct balance from user doc
-            await updateDoc(userDocRef, { balance: increment(-amt) });
-            userBalance -= amt;
-            document.getElementById("game-wallet-balance").innerText = `₹${userBalance.toLocaleString()}`;
-
-            // 2. Save bet in Firebase subcollection users/{uid}/bets/{matchId}
-            const betRef = doc(db, "users", currentUser.uid, "bets", currentSlip.matchId);
-            await setDoc(betRef, {
-                matchName: currentSlip.matchName,
-                team: currentSlip.team,
-                odds: currentSlip.odds,
-                amount: amt,
-                status: 'active',
-                timestamp: new Date().toISOString()
-            });
-
-            activeBets[currentSlip.matchId] = { team: currentSlip.team, amount: amt };
-            lockMatchButtons(currentSlip.matchId);
-            document.getElementById("active-bets-count").innerText = `Active Bets: ${Object.keys(activeBets).length}`;
-
-            openSuccessModal("Bet Saved to Firebase!", `₹${amt.toLocaleString()} placed on ${currentSlip.team} (${currentSlip.odds}x).`);
-        }
-
-        document.addEventListener('click', function (e) {
-            const target = e.target.closest('.tactile-btn');
-            if (!target) return;
-            const circle = document.createElement('span');
-            const rect = target.getBoundingClientRect();
-            const d = Math.max(rect.width, rect.height);
-            circle.style.width = circle.style.height = `${d}px`;
-            circle.style.left = `${e.clientX - rect.left - d/2}px`;
-            circle.style.top = `${e.clientY - rect.top - d/2}px`;
-            circle.classList.add('ripple');
-            target.appendChild(circle);
-            setTimeout(() => circle.remove(), 600);
+async function createFirestoreBet(amount) {
+    try {
+        const docRef = await addDoc(collection(db, "cricket_live_bets"), {
+            uid: currentUser.uid,
+            name: currentUserName,
+            amount: amount,
+            roundId: G.rid,
+            cashedOut: false,
+            multiplier: 1.00,
+            win: 0,
+            createdAt: serverTimestamp()
         });
-    </script>
+        myActiveBetDocId = docRef.id;
+    } catch (e) {
+        console.error("Error creating Firestore bet:", e);
+    }
+}
+
+async function updateFirestoreBetCashout(mult, winAmt) {
+    if (!myActiveBetDocId) return;
+    try {
+        const { updateDoc: fbUpdate, doc: fbDoc } = await import("https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js");
+        await fbUpdate(fbDoc(db, "cricket_live_bets", myActiveBetDocId), {
+            cashedOut: true,
+            multiplier: mult,
+            win: winAmt
+        });
+    } catch (e) {
+        console.error("Error updating cashout bet:", e);
+    }
+}
+
+function renderLiveBetsFromFirestore(bets) {
+    const container = $('live-bets-list');
+    if (!bets.length) {
+        container.innerHTML = '<div style="padding:8px; text-align:center; color:var(--mut);">Waiting for live bets...</div>';
+        return;
+    }
+    container.innerHTML = bets.map(b => {
+        const isUser = b.uid === currentUser?.uid;
+        const rowBg = b.cashedOut ? 'background:rgba(61,220,132,0.1); border-left:2px solid var(--g);' : (isUser ? 'background:rgba(255,200,61,0.1); border-left:2px solid var(--gold);' : '');
+        return `
+            <div style="display:grid; grid-template-columns:5fr 3fr 2fr 2fr; padding:5px 10px; align-items:center; border-bottom:1px solid #1f212b; ${rowBg}">
+                <div style="font-weight:600; color:${isUser ? 'var(--gold)' : 'var(--txt)'}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${b.name}</div>
+                <div style="text-align:right; font-variant-numeric:tabular-nums;">₹${b.amount}</div>
+                <div style="text-align:center; font-weight:700; color:${b.cashedOut ? 'var(--cy)' : 'var(--mut);'}">${b.cashedOut ? b.multiplier.toFixed(2)+'x' : 'Playing'}</div>
+                <div style="text-align:right; font-weight:800; color:${b.cashedOut ? 'var(--g)' : 'var(--mut);'}">${b.cashedOut ? '₹'+Math.round(b.win) : '-'}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+const G={phase:"idle",amt:50,bet:0,ball:0,M:1,runs:0,rid:1001,busy:false,q:0,qc:0};
+const fmt=c=>(c).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+function rnd(){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]/4294967296}
+const mDisp=()=>Math.floor(G.M*100+1e-6)/100;
+
+/* ===== sound ===== */
+let ac,muted=false;
+function tone(f,d,t,v,s){if(muted)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime+(s||0);o.type=t||"sine";o.frequency.value=f;g.gain.setValueAtTime(v||.05,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(n+d)}catch(e){}}
+const crack=()=>{tone(950,.04,"square",.09);tone(320,.09,"sine",.12)};
+const sfx={
+  start:()=>{tone(320,.1,"triangle",.05);tone(480,.1,"triangle",.05,.07)},
+  bowl:()=>tone(200,.18,"sine",.03),
+  run:()=>crack(),
+  four:()=>{crack();[660,880].forEach((f,i)=>tone(f,.14,"triangle",.06,.1+i*.08))},
+  six:()=>{crack();[523,659,784,1046,1318].forEach((f,i)=>tone(f,.16,"triangle",.06,.12+i*.07))},
+  out:()=>{tone(170,.3,"square",.08);tone(80,.4,"sawtooth",.07,.06)},
+  win:()=>[660,830,990,1320].forEach((f,i)=>tone(f,.18,"triangle",.07,i*.09))
+};
+const sndBtn=$("snd");sndBtn.textContent=muted?"🔇":"🔊";
+sndBtn.onclick=()=>{muted=!muted;sndBtn.textContent=muted?"🔇":"🔊";};
+
+/* ===== canvas scene ===== */
+const wrap=$("wrap"),cv=$("cv"),ctx=cv.getContext("2d");
+let W=300,H=300,dpr=1,bg=null;
+let ecx,ecy,erx,ery,R1,bh,bfeet,bx,px,py,batL,stX,stBase,stH,stSp,Cx,Cy,cols=20;
+const CROWD=["#ff4d5a","#5ec8ff","#ffc83d","#b06cff","#3ddc84","#f4f4ff"];
+const fx=[];
+let wavePh=0,boost=0,shot=null,lastBusy=false,batCur=.35,stumpF=0;
+const B={vis:false,x:0,y:0,r:6,a:1,ang:0,gy:0,ground:true,trail:[]};
+const lerp=(a,b,t)=>a+(b-a)*t;
+
+function sprite(c1,c2){const s=64,k=document.createElement("canvas");k.width=k.height=s;const x=k.getContext("2d"),g=x.createRadialGradient(32,32,0,32,32,32);
+  g.addColorStop(0,"#fff");g.addColorStop(.18,c1);g.addColorStop(.5,c2);g.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=g;x.fillRect(0,0,s,s);return k}
+const GLOW=sprite("#ffe08a","rgba(255,170,30,.35)");
+const BALLSP=(()=>{const s=64,k=document.createElement("canvas");k.width=k.height=s;const x=k.getContext("2d");
+  const g=x.createRadialGradient(24,22,3,32,32,31);g.addColorStop(0,"#ff6b6b");g.addColorStop(1,"#a8141c");
+  x.fillStyle=g;x.beginPath();x.arc(32,32,30,0,6.2832);x.fill();
+  x.strokeStyle="#f7e9d2";x.lineWidth=2.4;x.setLineDash([3,3]);
+  x.beginPath();x.arc(8,32,26,-1,1);x.stroke();x.beginPath();x.arc(56,32,26,2.14,4.14);x.stroke();return k})();
+
+function deliv(s,x0,sw){
+  const gy=lerp(H*.345,H*.83,Math.pow(s,1.25)),sc=lerp(.45,1.45,s),SB=.68,h0=H*.045,h1=H*.05;
+  const h=s<SB?h0*(1-s/SB):h1*Math.pow((s-SB)/(1-SB),.7);
+  return{x:lerp(x0,px,s)+Math.sin(s*3.1)*sw*(1-s),y:gy-h*sc,r:lerp(2.4,R1,Math.pow(s,1.4)),gy:gy};
+}
+function layout(){
+  ecx=W/2;ecy=H*.62;erx=W*.47;ery=H*.40;R1=Math.max(8,W*.03);
+  bh=H*.3;bfeet=H*.86;bx=W/2-W*.1;px=bx+bh*.12;py=bfeet-bh*.52;batL=bh*.5;
+  stX=W/2;stBase=H*.905;stH=H*.13;stSp=Math.max(9,W*.024);
+  Cx=px;Cy=deliv(1,W/2,0).y;cols=Math.ceil(W/13)+1;
+}
+function buildBg(){
+  bg=document.createElement("canvas");bg.width=Math.round(W*dpr);bg.height=Math.round(H*dpr);
+  const x=bg.getContext("2d");x.scale(dpr,dpr);
+  let g=x.createLinearGradient(0,0,0,H*.24);g.addColorStop(0,"#070b1c");g.addColorStop(1,"#18204a");x.fillStyle=g;x.fillRect(0,0,W,H*.24);
+  x.globalCompositeOperation="lighter";
+  for(const p of [W*.08,W*.92]){const lg=x.createRadialGradient(p,0,0,p,0,W*.6);lg.addColorStop(0,"rgba(255,244,205,.6)");lg.addColorStop(1,"rgba(255,244,205,0)");x.fillStyle=lg;x.fillRect(0,0,W,H*.5)}
+  x.globalCompositeOperation="source-over";
+  const by=H*.205,bhh=H*.036,bc=["#6a3dff","#1488c8","#ffb11f","#d6336c"];
+  for(let i=0;i<8;i++){x.fillStyle=bc[i%4];x.globalAlpha=.85;x.fillRect(i*W/8,by,W/8-2,bhh)}x.globalAlpha=1;
+  x.fillStyle="#1b5a30";x.fillRect(0,H*.24,W,H);
+  const n=9;
+  for(let i=n;i>=1;i--){x.fillStyle=i%2?"#2f9a4c":"#35a553";x.beginPath();x.ellipse(ecx,ecy,erx*i/n,ery*i/n,0,0,6.2832);x.fill()}
+  x.setLineDash([7,6]);x.strokeStyle="rgba(255,255,255,.85)";x.lineWidth=2.5;x.beginPath();x.ellipse(ecx,ecy,erx,ery,0,0,6.2832);x.stroke();x.setLineDash([]);
+  const pg=x.createLinearGradient(0,H*.34,0,H*.93);pg.addColorStop(0,"#b9975c");pg.addColorStop(1,"#d3b178");
+  x.fillStyle=pg;x.beginPath();x.moveTo(W/2-W*.028,H*.34);x.lineTo(W/2+W*.028,H*.34);x.lineTo(W/2+W*.16,H*.95);x.lineTo(W/2-W*.16,H*.95);x.closePath();x.fill();
+  x.strokeStyle="rgba(255,255,255,.75)";x.lineWidth=2;
+  x.beginPath();x.moveTo(W/2-W*.05,H*.372);x.lineTo(W/2+W*.05,H*.372);x.stroke();
+  x.beginPath();x.moveTo(W/2-W*.2,H*.80);x.lineTo(W/2+W*.2,H*.80);x.stroke();
+  const F=[[-.62,.62],[.55,.7],[-.25,.9],[.3,.93],[-.78,.3],[.78,.32],[0,.97]];
+  for(const f of F){const fx0=ecx+f[0]*erx,fy0=ecy-f[1]*ery*.85,hh=H*(.05+.04*(1-f[1]));
+    x.fillStyle="rgba(0,0,0,.25)";x.beginPath();x.ellipse(fx0,fy0+1,hh*.25,hh*.06,0,0,6.2832);x.fill();
+    x.fillStyle="#2a62d8";x.fillRect(fx0-hh*.17,fy0-hh*.78,hh*.34,hh*.4);x.fillStyle="#e9eef5";x.fillRect(fx0-hh*.13,fy0-hh*.4,hh*.26,hh*.4);
+    x.fillStyle="#f1c9a5";x.beginPath();x.arc(fx0,fy0-hh*.88,hh*.11,0,6.2832);x.fill()}
+  g=x.createRadialGradient(W/2,H*.55,H*.3,W/2,H*.55,H*.9);g.addColorStop(0,"rgba(0,0,0,0)");g.addColorStop(1,"rgba(0,0,0,.45)");x.fillStyle=g;x.fillRect(0,0,W,H);
+}
+function resize(){
+  const b=wrap.getBoundingClientRect();if(b.width<10||b.height<10)return;
+  dpr=Math.min(window.devicePixelRatio||1,2);
+  W=b.width;H=b.height;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  layout();buildBg();
+}
+if(window.ResizeObserver)new ResizeObserver(resize).observe(wrap);else addEventListener("resize",resize);
+
+function ropeS(dx,dy){let s=0;for(let t=4;t<H*1.6;t+=4){const x=Cx+dx*t,y=Cy+dy*t,a=(x-ecx)/erx,b=(y-ecy)/ery;if(a*a+b*b>=1)break;s=t}return s}
+function burst(x,y,n,cs,sp,up){for(let i=0;i<n;i++){const a=Math.random()*6.2832,v=(.3+Math.random())*sp;fx.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-(up||0),l:1,c:cs[i%cs.length]})}}
+
+function postPos(k){
+  const s=shot;
+  if(s.kind==="bowled"){const e=k,sx=stX,sy=stBase-stH*.6;return{x:lerp(Cx,sx,e),y:lerp(Cy,sy,e),r:R1*(1+.1*e),a:1}}
+  if(s.air){const e=k,arc=Math.sin(Math.PI*k)*s.arc;
+    return{x:Cx+s.dx*s.dist*e,y:Cy+s.dy*s.dist*e-arc,r:R1*(1-.45*k+.6*Math.sin(Math.PI*k)),a:s.kind==="caught"?1:(k>.8?Math.max(0,(1-k)/.2):1)}}
+  const e=1-Math.pow(1-k,2.2);
+  return{x:Cx+s.dx*s.dist*e,y:Cy+s.dy*s.dist*e,r:R1*(1-.5*e),a:k>.85?Math.max(0,(1-k)/.15):1};
+}
+function update(dt){
+  wavePh+=dt*(1.1+Math.min(G.ball,BALLS)*.25+boost);boost=Math.max(0,boost-dt*1.4);
+  if(shot){
+    shot.t+=dt;const t=shot.t,D=shot.D;
+    if(t<D){
+      if(t>=shot.t0){const s=(t-shot.t0)/(D-shot.t0),p=deliv(s,shot.x0,shot.sw);B.vis=true;B.x=p.x;B.y=p.y;B.r=p.r;B.gy=p.gy;B.a=1;B.ground=true;B.ang+=dt*18}
+    }else{
+      const k=Math.min(1,(t-D)/shot.Tp),p=postPos(k);B.vis=true;B.x=p.x;B.y=p.y;B.r=p.r;B.a=p.a;B.ground=!shot.air;B.gy=B.y+B.r;B.ang+=dt*22;
+      if(shot.kind==="caught"&&k>=1)B.a=0;
+      if(shot.fast){B.trail.push(B.x,B.y);if(B.trail.length>16)B.trail.splice(0,2)}
+      if(shot.kind==="bowled"&&k>=.85&&!shot.hitStumps){shot.hitStumps=true;burst(stX,stBase-stH,14,["#e8c07a","#fff"],150,80)}
+    }
+    if(!shot.resolved&&t>=D+.15)resolve();
+    if(t>=D+shot.Tp+.1){shot=null;B.vis=false;B.trail.length=0;G.busy=false;if(G.q&&G.phase==="round"){G.q=0;shoot()}}
+  }
+  if(G.busy&&shot&&shot.kind==="bowled"&&shot.t>=shot.D+.2)stumpF=Math.min(1,stumpF+dt*3.2);
+  if(!shot)batCur+=(.35-batCur)*(1-Math.exp(-8*dt));
+  for(let i=fx.length-1;i>=0;i--){const f=fx[i];f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=260*dt;f.vx*=.99;f.l-=dt*1.1;if(f.l<=0)fx.splice(i,1)}
+  if(lastBusy!==G.busy){lastBusy=G.busy;hitBtn.classList.toggle("wait",G.busy)}
+}
+
+function drawCrowd(){
+  const amp=2.2+G.ball*.35+boost*4;
+  for(let r=0;r<3;r++){
+    const y=H*(.055+r*.05),s=.72+r*.18;
+    for(let c=0;c<cols;c++){
+      const x=(c+.5+(r&1)*.5)*W/cols,lift=Math.max(0,Math.sin(c*.45-wavePh*3+r*.35))*amp*s;
+      ctx.fillStyle=CROWD[(c*7+r*3)%6];ctx.fillRect(x-3.6*s,y+2*s-lift,7.2*s,7*s);
+      ctx.fillStyle="#f1c9a5";ctx.beginPath();ctx.arc(x,y-lift,3.1*s,0,6.2832);ctx.fill();
+    }
+  }
+}
+function batTheta(){
+  if(!shot)return batCur;
+  const t=shot.t,D=shot.D,st=shot.kind==="bowled"?D-.36:D-.22,d=.42;
+  let th;
+  if(t<st){const k=Math.min(1,t/Math.max(.05,st));th=lerp(.35,2.2,k*k*(3-2*k))}
+  else{const k=Math.min(1,(t-st)/d);th=lerp(2.2,-2.0,k*k*(3-2*k))}
+  batCur=th;return th;
+}
+function drawBowler(){
+  const x=W/2,f=H*.335,h=H*.085;let arm=-.5;
+  if(shot){const k=Math.min(1,shot.t/(shot.t0+.12));arm=lerp(-.5,-6.4,k)}
+  ctx.fillStyle="#2a62d8";ctx.fillRect(x-h*.17,f-h*.78,h*.34,h*.4);ctx.fillStyle="#e9eef5";ctx.fillRect(x-h*.13,f-h*.4,h*.26,h*.4);
+  ctx.fillStyle="#f1c9a5";ctx.beginPath();ctx.arc(x,f-h*.88,h*.11,0,6.2832);ctx.fill();
+  ctx.strokeStyle="#2a62d8";ctx.lineWidth=Math.max(1.6,h*.09);ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x+h*.15,f-h*.74);ctx.lineTo(x+h*.15+Math.sin(arm)*h*.4,f-h*.74-Math.cos(arm)*h*.4);ctx.stroke();
+}
+function drawStumps(){
+  const hit=stumpF;
+  for(let i=-1;i<=1;i++){
+    ctx.save();ctx.translate(stX+i*stSp,stBase);ctx.rotate(i*hit*1.1+(i===0?hit*.15:0));ctx.translate(i*hit*stSp*.8,-hit*stH*.15);
+    ctx.fillStyle="#f0d9a6";ctx.fillRect(-2,-stH,4,stH);ctx.restore();
+  }
+  if(hit<.05){ctx.fillStyle="#fff3d0";ctx.fillRect(stX-stSp-2,stBase-stH-3,stSp*2+4,3)}
+}
+function drawBatsman(th){
+  const h=bh,x=bx,f=bfeet;
+  ctx.fillStyle="rgba(0,0,0,.3)";ctx.beginPath();ctx.ellipse(x,f+2,h*.22,h*.04,0,0,6.2832);ctx.fill();
+  ctx.fillStyle="#f6f6f6";ctx.fillRect(x-h*.15,f-h*.42,h*.12,h*.42);ctx.fillRect(x+h*.03,f-h*.42,h*.12,h*.42);
+  ctx.fillStyle="#e3e8f0";ctx.fillRect(x-h*.14,f-h*.56,h*.28,h*.16);
+  ctx.fillStyle="#2a62d8";ctx.beginPath();ctx.roundRect?ctx.roundRect(x-h*.18,f-h*.8,h*.38,h*.4,h*.07):ctx.rect(x-h*.18,f-h*.8,h*.38,h*.4);ctx.fill();
+  ctx.fillStyle="#fff";ctx.fillRect(x-h*.07,f-h*.7,h*.16,h*.07);
+  ctx.fillStyle="#0f2f8f";ctx.beginPath();ctx.arc(x+h*.01,f-h*.88,h*.105,0,6.2832);ctx.fill();
+  ctx.fillStyle="#0a1f66";ctx.fillRect(x-h*.09,f-h*.9,h*.2,h*.03);
+  ctx.strokeStyle="#2a62d8";ctx.lineWidth=h*.07;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x+h*.16,f-h*.72);ctx.lineTo(px,py);ctx.moveTo(x-h*.1,f-h*.7);ctx.lineTo(px-h*.03,py);ctx.stroke();
+  ctx.save();ctx.translate(px,py);ctx.rotate(th);
+  ctx.strokeStyle="#2b2b30";ctx.lineWidth=h*.035;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,batL*.28);ctx.stroke();
+  ctx.fillStyle="#e7bd72";ctx.beginPath();ctx.roundRect?ctx.roundRect(-h*.05,batL*.24,h*.1,batL*.76,h*.02):ctx.rect(-h*.05,batL*.24,h*.1,batL*.76);ctx.fill();
+  ctx.fillStyle="#c99650";ctx.fillRect(-h*.012,batL*.3,h*.024,batL*.65);
+  ctx.restore();
+}
+function draw(){
+  ctx.globalAlpha=1;ctx.drawImage(bg,0,0,W,H);
+  drawCrowd();
+  drawBowler();
+  if(B.vis&&B.ground&&B.a>0){ctx.globalAlpha=.3*B.a;ctx.fillStyle="#000";ctx.beginPath();ctx.ellipse(B.x,B.gy,B.r*.9,B.r*.3,0,0,6.2832);ctx.fill();ctx.globalAlpha=1}
+  drawBatsman(batTheta());
+  drawStumps();
+  if(shot&&shot.kind==="caught"&&shot.t>shot.D+shot.Tp*.35){
+    const k=Math.min(1,(shot.t-shot.D-shot.Tp*.35)/(shot.Tp*.5)),ex=lerp(shot.fx0,shot.fx,k),h=H*.07;
+    person(ex,ex,shot.fy,h,"#ffc83d","#e9eef5",k>=1);
+  }
+  if(B.vis&&B.a>0){
+    if(B.trail.length){ctx.globalCompositeOperation="lighter";const n=B.trail.length/2;
+      for(let i=0;i<n;i++){const k=(i+1)/n,s=B.r*(1+k)*1.6;ctx.globalAlpha=k*.5*B.a;ctx.drawImage(GLOW,B.trail[i*2]-s/2,B.trail[i*2+1]-s/2,s,s)}
+      ctx.globalCompositeOperation="source-over"}
+    ctx.globalAlpha=B.a;ctx.save();ctx.translate(B.x,B.y);ctx.rotate(B.ang);ctx.drawImage(BALLSP,-B.r,-B.r,B.r*2,B.r*2);ctx.restore();ctx.globalAlpha=1;
+  }
+  for(const f of fx){ctx.globalAlpha=Math.max(0,f.l);ctx.fillStyle=f.c;ctx.fillRect(f.x-1.5,f.y-1.5,3,3)}
+  ctx.globalAlpha=1;
+}
+let last=0;
+function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000||0);last=now;update(dt);draw()}
+
+const multEl=$("mult"),potEl=$("pot"),toastEl=$("toast"),hitBtn=$("hit"),cashBtn=$("cash"),cashAmt=$("cashAmt"),ballNo=$("ballNo"),pipsEl=$("pips");
+pipsEl.innerHTML=new Array(BALLS+1).join("<i></i>");
+const pips=[...pipsEl.children];
+let tid,mt;
+function toast(a,b,c,ms){toastEl.className="show "+c;toastEl.innerHTML=a+(b?"<small>"+b+"</small>":"");clearTimeout(tid);if(ms)tid=setTimeout(hideToast,ms)}
+function hideToast(){clearTimeout(tid);toastEl.className=""}
+function msg(t){$("msg").textContent=t;clearTimeout(mt);mt=setTimeout(()=>$("msg").textContent="",2600)}
+function flash(c){const e=$("balBtn");if(!e)return;e.classList.remove("up","dn");void e.offsetWidth;e.classList.add(c)}
+function shake(){wrap.classList.remove("shake");void wrap.offsetWidth;wrap.classList.add("shake");setTimeout(()=>wrap.classList.remove("shake"),450)}
+
+function render(){
+  $("balTop").textContent=fmt(userFirestoreBalance);
+}
+
+function hudRound(){
+  const m=mDisp(),pay=CUR+fmt(Math.floor(G.bet*m+1e-6));
+  multEl.textContent="x"+m.toFixed(2);multEl.className=G.ball&&m>1?"hot":"";
+  potEl.textContent=G.ball?"Runs "+G.runs+" · Win "+pay:"Survive balls to raise the multiplier";
+  cashAmt.textContent=G.ball?pay:"";cashBtn.disabled=G.ball<1;
+  ballNo.textContent="ball "+Math.min(BALLS,G.ball+1)+"/"+BALLS;
+  pips.forEach((p,i)=>p.classList.toggle("on",i<G.ball));
+}
+function idleHud(){multEl.textContent="x1.00";multEl.className="";potEl.textContent="Place a bet to start";pips.forEach(p=>p.classList.remove("on"))}
+function setUI(){
+  const idle=G.phase==="idle";
+  $("play").hidden=!idle;hitBtn.hidden=idle;cashBtn.hidden=idle;
+  document.querySelectorAll("#chips button").forEach(e=>e.disabled=!idle||+e.dataset.a>userFirestoreBalance);
+}
+
+let rt;
+function autoReset(){
+  const id=G.rid;clearTimeout(rt);
+  rt=setTimeout(()=>{if(G.rid!==id||G.phase!=="idle")return;
+    G.ball=0;G.M=1;G.runs=0;shot=null;G.busy=false;fx.length=0;B.vis=false;B.trail.length=0;stumpF=0;
+    hideToast();idleHud()},1600);
+}
+
+async function play(){
+  if(G.phase!=="idle")return;
+  const bet=G.amt;
+  if(bet>userFirestoreBalance){msg("Not enough balance for "+CUR+G.amt);return}
+
+  await updateFirestoreBalance(-bet);
+  
+  G.rid++;G.bet=bet;G.ball=0;G.M=1;G.runs=0;G.q=0;G.qc=0;G.busy=false;G.phase="round";shot=null;stumpF=0;
+  B.vis=false;B.trail.length=0;fx.length=0;
+  hideToast();hudRound();render();flash("dn");setUI();sfx.start();
+
+  await createFirestoreBet(bet);
+}
+
+function shoot(){
+  if(G.phase!=="round")return;
+  if(G.busy){G.q=1;return}
+  G.busy=true;stumpF=0;
+  const T=TIERS[G.amt];
+  let o=-1,kind=null;
+  if(rnd()<T.w){kind=rnd()<.6?"bowled":"caught"}
+  else{const u=rnd();let a=0;for(o=0;o<4;o++){a+=PW[o];if(u<a)break}}
+  const ang=(rnd()*2-1)*1.05,dx=Math.sin(ang),dy=-Math.cos(ang),sR=ropeS(dx,dy);
+  const s={t:0,D:T.d,t0:T.d*.12,kind:kind,o:o,runs:o>=0?RUNS[o]:0,dx:dx,dy:dy,x0:W/2+(rnd()*2-1)*W*.012,sw:(rnd()*2-1)*W*.02,
+    air:false,fast:false,arc:0,dist:0,Tp:.8,resolved:false,hitStumps:false};
+  if(kind==="bowled"){s.Tp=.9}
+  else if(kind==="caught"){s.air=true;s.arc=H*.15;s.dist=sR*.6;s.Tp=1.0;s.fast=true;
+    s.fx=Cx+dx*s.dist;s.fy=Cy+dy*s.dist+H*.02;s.fx0=s.fx+(rnd()<.5?-1:1)*W*.12;}
+  else if(o===0){s.dist=H*.045;s.Tp=.45}
+  else if(o===1){s.dist=Math.min(sR*.35,H*.2);s.Tp=.75}
+  else if(o===2){s.dist=Math.min(sR*.55,H*.3);s.Tp=.8}
+  else if(o===3){s.dist=sR;s.Tp=.85;s.fast=true}
+  else{s.air=true;s.arc=H*.22;s.dist=sR*1.45;s.Tp=1.15;s.fast=true}
+  shot=s;B.vis=false;B.trail.length=0;B.ang=0;
+  sfx.bowl();
+}
+
+const NAMES=["DOT BALL","1 RUN","2 RUNS","FOUR! 🔥","SIX! 🚀"];
+function resolve(){
+  const s=shot;s.resolved=true;
+  if(s.kind){lose(s.kind);return}
+  const T=TIERS[G.amt];
+  G.ball++;G.runs+=s.runs;G.M*=1+T.c*s.runs;
+  if(s.o>=3){boost=s.o===4?3.2:2;burst(W/2,H*.12,s.o===4?36:20,["#ffd45a","#fff","#3ddc84","#5ec8ff","#ff4d5a"],220,40)}
+  (s.o===4?sfx.six:s.o===3?sfx.four:sfx.run)();
+  toast(NAMES[s.o],"x"+mDisp().toFixed(2),s.o===4?"six":"win",800);
+  hudRound();
+  if(G.ball>=BALLS){cashOut(true);return}
+  if(G.qc){G.qc=0;cashOut(false)}
+}
+
+function lose(kind){
+  G.phase="idle";G.q=0;G.qc=0;
+  multEl.textContent="OUT!";multEl.className="lose";potEl.textContent=(kind==="bowled"?"Bowled":"Caught")+" · "+G.runs+" runs";
+  toast("☝️ OUT!",(kind==="bowled"?"Bowled! ":"Caught! ")+"-"+CUR+fmt(G.bet),"lose");
+  sfx.out();shake();try{navigator.vibrate&&navigator.vibrate(140)}catch(e){}
+  render();setUI();autoReset();
+}
+
+async function cashOut(auto){
+  if(G.phase!=="round"||G.ball<1)return;
+  if(shot&&!shot.resolved){G.qc=1;return}
+  const m=mDisp(),pay=Math.floor(G.bet*m+1e-6);
+  G.phase="idle";G.q=0;G.qc=0;
+  
+  await updateFirestoreBalance(pay);
+  await updateFirestoreBetCashout(m, pay);
+
+  burst(W/2,H*.12,40,["#ffd45a","#fff","#3ddc84","#5ec8ff","#ff4d5a"],230,40);boost=3;
+  multEl.textContent="x"+m.toFixed(2);multEl.className="win";potEl.textContent="Cashed out! "+G.runs+" runs";
+  toast("🏆 +"+CUR+fmt(pay-G.bet),"x"+m.toFixed(2)+(auto?" · innings complete!":""),"win");
+  sfx.win();render();flash("up");setUI();autoReset();
+}
+
+function fast(el,fn){
+  el.addEventListener("pointerdown",e=>{if(e.button>0)return;e.preventDefault();fn(e)});
+  el.addEventListener("click",e=>{if(e.detail===0)fn(e)});
+}
+fast($("play"),play);fast(hitBtn,shoot);fast(cashBtn,()=>cashOut(false));
+fast($("chips"),e=>{
+  const b=e.target.closest("button");if(!b||G.phase!=="idle"||b.disabled)return;
+  G.amt=+b.dataset.a;[...$("chips").children].forEach(x=>x.classList.toggle("on",x===b));
+});
+
+resize();idleHud();render();setUI();requestAnimationFrame(frame);
+</script>
 </body>
 </html>
