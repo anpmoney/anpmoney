@@ -3,17 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#3f8e43">
     <title>ANP MONEY - Mini Games Arena</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Preconnect for faster Firebase handshake on Vercel -->
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+
     <style>
+        :root {
+            --green-top: #5cb45c;
+            --green-bot: #3f8e43;
+            --green-accent: #16a34a;
+            --green-dark: #15803d;
+            --bg-slate: #f8fafc;
+            --border-green: #bbf7d0;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-sans);
             background: linear-gradient(135deg, #0a1f12 0%, #000000 100%);
             -webkit-tap-highlight-color: transparent;
             min-height: 100vh;
@@ -22,41 +36,37 @@
             align-items: center;
             justify-content: center;
             overflow-x: hidden;
+            color: var(--text-dark);
         }
+
         body::before {
             content: "";
-            position: absolute;
+            position: fixed;
             inset: 0;
             pointer-events: none;
-            background: radial-gradient(circle at 20% 20%, rgba(45,164,90,0.15), transparent 40%), 
-                        radial-gradient(circle at 80% 80%, rgba(0,255,150,0.08), transparent 45%);
+            background:
+                radial-gradient(circle at 20% 20%, rgba(45, 164, 90, 0.18), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 150, 0.1), transparent 45%);
+            animation: ambientGlow 8s ease-in-out infinite alternate;
         }
+
+        .hidden { display: none !important; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .bg-wave-pattern {
-            background: linear-gradient(to bottom, #5cb45c, #3f8e43);
-            position: relative;
-            overflow: hidden;
-        }
-        .glass-modal {
-            background: rgba(10, 26, 16, 0.96);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 2px solid rgba(234, 179, 8, 0.5);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 25px rgba(234,179,8,0.25);
-        }
+
+        /* App Shell */
         .app-container {
             width: 100%;
             max-width: 430px;
             height: 100dvh;
-            background: #f8fafc;
+            background: var(--bg-slate);
             position: relative;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
+
         @media (min-width: 640px) {
             .app-container {
                 height: 880px;
@@ -66,196 +76,732 @@
             }
         }
 
-        /* Tactile Button & Ripple Physics */
-        .tactile-btn {
-            position: relative; overflow: hidden; transform: translateZ(0);
-            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease, filter 0.15s ease;
-            cursor: pointer; -webkit-user-select: none; user-select: none;
+        /* Header */
+        .header {
+            background: linear-gradient(to bottom, var(--green-top), var(--green-bot));
+            padding: 24px 20px 26px;
+            color: #fff;
+            position: relative;
+            flex-shrink: 0;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
-        .tactile-btn:hover { filter: brightness(1.05); }
-        .tactile-btn:active { transform: scale(0.94) translateY(1px) !important; box-shadow: 0 2px 6px rgba(63, 142, 67, 0.25) !important; }
+
+        .header::after {
+            content: "";
+            position: absolute;
+            top: -40%;
+            right: -15%;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 70%);
+            pointer-events: none;
+            animation: floatSlow 6s ease-in-out infinite alternate;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            animation: floatIcon 3.2s ease-in-out infinite;
+        }
+
+        .brand-title {
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+
+        .home-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .home-btn:hover { background: rgba(255, 255, 255, 0.32); }
+
+        /* Gaming Wallet Card */
+        .wallet-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            overflow: hidden;
+        }
+
+        .wallet-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 65%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+            transform: skewX(-20deg);
+            animation: walletSheen 5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .wallet-label {
+            font-size: 10px;
+            color: #dcfce7;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .wallet-amount {
+            font-size: 20px;
+            font-weight: 900;
+            font-family: var(--font-mono);
+            color: #fff;
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .wallet-amount.pop { transform: scale(1.06); }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        .status-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: statusPulse 1.6s ease-in-out infinite;
+        }
+
+        .status-loading { background: rgba(255, 255, 255, 0.22); color: #fff; }
+        .status-locked { background: #ef4444; color: #fff; }
+        .status-unlocked { background: #facc15; color: #030712; }
+
+        /* Main Area */
+        .main-content {
+            flex: 1;
+            background: var(--bg-slate);
+            border-radius: 24px 24px 0 0;
+            margin-top: -12px;
+            position: relative;
+            z-index: 10;
+            padding: 24px 20px 96px;
+            overflow-y: auto;
+        }
+
+        .info-banner {
+            margin-bottom: 16px;
+            background: #f0fdf4;
+            border: 1px solid var(--border-green);
+            border-radius: 16px;
+            padding: 12px;
+            font-size: 12px;
+            color: #166534;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            opacity: 0;
+            animation: cardReveal 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .info-icon {
+            color: var(--green-accent);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .info-banner p { line-height: 1.5; }
+
+        .section-heading {
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            animation: cardReveal 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.06s forwards;
+        }
+
+        .section-heading svg { color: var(--green-accent); }
+
+        /* Games Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .game-card {
+            background: #fff;
+            border: 1px solid var(--border-green);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            opacity: 0;
+            transform: translateY(14px) scale(0.97);
+            animation: cardReveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .game-card:nth-child(1) { animation-delay: 0.08s; }
+        .game-card:nth-child(2) { animation-delay: 0.14s; }
+        .game-card:nth-child(3) { animation-delay: 0.20s; }
+        .game-card:nth-child(4) { animation-delay: 0.26s; }
+        .game-card:nth-child(5) { animation-delay: 0.32s; }
+        .game-card:nth-child(6) { animation-delay: 0.38s; }
+
+        .game-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -6px rgba(22, 163, 74, 0.22);
+            border-color: #86efac;
+        }
+
+        .game-card.shake-locked {
+            animation: lockShake 0.42s ease !important;
+            opacity: 1;
+        }
+
+        .game-thumb {
+            height: 112px;
+            width: 100%;
+            background: linear-gradient(110deg, #0f172a 30%, #1e293b 50%, #0f172a 70%);
+            background-size: 200% 100%;
+            animation: shimmerBg 1.5s linear infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            opacity: 0;
+            transition: transform 0.35s ease, opacity 0.35s ease;
+        }
+
+        .game-thumb img.loaded { opacity: 1; }
+        .game-card:hover .game-thumb img { transform: scale(1.07); }
+
+        .thumb-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.68), transparent 65%);
+            pointer-events: none;
+        }
+
+        .game-badge {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 6px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .badge-aviator { background: rgba(22, 163, 74, 0.85); }
+        .badge-chicken { background: rgba(5, 150, 105, 0.85); }
+        .badge-mines { background: rgba(13, 148, 136, 0.85); }
+        .badge-cricket { background: rgba(21, 128, 61, 0.85); }
+        .badge-goal { background: rgba(8, 145, 178, 0.85); }
+        .badge-vortex { background: rgba(79, 70, 229, 0.85); }
+
+        .game-body {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .game-desc {
+            font-size: 10px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .game-action-btn {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            color: #fff;
+            background: #9ca3af;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .game-action-btn.is-unlocked {
+            background: linear-gradient(135deg, #16a34a, #059669);
+            box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
+        }
+
+        .game-action-btn.is-unlocked::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 55%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+            transform: skewX(-20deg);
+            animation: btnShine 3.6s ease-in-out infinite;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 24px 20px;
+            z-index: 40;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #9ca3af;
+            padding: 4px 6px;
+            border-radius: 10px;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .nav-btn span { font-size: 10px; font-weight: 500; }
+        .nav-btn:hover { color: var(--green-accent); }
+        .nav-btn.active { color: var(--green-accent); }
+        .nav-btn.active span { font-weight: 700; }
+        .nav-btn.active svg { transform: translateY(-1px); }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 16px;
+            animation: fadeIn 0.2s ease forwards;
+        }
+
+        .glass-modal {
+            background: rgba(10, 26, 16, 0.96);
+            border: 2px solid rgba(234, 179, 8, 0.5);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 25px rgba(234, 179, 8, 0.25);
+            border-radius: 24px;
+            max-width: 360px;
+            width: 100%;
+            padding: 24px;
+            text-align: center;
+            color: #fff;
+            animation: modalPop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .modal-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.22);
+            border: 1px solid #f87171;
+            color: #f87171;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            animation: lockShake 0.5s ease 0.15s;
+        }
+
+        .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+        .modal-text { font-size: 12px; color: #d1d5db; line-height: 1.55; margin-bottom: 20px; }
+
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(to right, #22c55e, #059669);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* Tactile Physics & Ripple */
+        .tactile-btn {
+            position: relative;
+            overflow: hidden;
+            transform: translateZ(0);
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.15s ease;
+        }
+
+        .tactile-btn:hover { filter: brightness(1.04); }
+        .tactile-btn:active { transform: scale(0.95) translateY(1px) !important; }
 
         .ripple {
-            position: absolute; background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
-            border-radius: 50%; transform: scale(0); animation: rippleEffect 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards; pointer-events: none;
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: rippleEffect 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            pointer-events: none;
         }
+
+        /* Keyframes */
         @keyframes rippleEffect {
             0% { transform: scale(0); opacity: 0.8; }
-            100% { transform: scale(4.5); opacity: 0; }
+            100% { transform: scale(4.2); opacity: 0; }
+        }
+        @keyframes cardReveal {
+            from { opacity: 0; transform: translateY(14px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes floatSlow {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(-10px, 12px) scale(1.1); }
+        }
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-2px) rotate(-6deg); }
+        }
+        @keyframes walletSheen {
+            0%, 60% { left: -120%; }
+            100% { left: 160%; }
+        }
+        @keyframes btnShine {
+            0%, 65% { left: -100%; }
+            100% { left: 160%; }
+        }
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(0.75); }
+        }
+        @keyframes shimmerBg {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        @keyframes lockShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-5px) rotate(-2deg); }
+            40% { transform: translateX(5px) rotate(2deg); }
+            60% { transform: translateX(-4px) rotate(-1deg); }
+            80% { transform: translateX(4px) rotate(1deg); }
+        }
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.86) translateY(12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes ambientGlow {
+            from { opacity: 0.75; }
+            to { opacity: 1; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .game-card, .info-banner, .section-heading { opacity: 1; transform: none; }
         }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        
+
         <!-- Header -->
-        <header class="bg-wave-pattern pt-6 px-5 pb-6 text-white relative flex-shrink-0 shadow-md">
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white text-sm shadow-sm backdrop-blur-md">
-                        <i class="fas fa-gamepad"></i>
+        <header class="header">
+            <div class="header-top">
+                <div class="brand">
+                    <div class="brand-icon" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
                     </div>
-                    <h1 class="text-base font-black tracking-tight">ANP Games Arena</h1>
+                    <h1 class="brand-title">ANP Games Arena</h1>
                 </div>
-                <button onclick="window.location.href='index.html'" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs hover:bg-white/30 transition-all tactile-btn">
-                    <i class="fas fa-home"></i>
+                <button onclick="window.location.href='index.html'" class="home-btn tactile-btn" aria-label="Go to Home">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg>
                 </button>
             </div>
 
-            <!-- Gaming Wallet Card (Powered by Daily Earnings) -->
-            <div class="bg-black/20 border border-white/20 rounded-2xl p-3.5 flex justify-between items-center backdrop-blur-sm">
+            <!-- Gaming Wallet Card -->
+            <div class="wallet-card">
                 <div>
-                    <span class="text-[10px] text-green-100 uppercase tracking-wider block font-semibold">Gaming Balance (Daily Earnings)</span>
-                    <span class="text-xl font-black text-white font-mono" id="game-wallet-balance">₹0.00</span>
+                    <span class="wallet-label">Gaming Balance (Daily Earnings)</span>
+                    <span class="wallet-amount" id="game-wallet-balance">₹0.00</span>
                 </div>
-                <div class="text-right">
-                    <span class="text-[9px] bg-yellow-400 text-gray-950 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider inline-block shadow" id="wallet-status-badge">Locked</span>
+                <div>
+                    <span class="status-badge status-loading" id="wallet-status-badge">Checking</span>
                 </div>
             </div>
         </header>
 
         <!-- Main Content Area -->
-        <main class="flex-1 bg-slate-50 rounded-t-[24px] -mt-3 relative z-10 px-5 pt-6 pb-24 overflow-y-auto hide-scrollbar">
-            
-            <div class="mb-4 bg-green-50 border border-green-200 rounded-2xl p-3 text-xs text-green-800 flex items-start gap-2.5 shadow-sm">
-                <i class="fas fa-info-circle text-green-600 mt-0.5 text-sm"></i>
-                <p class="leading-relaxed">Games are unlocked automatically when you purchase a VIP pack and maintain a positive daily earnings balance!</p>
+        <main class="main-content hide-scrollbar">
+
+            <div class="info-banner">
+                <svg class="info-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <p>Games are unlocked automatically when you purchase a VIP pack and maintain a positive daily earnings balance!</p>
             </div>
 
-            <h3 class="text-gray-800 font-bold text-xs mb-3 flex items-center gap-2">
-                <i class="fas fa-dice text-green-600"></i> Select Arcade Game
+            <h3 class="section-heading">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor"/></svg>
+                Select Arcade Game
             </h3>
 
             <!-- 6 Mini Games Grid -->
-            <div class="grid grid-cols-2 gap-3.5">
-                
+            <div class="games-grid">
+
                 <!-- Game 1: Aviator -->
-                <div data-game="aviator.html" class="game-card bg-white border border-green-200 rounded-2xl overflow-hidden flex flex-col justify-between cursor-pointer shadow-sm hover:shadow-md transition-all active:scale-95 tactile-btn group">
-                    <div class="h-28 w-full overflow-hidden bg-black relative">
-                        <img src="https://store-images.s-microsoft.com/image/apps.45766.14543233177160646.6ddc3152-320c-48fb-af71-2cc05af483cf.e0bed119-925b-4519-af2e-066102dc83af" alt="Aviator" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <span class="absolute bottom-2 left-2 text-[10px] font-bold text-white bg-green-600/80 px-2 py-0.5 rounded-md backdrop-blur-sm">Aviator</span>
+                <div data-game="aviator.html" class="game-card tactile-btn">
+                    <div class="game-thumb">
+                        <img src="https://store-images.s-microsoft.com/image/apps.45766.14543233177160646.6ddc3152-320c-48fb-af71-2cc05af483cf.e0bed119-925b-4519-af2e-066102dc83af" alt="Aviator" loading="lazy" decoding="async">
+                        <div class="thumb-overlay"></div>
+                        <span class="game-badge badge-aviator">Aviator</span>
                     </div>
-                    <div class="p-3">
-                        <p class="text-[10px] text-gray-500 mb-2.5">Fly high & cash out before multiplier flies!</p>
-                        <span class="game-action-btn w-full py-2 bg-gray-400 text-white text-center font-bold text-[10px] rounded-xl block shadow"><i class="fas fa-lock mr-1"></i> Locked</span>
+                    <div class="game-body">
+                        <p class="game-desc">Fly high &amp; cash out before multiplier flies!</p>
+                        <span class="game-action-btn">Checking...</span>
                     </div>
                 </div>
 
                 <!-- Game 2: Chicken Road 2 -->
-                <div data-game="chicken_road2.html" class="game-card bg-white border border-green-200 rounded-2xl overflow-hidden flex flex-col justify-between cursor-pointer shadow-sm hover:shadow-md transition-all active:scale-95 tactile-btn group">
-                    <div class="h-28 w-full overflow-hidden bg-black relative">
-                        <img src="https://www.cbc.ca/kids/images/crossychicken_thumbnail.jpg" alt="Chicken Road 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <span class="absolute bottom-2 left-2 text-[10px] font-bold text-white bg-emerald-600/80 px-2 py-0.5 rounded-md backdrop-blur-sm">Chicken Road 2</span>
+                <div data-game="chicken_road2.html" class="game-card tactile-btn">
+                    <div class="game-thumb">
+                        <img src="https://www.cbc.ca/kids/images/crossychicken_thumbnail.jpg" alt="Chicken Road 2" loading="lazy" decoding="async">
+                        <div class="thumb-overlay"></div>
+                        <span class="game-badge badge-chicken">Chicken Road 2</span>
                     </div>
-                    <div class="p-3">
-                        <p class="text-[10px] text-gray-500 mb-2.5">Cross the hazardous path safely.</p>
-                        <span class="game-action-btn w-full py-2 bg-gray-400 text-white text-center font-bold text-[10px] rounded-xl block shadow"><i class="fas fa-lock mr-1"></i> Locked</span>
+                    <div class="game-body">
+                        <p class="game-desc">Cross the hazardous path safely.</p>
+                        <span class="game-action-btn">Checking...</span>
                     </div>
                 </div>
 
                 <!-- Game 3: Mines -->
-                <div data-game="mines.html" class="game-card bg-white border border-green-200 rounded-2xl overflow-hidden flex flex-col justify-between cursor-pointer shadow-sm hover:shadow-md transition-all active:scale-95 tactile-btn group">
-                    <div class="h-28 w-full overflow-hidden bg-black relative">
-                        <img src="https://miro.medium.com/v2/resize:fit:1400/1*M3zmtYQPGdGtsns4kMGh7w.jpeg" alt="Mines" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <span class="absolute bottom-2 left-2 text-[10px] font-bold text-white bg-teal-600/80 px-2 py-0.5 rounded-md backdrop-blur-sm">Mines</span>
+                <div data-game="mines.html" class="game-card tactile-btn">
+                    <div class="game-thumb">
+                        <img src="https://miro.medium.com/v2/resize:fit:1400/1*M3zmtYQPGdGtsns4kMGh7w.jpeg" alt="Mines" loading="lazy" decoding="async">
+                        <div class="thumb-overlay"></div>
+                        <span class="game-badge badge-mines">Mines</span>
                     </div>
-                    <div class="p-3">
-                        <p class="text-[10px] text-gray-500 mb-2.5">Uncover safe gems and avoid hidden mines.</p>
-                        <span class="game-action-btn w-full py-2 bg-gray-400 text-white text-center font-bold text-[10px] rounded-xl block shadow"><i class="fas fa-lock mr-1"></i> Locked</span>
+                    <div class="game-body">
+                        <p class="game-desc">Uncover safe gems and avoid hidden mines.</p>
+                        <span class="game-action-btn">Checking...</span>
                     </div>
                 </div>
 
                 <!-- Game 4: Cricket -->
-                <div data-game="cricket.html" class="game-card bg-white border border-green-200 rounded-2xl overflow-hidden flex flex-col justify-between cursor-pointer shadow-sm hover:shadow-md transition-all active:scale-95 tactile-btn group">
-                    <div class="h-28 w-full overflow-hidden bg-black relative">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/81/Barsapara_Cricket_Stadium_match_under_floodlights.jpg" alt="Cricket" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <span class="absolute bottom-2 left-2 text-[10px] font-bold text-white bg-green-700/80 px-2 py-0.5 rounded-md backdrop-blur-sm">Cricket</span>
+                <div data-game="cricket.html" class="game-card tactile-btn">
+                    <div class="game-thumb">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/81/Barsapara_Cricket_Stadium_match_under_floodlights.jpg" alt="Cricket" loading="lazy" decoding="async">
+                        <div class="thumb-overlay"></div>
+                        <span class="game-badge badge-cricket">Cricket</span>
                     </div>
-                    <div class="p-3">
-                        <p class="text-[10px] text-gray-500 mb-2.5">Hit big boundaries and score rewards.</p>
-                        <span class="game-action-btn w-full py-2 bg-gray-400 text-white text-center font-bold text-[10px] rounded-xl block shadow"><i class="fas fa-lock mr-1"></i> Locked</span>
+                    <div class="game-body">
+                        <p class="game-desc">Hit big boundaries and score rewards.</p>
+                        <span class="game-action-btn">Checking...</span>
                     </div>
                 </div>
 
                 <!-- Game 5: Goal Wave -->
-                <div data-game="goal_wave.html" class="game-card bg-white border border-green-200 rounded-2xl overflow-hidden flex flex-col justify-between cursor-pointer shadow-sm hover:shadow-md transition-all active:scale-95 tactile-btn group">
-                    <div class="h-28 w-full overflow-hidden bg-black relative">
-                        <img src="https://nwscdn.com/media/catalog/product/cache/h900xw900/c/u/custom-football-goal-nets-_choose-size-colour-share_.jpg" alt="Goal Wave" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <span class="absolute bottom-2 left-2 text-[10px] font-bold text-white bg-cyan-600/80 px-2 py-0.5 rounded-md backdrop-blur-sm">Goal Wave</span>
+                <div data-game="goal_wave.html" class="game-card tactile-btn">
+                    <div class="game-thumb">
+                        <img src="https://nwscdn.com/media/catalog/product/cache/h900xw900/c/u/custom-football-goal-nets-_choose-size-colour-share_.jpg" alt="Goal Wave" loading="lazy" decoding="async">
+                        <div class="thumb-overlay"></div>
+                        <span class="game-badge badge-goal">Goal Wave</span>
                     </div>
-                    <div class="p-3">
-                        <p class="text-[10px] text-gray-500 mb-2.5">Score penalty shots & ride winning wave.</p>
-                        <span class="game-action-btn w-full py-2 bg-gray-400 text-white text-center font-bold text-[10px] rounded-xl block shadow"><i class="fas fa-lock mr-1"></i> Locked</span>
+                    <div class="game-body">
+                        <p class="game-desc">Score penalty shots &amp; ride winning wave.</p>
+                        <span class="game-action-btn">Checking...</span>
                     </div>
                 </div>
 
                 <!-- Game 6: Vortex -->
-                <div data-game="vortex.html" class="game-card bg-white border border-green-200 rounded-2xl overflow-hidden flex flex-col justify-between cursor-pointer shadow-sm hover:shadow-md transition-all active:scale-95 tactile-btn group">
-                    <div class="h-28 w-full overflow-hidden bg-black relative">
-                        <img src="https://images6.alphacoders.com/308/308636.jpg" alt="Vortex" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <span class="absolute bottom-2 left-2 text-[10px] font-bold text-white bg-indigo-600/80 px-2 py-0.5 rounded-md backdrop-blur-sm">Vortex</span>
+                <div data-game="vortex.html" class="game-card tactile-btn">
+                    <div class="game-thumb">
+                        <img src="https://images6.alphacoders.com/308/308636.jpg" alt="Vortex" loading="lazy" decoding="async">
+                        <div class="thumb-overlay"></div>
+                        <span class="game-badge badge-vortex">Vortex</span>
                     </div>
-                    <div class="p-3">
-                        <p class="text-[10px] text-gray-500 mb-2.5">Navigate quantum vortex for multipliers.</p>
-                        <span class="game-action-btn w-full py-2 bg-gray-400 text-white text-center font-bold text-[10px] rounded-xl block shadow"><i class="fas fa-lock mr-1"></i> Locked</span>
+                    <div class="game-body">
+                        <p class="game-desc">Navigate quantum vortex for multipliers.</p>
+                        <span class="game-action-btn">Checking...</span>
                     </div>
                 </div>
 
             </div>
-
         </main>
 
-        <!-- Fully Linked Bottom Navigation Bar -->
-        <nav class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between items-center px-6 pt-2 pb-5 z-40 shadow-lg">
-            <button onclick="window.location.href='index.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600 transition-colors tactile-btn">
-                <i class="fas fa-home text-lg mb-1"></i>
-                <span class="text-[10px] font-medium">Home</span>
+        <!-- Bottom Navigation Bar -->
+        <nav class="bottom-nav">
+            <button onclick="window.location.href='index.html'" class="nav-btn tactile-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg>
+                <span>Home</span>
             </button>
-            <button onclick="window.location.href='delivery.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600 transition-colors tactile-btn">
-                <i class="fas fa-box text-lg mb-1"></i>
-                <span class="text-[10px] font-medium">Delivery</span>
+            <button onclick="window.location.href='delivery.html'" class="nav-btn tactile-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v9"/></svg>
+                <span>Delivery</span>
             </button>
-            <button onclick="window.location.href='games.html'" class="flex flex-col items-center text-green-600 group tactile-btn">
-                <i class="fas fa-gamepad text-lg mb-1"></i>
-                <span class="text-[10px] font-medium font-bold">Games</span>
+            <button onclick="window.location.href='games.html'" class="nav-btn active tactile-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+                <span>Games</span>
             </button>
-            <button onclick="window.location.href='map.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600 transition-colors tactile-btn">
-                <i class="fas fa-map-marked-alt text-lg mb-1"></i>
-                <span class="text-[10px] font-medium">Map</span>
+            <button onclick="window.location.href='map.html'" class="nav-btn tactile-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                <span>Map</span>
             </button>
-            <button onclick="window.location.href='my.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600 transition-colors tactile-btn">
-                <i class="fas fa-user text-lg mb-1"></i>
-                <span class="text-[10px] font-medium">My</span>
+            <button onclick="window.location.href='my.html'" class="nav-btn tactile-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>My</span>
             </button>
         </nav>
     </div>
 
     <!-- Locked Alert Modal -->
-    <div id="locked-alert-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden px-4 backdrop-blur-md">
-        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-center text-white">
-            <div class="w-14 h-14 bg-red-500 bg-opacity-25 border border-red-400 rounded-full flex items-center justify-center mx-auto mb-3 text-red-400 text-2xl">
-                <i class="fas fa-lock"></i>
+    <div id="locked-alert-modal" class="modal-backdrop hidden">
+        <div class="glass-modal">
+            <div class="modal-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             </div>
-            <h3 class="text-lg font-bold mb-1">Game Locked</h3>
-            <p class="text-xs text-gray-300 mb-5 leading-relaxed">Your balance is ₹0.00. Please purchase a VIP package from the home dashboard to unlock and play games!</p>
-            <button onclick="document.getElementById('locked-alert-modal').classList.add('hidden')" class="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl text-xs tactile-btn">
+            <h3 class="modal-title">Game Locked</h3>
+            <p class="modal-text">Your balance is ₹0.00. Please purchase a VIP package from the home dashboard to unlock and play games!</p>
+            <button onclick="document.getElementById('locked-alert-modal').classList.add('hidden')" class="modal-btn tactile-btn">
                 Got It
             </button>
         </div>
     </div>
 
-    <!-- Firebase Script Integration & Lock Logic -->
+    <!-- Firebase Integration & Lightweight UI Animations -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+        const LOCK_SVG = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+        const PLAY_SVG = `<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>`;
+
+        // Smooth image reveal on load
+        document.querySelectorAll('.game-thumb img').forEach(img => {
+            if (img.complete) {
+                img.classList.add('loaded');
+            } else {
+                img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+                img.addEventListener('error', () => img.classList.add('loaded'), { once: true });
+            }
+        });
+
+        // Smooth balance count-up animation
+        function animateBalance(el, target) {
+            if (target <= 0) {
+                el.textContent = "₹0.00";
+                return;
+            }
+            const duration = 550;
+            const start = performance.now();
+            const hasDecimals = target % 1 !== 0;
+
+            function frame(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const current = target * eased;
+                el.textContent = `₹${(hasDecimals ? current : Math.round(current)).toLocaleString(undefined, hasDecimals ? { minimumFractionDigits: 2, maximumFractionDigits: 2 } : undefined)}`;
+                if (progress < 1) {
+                    requestAnimationFrame(frame);
+                } else {
+                    el.textContent = `₹${target.toLocaleString()}`;
+                    el.classList.add('pop');
+                    setTimeout(() => el.classList.remove('pop'), 300);
+                }
+            }
+            requestAnimationFrame(frame);
+        }
 
         const firebaseConfig = {
             apiKey: "AIzaSyAoXMQtogVuO8O_OXO62JthLagGeqGSPHg",
@@ -278,40 +824,44 @@
             }
 
             try {
-                const userDocRef = doc(db, "users", user.uid);
-                const userSnap = await getDoc(userDocRef);
+                const userSnap = await getDoc(doc(db, "users", user.uid));
                 if (userSnap.exists()) {
-                    const userData = userSnap.data();
-                    const balance = userData.balance || 0;
-                    document.getElementById("game-wallet-balance").innerText = `₹${balance.toLocaleString()}`;
-
-                    const gameCards = document.querySelectorAll('.game-card');
+                    const balance = userSnap.data().balance || 0;
+                    const balanceEl = document.getElementById("game-wallet-balance");
                     const badge = document.getElementById("wallet-status-badge");
+                    const gameCards = document.querySelectorAll('.game-card');
+
+                    animateBalance(balanceEl, balance);
 
                     if (balance <= 0) {
-                        badge.innerText = "Locked";
-                        badge.className = "text-[9px] bg-red-500 text-white font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider inline-block shadow";
-                        
+                        badge.textContent = "Locked";
+                        badge.className = "status-badge status-locked";
+
                         gameCards.forEach(card => {
                             const actionBtn = card.querySelector('.game-action-btn');
+                            actionBtn.innerHTML = `${LOCK_SVG} Locked`;
+                            actionBtn.className = "game-action-btn";
                             card.onclick = () => {
-                                document.getElementById("locked-alert-modal").classList.remove("hidden");
+                                card.classList.remove('shake-locked');
+                                void card.offsetWidth;
+                                card.classList.add('shake-locked');
+                                setTimeout(() => {
+                                    document.getElementById("locked-alert-modal").classList.remove("hidden");
+                                }, 150);
                             };
-                            actionBtn.innerHTML = `<i class="fas fa-lock mr-1"></i> Locked`;
-                            actionBtn.className = "game-action-btn w-full py-2 bg-gray-400 text-white text-center font-bold text-[10px] rounded-xl block shadow";
                         });
                     } else {
-                        badge.innerText = "Unlocked";
-                        badge.className = "text-[9px] bg-yellow-400 text-gray-950 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider inline-block shadow";
-                        
+                        badge.textContent = "Unlocked";
+                        badge.className = "status-badge status-unlocked";
+
                         gameCards.forEach(card => {
                             const targetUrl = card.getAttribute('data-game');
                             const actionBtn = card.querySelector('.game-action-btn');
+                            actionBtn.innerHTML = `${PLAY_SVG} Play Game`;
+                            actionBtn.className = "game-action-btn is-unlocked";
                             card.onclick = () => {
                                 window.location.href = targetUrl;
                             };
-                            actionBtn.innerHTML = `Play Game`;
-                            actionBtn.className = "game-action-btn w-full py-2 bg-green-600 hover:bg-green-700 text-white text-center font-bold text-[10px] rounded-xl block shadow";
                         });
                     }
                 }
@@ -320,8 +870,8 @@
             }
         });
 
-        // Universal Tactile Ripple Effect Listener
-        document.addEventListener('click', function (e) {
+        // Universal Tactile Ripple Effect
+        document.addEventListener('click', (e) => {
             const target = e.target.closest('.tactile-btn');
             if (!target) return;
             const existingRipple = target.querySelector('.ripple');
@@ -335,7 +885,7 @@
             circle.style.top = `${e.clientY - rect.top - radius}px`;
             circle.classList.add('ripple');
             target.appendChild(circle);
-            setTimeout(() => circle.remove(), 600);
+            setTimeout(() => circle.remove(), 550);
         });
     </script>
 </body>
