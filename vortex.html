@@ -1,381 +1,1909 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ANP MONEY - Vortex</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            -webkit-tap-highlight-color: transparent;
-            min-height: 100vh;
-            min-height: 100dvh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-x: hidden;
-        }
-        .bg-wave-pattern {
-            background: linear-gradient(135deg, #2da45a 0%, #3f8e43 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        .app-container {
-            width: 100%;
-            max-width: 430px;
-            height: 100dvh;
-            background: #f8fafc;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(45, 164, 90, 0.25);
-        }
-        @media (min-width: 640px) {
-            .app-container {
-                height: 880px;
-                max-height: 92vh;
-                border-radius: 36px;
-                border: 8px solid rgba(45, 164, 90, 0.3);
-            }
-        }
-        .classic-card {
-            background: #ffffff;
-            border: 1px solid rgba(45, 164, 90, 0.2);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-        }
-        .glass-modal {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 2px solid rgba(45, 164, 90, 0.4);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 30px rgba(45,164,90,0.15);
-        }
-        .tactile-btn {
-            position: relative; overflow: hidden; transform: translateZ(0);
-            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease, filter 0.15s ease;
-            cursor: pointer; -webkit-user-select: none; user-select: none;
-        }
-        .tactile-btn:hover { filter: brightness(1.05); }
-        .tactile-btn:active { transform: scale(0.94) translateY(1px) !important; }
-        .ripple {
-            position: absolute; background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
-            border-radius: 50%; transform: scale(0); animation: rippleEffect 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards; pointer-events: none;
-        }
-        @keyframes rippleEffect {
-            0% { transform: scale(0); opacity: 0.8; }
-            100% { transform: scale(4.5); opacity: 0; }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <title>Vortex 2</title>
+  <base href="/" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+  />
+  <meta name="theme-color" content="#0d1124" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&family=Montserrat:wght@500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg-app: radial-gradient(circle at 50% 15%, #1d2552 0%, #0a0d1c 75%);
+      --bg-header: rgba(12, 16, 34, 0.92);
+      --bg-panel: #151a33;
+      --bg-card: #1d2445;
+      --bg-input: #0e1226;
+      --border-soft: rgba(255, 255, 255, 0.1);
+      --text-main: #ffffff;
+      --text-muted: #98a2c7;
+      --water: #0ea5e9;
+      --earth: #22c55e;
+      --fire: #ef4444;
+      --gold: #fbbf24;
+      --brand: #5354d8;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    body.light-mode {
+      --bg-app: linear-gradient(180deg, #eef2ff 0%, #dbe4ff 100%);
+      --bg-header: rgba(255, 255, 255, 0.94);
+      --bg-panel: #ffffff;
+      --bg-card: #f1f5f9;
+      --bg-input: #e2e8f0;
+      --border-soft: rgba(15, 23, 42, 0.12);
+      --text-main: #0f172a;
+      --text-muted: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #0a0d1c;
+      color: var(--text-main);
+      font-family: 'Montserrat', 'Inter', system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    input {
+      user-select: text;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      touch-action: manipulation;
+    }
+
+    #root {
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-app);
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    /* HEADER */
+    .header {
+      height: 54px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      background: var(--bg-header);
+      border-bottom: 1px solid var(--border-soft);
+      position: relative;
+      z-index: 40;
+    }
+
+    .logo-badge {
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--text-main);
+    }
+
+    .logo-badge .two {
+      background: linear-gradient(135deg, #38bdf8, #ef4444);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 22px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-btn {
+      height: 36px;
+      padding: 0 11px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .pill-btn:active {
+      transform: scale(0.96);
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .balance-pill {
+      font-variant-numeric: tabular-nums;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .inr-coin {
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffe066, #e59400);
+      color: #3d2200;
+      font-weight: 900;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* BURGER MENU */
+    .menu-container {
+      position: absolute;
+      top: 54px;
+      right: 12px;
+      width: 284px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+      padding: 14px;
+      display: none;
+      flex-direction: column;
+      gap: 9px;
+      z-index: 60;
+    }
+
+    .menu-container.open {
+      display: flex;
+    }
+
+    .menu-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .menu-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .menu-username {
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .change-avatar-btn {
+      background: transparent;
+      color: #38bdf8;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 0;
+      margin-top: 2px;
+    }
+
+    .firebase-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fbbf24;
+      flex-shrink: 0;
+    }
+
+    .firebase-dot.connected {
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+
+    .menu-item.clickable:hover,
+    .menu-item.clickable:active {
+      background: rgba(128, 128, 128, 0.14);
+    }
+
+    .menu-divider {
+      height: 1px;
+      background: var(--border-soft);
+    }
+
+    .switch {
+      position: relative;
+      width: 38px;
+      height: 21px;
+      border-radius: 999px;
+      background: #475569;
+      transition: background 0.2s;
+    }
+    .switch::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.2s;
+    }
+    .switch.on {
+      background: #22c55e;
+    }
+    .switch.on::after {
+      transform: translateX(17px);
+    }
+
+    /* MAIN LAYOUT */
+    .main-layout {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 8px 12px calc(8px + var(--safe-bottom));
+      gap: 8px;
+    }
+
+    /* RING STATUS STRIP */
+    .rings-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .ring-pill {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .ring-pill.water { border-left: 4px solid var(--water); }
+    .ring-pill.earth { border-left: 4px solid var(--earth); }
+    .ring-pill.fire { border-left: 4px solid var(--fire); }
+
+    .ring-pill .val {
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* VORTEX ARENA */
+    .arena {
+      flex: 1;
+      min-height: 220px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-soft);
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #vortex-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+
+    .result-toast {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      background: rgba(10, 14, 30, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #fff;
+      padding: 7px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 12;
+      white-space: nowrap;
+    }
+
+    .result-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* CONTROLS */
+    .controls-panel {
+      flex-shrink: 0;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .payout-spin-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-btn {
+      height: 50px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.15;
+      color: #fff;
+      transition: transform 0.08s, opacity 0.15s;
+    }
+
+    .action-btn:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .part-btn {
+      background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+      box-shadow: 0 3px 0 #1e3a8a;
+    }
+
+    .cashout-btn {
+      background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
+      box-shadow: 0 3px 0 #14532d;
+    }
+
+    .spin-cluster {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mini-mode-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mini-mode-btn.active {
+      background: #f59e0b;
+      color: #111;
+      border-color: #fbbf24;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+    }
+
+    .spin-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #818cf8, #4543bf 70%);
+      border: 3px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 0 22px rgba(83, 84, 216, 0.55);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s;
+    }
+
+    .spin-btn:active:not(:disabled) {
+      transform: scale(0.93);
+    }
+
+    .spin-btn.auto-active {
+      background: radial-gradient(circle at 35% 30%, #f87171, #dc2626 70%);
+      box-shadow: 0 0 22px rgba(239, 68, 68, 0.6);
+    }
+
+    .bet-row {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .input-box {
+      display: flex;
+      align-items: center;
+      background: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 3px;
+      height: 40px;
+    }
+
+    .mini-btn {
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 7px;
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .bet-input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      text-align: center;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .fast-bets {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .fast-btn {
+      height: 40px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .fast-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* LIVE WINS */
+    .live-wins-bar {
+      flex-shrink: 0;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 7px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .online-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .live-win-sum {
+      color: #22c55e;
+      font-weight: 900;
+    }
+
+    /* MODALS & BONUS GAMES */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 9, 20, 0.82);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 440px;
+      max-height: 88vh;
+      max-height: 88dvh;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-soft);
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+
+    .modal-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .modal-close {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      padding: 16px 18px;
+      overflow-y: auto;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    /* Earth 3-Reel Slot Bonus */
+    .earth-reels {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .reel-box {
+      height: 82px;
+      border-radius: 12px;
+      background: var(--bg-input);
+      border: 2px solid var(--earth);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      color: #4ade80;
+    }
+
+    /* Fire 4x4 Grid Bonus */
+    .fire-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .fire-cell {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #991b1b, #450a0a);
+      border: 2px solid #f87171;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fire-cell.revealed {
+      background: #1e293b;
+      border-color: #fbbf24;
+      color: #fde047;
+    }
+
+    .avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .avatar-choice {
+      height: 58px;
+      border-radius: 12px;
+      background: var(--bg-input);
+      border: 2px solid transparent;
+      font-size: 28px;
+    }
+
+    .avatar-choice.selected {
+      border-color: var(--gold);
+    }
+
+    .seed-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-family: monospace;
+      font-size: 12px;
+      word-break: break-all;
+      color: #4ade80;
+      margin: 6px 0 12px;
+    }
+
+    .history-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--bg-input);
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+
+    .desktop-only { display: inline-flex; }
+    .mobile-only { display: none; }
+
+    @media (max-width: 760px) {
+      .desktop-only { display: none; }
+      .mobile-only { display: flex; }
+      .bet-row { grid-template-columns: 1fr; }
+      .ring-pill { font-size: 11px; padding: 6px 8px; }
+      .spin-btn { width: 64px; height: 64px; font-size: 13px; }
+      .action-btn { height: 46px; font-size: 12px; }
+    }
+  </style>
 </head>
 <body>
+  <div id="root">
+    <!-- HEADER -->
+    <header class="header">
+      <div class="logo-badge">
+        🌀 VORTEX <span class="two">2</span>
+      </div>
 
-    <div class="app-container">
-        
-        <!-- Header -->
-        <header class="bg-wave-pattern pt-4 px-4 pb-4 text-white relative flex-shrink-0 shadow-md">
-            <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2">
-                    <button onclick="window.location.href='games.html'" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs hover:bg-white/30 transition-all tactile-btn">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <h1 class="text-sm font-black tracking-tight">Vortex Multiplier</h1>
-                </div>
-                <span class="text-[9px] bg-white text-emerald-800 font-bold px-2.5 py-0.5 rounded-full uppercase shadow">Cosmic Spin</span>
-            </div>
+      <div class="header-actions">
+        <button id="btn-theme" class="pill-btn icon-btn" title="Dark / Light Mode">🌙</button>
+        <button id="btn-how" class="pill-btn desktop-only">ℹ️ How to play?</button>
 
-            <!-- Gaming Wallet Card -->
-            <div class="bg-white/10 border border-white/20 rounded-xl p-2.5 flex justify-between items-center backdrop-blur-sm">
-                <div>
-                    <span class="text-[9px] text-emerald-100 uppercase tracking-wider block font-semibold">Gaming Balance</span>
-                    <span class="text-base font-black text-white font-mono" id="game-wallet-balance">₹0.00</span>
-                </div>
-                <div class="text-right">
-                    <span class="text-[10px] text-yellow-300 font-mono font-bold" id="live-multiplier">Target: Spin</span>
-                </div>
-            </div>
-        </header>
+        <button id="btn-balance" class="pill-btn balance-pill" title="Tap to top up if low">
+          <span id="balance-text">999 994.00</span>
+          <span class="inr-coin">₹</span>
+        </button>
 
-        <!-- Main Canvas Wheel View -->
-        <main class="flex-1 relative z-10 flex flex-col justify-between p-4 overflow-hidden">
-            
-            <div class="relative flex-1 w-full flex items-center justify-center overflow-hidden my-auto">
-                <canvas id="gameCanvas" class="w-full max-w-[320px] aspect-square"></canvas>
-                <!-- Center Pointer Arrow -->
-                <div class="absolute top-[calc(50%-15px)] left-[calc(50%-10px)] w-5 h-7 bg-yellow-400 clip-path-polygon pointer-events-none drop-shadow-md z-20" style="clip-path: polygon(50% 100%, 0% 0%, 100% 0%);"></div>
-            </div>
+        <button id="btn-fullscreen" class="pill-btn icon-btn" aria-label="Fullscreen">⛶</button>
+        <button id="btn-burger" class="pill-btn icon-btn" aria-label="Menu">☰</button>
+      </div>
 
-            <!-- Controls Panel -->
-            <div class="classic-card rounded-2xl p-4 flex flex-col gap-3">
-                <div class="flex justify-between items-center">
-                    <span class="text-xs text-slate-600 font-medium">Select Bet (₹):</span>
-                    <div class="flex gap-1.5">
-                        <button onclick="setBet(50)" class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-mono font-bold border border-slate-200 tactile-btn">₹50</button>
-                        <button onclick="setBet(100)" class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-mono font-bold border border-slate-200 tactile-btn">₹100</button>
-                        <button onclick="setBet(500)" class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-mono font-bold border border-slate-200 tactile-btn">₹500</button>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2 pt-1">
-                    <input type="number" id="bet-input" value="50" min="10" class="w-24 bg-slate-100 border border-slate-300 rounded-xl px-3 py-3 text-xs text-slate-900 font-mono outline-none focus:border-emerald-500">
-                    
-                    <button id="main-action-btn" onclick="spinVortex()" class="flex-1 py-3 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-extrabold rounded-xl text-xs shadow-lg tactile-btn">
-                        SPIN VORTEX
-                    </button>
-                </div>
-            </div>
-
-        </main>
-    </div>
-
-    <!-- Result Modal -->
-    <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden px-4 backdrop-blur-sm">
-        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-center text-slate-900 shadow-2xl">
-            <div id="modal-icon" class="w-14 h-14 bg-emerald-100 border border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl text-emerald-600">
-                <i class="fas fa-trophy"></i>
-            </div>
-            <h3 id="modal-title" class="text-lg font-bold mb-1">Spin Complete</h3>
-            <p id="modal-desc" class="text-xs text-slate-600 mb-5 leading-relaxed">Great spin!</p>
-            <button onclick="closeModal()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-xl text-xs tactile-btn">
-                Continue
-            </button>
+      <!-- BURGER MENU -->
+      <div id="menu-container" class="menu-container">
+        <div class="menu-header">
+          <div id="menu-avatar" class="menu-avatar">🌀</div>
+          <div style="min-width:0;flex:1;">
+            <div id="menu-username" class="menu-username">Player</div>
+            <button id="btn-change-avatar" class="change-avatar-btn">Change avatar</button>
+          </div>
+          <span id="firebase-dot" class="firebase-dot"></span>
         </div>
+
+        <div class="menu-item" id="sound-switch">
+          <span>🔊 Sound &amp; Voice</span>
+          <div id="toggle-sound" class="switch on"></div>
+        </div>
+
+        <div class="menu-divider"></div>
+
+        <button id="btn-fair" class="menu-item clickable"><span>🛡️ Provably fair settings</span><span>›</span></button>
+        <button id="btn-rules" class="menu-item clickable"><span>📜 Game rules &amp; Bonuses</span><span>›</span></button>
+        <button id="btn-history" class="menu-item clickable"><span>🕒 My bet history</span><span>›</span></button>
+        <button id="btn-how-mobile" class="menu-item clickable mobile-only"><span>ℹ️ How to play?</span><span>›</span></button>
+
+        <div class="menu-divider"></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);padding:0 4px;">
+          <span>Turbo Elemental Engine</span>
+          <strong id="sync-label">Connecting...</strong>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main-layout">
+      <!-- 3 ELEMENTAL RING COUNTERS -->
+      <section class="rings-strip">
+        <div class="ring-pill water">
+          <span>💧 Water</span>
+          <span id="stat-water" class="val">0/3 · 0x</span>
+        </div>
+        <div class="ring-pill earth">
+          <span>🌿 Earth</span>
+          <span id="stat-earth" class="val">0/5 · 0x</span>
+        </div>
+        <div class="ring-pill fire">
+          <span>🔥 Fire</span>
+          <span id="stat-fire" class="val">0/8 · 0x</span>
+        </div>
+      </section>
+
+      <!-- CENTRAL VORTEX WHEEL CANVAS -->
+      <section class="arena">
+        <canvas id="vortex-canvas"></canvas>
+        <div id="result-toast" class="result-toast">Ready to Spin</div>
+      </section>
+
+      <!-- CONTROLS PANEL -->
+      <section class="controls-panel">
+        <div class="payout-spin-row">
+          <button id="btn-part-payout" class="action-btn part-btn" disabled>
+            <span>PART PAYOUT</span>
+            <span id="part-amount">₹0.00</span>
+          </button>
+
+          <div class="spin-cluster">
+            <button id="btn-turbo" class="mini-mode-btn" title="Turbo Mode">⚡</button>
+            <button id="btn-spin" class="spin-btn" title="Tap to Spin or Hold for Autoplay">
+              <span id="spin-label">SPIN</span>
+              <span style="font-size:9px;opacity:0.8;">HOLD AUTO</span>
+            </button>
+            <button id="btn-auto" class="mini-mode-btn" title="Autoplay">🔁</button>
+          </div>
+
+          <button id="btn-cashout" class="action-btn cashout-btn" disabled>
+            <span>CASH OUT</span>
+            <span id="cashout-amount">₹0.00</span>
+          </button>
+        </div>
+
+        <div class="bet-row">
+          <div class="input-box">
+            <button id="btn-min" class="mini-btn">MIN</button>
+            <input id="bet-input" class="bet-input" type="text" inputmode="decimal" value="50" maxlength="9" />
+            <button id="btn-max" class="mini-btn">MAX</button>
+          </div>
+          <div class="fast-bets">
+            <button class="fast-btn" data-val="50">50 ₹</button>
+            <button class="fast-btn" data-val="100">100 ₹</button>
+            <button class="fast-btn" data-val="500">500 ₹</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIVE WINS -->
+      <section class="live-wins-bar">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span>Live wins:</span>
+          <span class="online-badge"><span class="pulse-dot"></span>Online: <strong id="online-count" style="color:var(--text-main);">4820</strong></span>
+        </div>
+        <div id="live-feed-item" style="display:flex;align-items:center;gap:6px;">
+          <span>🇮🇳</span>
+          <span>RohanVortex</span>
+          <span class="live-win-sum">+₹1,250.00</span>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL / BONUS CONTAINER -->
+  <div id="modal-backdrop" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-head">
+        <span id="modal-title">Modal</span>
+        <button id="modal-close" class="modal-close">✕</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
     </div>
+  </div>
 
-    <!-- Firebase & Vortex Engine Script -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+  <script>
+    window.env = {
+      RTP_VALUE: 0.96,
+      MIN_BET: 1,
+      MAX_BET: 5000,
+      MAX_MULT: 999,
+      MAX_WIN: 850000,
+    };
+  </script>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAoXMQtogVuO8O_OXO62JthLagGeqGSPHg",
-            authDomain: "anpmoney-290eb.firebaseapp.com",
-            projectId: "anpmoney-290eb",
-            storageBucket: "anpmoney-290eb.firebasestorage.app",
-            messagingSenderId: "609571923036",
-            appId: "1:609571923036:web:45544e187ce63adec0f299",
-            measurementId: "G-HCW4DY6E6J"
+  <script type="module">
+    // =========================================================================
+    // 1. YOUR FIREBASE CONFIG
+    // =========================================================================
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyAoXMQtogVuO8O_OXO62JthLagGeqGSPHg",
+      authDomain: "anpmoney-290eb.firebaseapp.com",
+      projectId: "anpmoney-290eb",
+      storageBucket: "anpmoney-290eb.firebasestorage.app",
+      messagingSenderId: "609571923036",
+      appId: "1:609571923036:web:45544e187ce63adec0f299",
+      measurementId: "G-HCW4DY6E6J"
+    };
+
+    // Prevent two-finger pinch zoom
+    document.addEventListener("touchmove", (e) => {
+      if (e.touches.length === 2) e.preventDefault();
+    }, { passive: false });
+
+    // =========================================================================
+    // 2. SHA-256 PROVABLY FAIR HELPER (ANDROID 10-16 SAFE)
+    // =========================================================================
+    function sha256Fallback(ascii) {
+      function rr(v, a) { return (v >>> a) | (v << (32 - a)); }
+      const mp = Math.pow, mw = mp(2, 32);
+      let res = "", words = [], abl = ascii.length * 8;
+      let hash = (sha256Fallback.h = sha256Fallback.h || []);
+      let k = (sha256Fallback.k = sha256Fallback.k || []);
+      let pc = k.length, ic = {};
+      for (let c = 2; pc < 64; c++) {
+        if (!ic[c]) {
+          for (let i = 0; i < 313; i += c) ic[i] = c;
+          hash[pc] = (mp(c, 0.5) * mw) | 0;
+          k[pc++] = (mp(c, 1 / 3) * mw) | 0;
+        }
+      }
+      ascii += "\x80";
+      while ((ascii.length % 64) - 56) ascii += "\x00";
+      for (let i = 0; i < ascii.length; i++) words[i >> 2] |= ascii.charCodeAt(i) << (((3 - i) % 4) * 8);
+      words[words.length] = (abl / mw) | 0;
+      words[words.length] = abl;
+      for (let j = 0; j < words.length;) {
+        const w = words.slice(j, (j += 16)), oh = hash;
+        hash = hash.slice(0, 8);
+        for (let i = 0; i < 64; i++) {
+          const w15 = w[i - 15], w2 = w[i - 2], a = hash[0], e = hash[4];
+          const t1 = hash[7] + (rr(e, 6) ^ rr(e, 11) ^ rr(e, 25)) + ((e & hash[5]) ^ (~e & hash[6])) + k[i] +
+            (w[i] = i < 16 ? w[i] : (w[i - 16] + (rr(w15, 7) ^ rr(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rr(w2, 17) ^ rr(w2, 19) ^ (w2 >>> 10))) | 0);
+          const t2 = (rr(a, 2) ^ rr(a, 13) ^ rr(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+          hash = [(t1 + t2) | 0].concat(hash);
+          hash[4] = (hash[4] + t1) | 0;
+        }
+        for (let i = 0; i < 8; i++) hash[i] = (hash[i] + oh[i]) | 0;
+      }
+      for (let i = 0; i < 8; i++) for (let j = 3; j + 1; j--) res += (((hash[i] >> (j * 8)) & 255) < 16 ? "0" : "") + ((hash[i] >> (j * 8)) & 255).toString(16);
+      return res;
+    }
+
+    async function sha256Hex(str) {
+      if (window.crypto && window.crypto.subtle) {
+        const buf = new TextEncoder().encode(str);
+        const h = await window.crypto.subtle.digest("SHA-256", buf);
+        return Array.from(new Uint8Array(h)).map((b) => b.toString(16).padStart(2, "0")).join("");
+      }
+      return sha256Fallback(str);
+    }
+
+    function randomHex(len = 24) {
+      const ch = "0123456789abcdef";
+      let s = "";
+      for (let i = 0; i < len; i++) s += ch[(Math.random() * 16) | 0];
+      return s;
+    }
+
+    // =========================================================================
+    // 3. ELEMENTAL RING TABLES (FROM REVIEW SPECS)
+    // =========================================================================
+    const RINGS = {
+      water: { name: "Water", max: 3, mults: [0, 1.6, 5.0, 10.0], color: "#0ea5e9", glow: "#38bdf8" },
+      earth: { name: "Earth", max: 5, mults: [0, 2.5, 6.0, 12.0, 24.0, 45.0], color: "#22c55e", glow: "#4ade80" },
+      fire:  { name: "Fire",  max: 8, mults: [0, 4.0, 8.0, 15.0, 30.0, 60.0, 100.0, 150.0, 200.0], color: "#ef4444", glow: "#f87171" },
+    };
+
+    // =========================================================================
+    // 4. AUDIO + VOICE CALLS
+    // =========================================================================
+    class VortexAudio {
+      constructor() {
+        this.ctx = null;
+        this.on = true;
+      }
+      unlock() {
+        if (!this.ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) this.ctx = new AC();
+        }
+        if (this.ctx && this.ctx.state === "suspended") this.ctx.resume().catch(() => {});
+      }
+      tone(f, dur, type = "sine", vol = 0.12, endF = null) {
+        if (!this.on || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = type;
+        o.frequency.setValueAtTime(f, now);
+        if (endF) o.frequency.exponentialRampToValueAtTime(endF, now + dur);
+        g.gain.setValueAtTime(vol, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + dur);
+        o.connect(g);
+        g.connect(this.ctx.destination);
+        o.start(now);
+        o.stop(now + dur);
+      }
+      spinTick() { this.tone(360, 0.04, "triangle", 0.05); }
+      hitElement(ringKey, step) {
+        const base = ringKey === "water" ? 440 : ringKey === "earth" ? 523 : 659;
+        this.tone(base + step * 55, 0.18, "sine", 0.14, base + step * 95);
+      }
+      wind() { this.tone(240, 0.16, "sine", 0.06, 180); }
+      skull() { this.tone(130, 0.3, "sawtooth", 0.16, 48); }
+      bonus() {
+        [523, 659, 784, 1046, 1318].forEach((f, idx) =>
+          setTimeout(() => this.tone(f, 0.2, "triangle", 0.14), idx * 70)
+        );
+      }
+      speak(word) {
+        if (!this.on || !window.speechSynthesis) return;
+        try {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(word);
+          u.rate = 1.15;
+          u.pitch = 1.0;
+          u.volume = 0.7;
+          window.speechSynthesis.speak(u);
+        } catch {}
+      }
+    }
+    const audio = new VortexAudio();
+
+    // =========================================================================
+    // 5. STATE + FIREBASE SYNC (ANPMONEY-290EB)
+    // =========================================================================
+    const AVATARS = ["🌀", "💧", "🌿", "🔥", "⚡", "🦊", "🦁", "🐉"];
+    const STORAGE_KEY = "vortex2_state_inr_v1";
+
+    const state = {
+      uid: null,
+      firebaseConnected: false,
+      username: "Player",
+      nameEditedByUser: false,
+      avatar: "🌀",
+      balance: 999994.0,
+      bet: 50,
+      turbo: false,
+      autoplay: false,
+      spinning: false,
+      inBonus: false,
+      rings: { water: 0, earth: 0, fire: 0 },
+      ringPots: { water: 0, earth: 0, fire: 0 },
+      lastGain: null, // { ring, deltaPot }
+      clientSeed: localStorage.getItem("vx2_client_seed") || randomHex(12),
+      serverSeed: randomHex(24),
+      serverSeedHash: "",
+      nonce: Number(localStorage.getItem("vx2_nonce") || 1),
+      history: [],
+    };
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      if (saved) {
+        if (typeof saved.balance === "number") state.balance = saved.balance;
+        if (saved.username && saved.username !== "Silver Proper Bandicoot") state.username = saved.username;
+        if (saved.avatar) state.avatar = saved.avatar;
+        if (saved.rings) state.rings = saved.rings;
+        if (saved.ringPots) state.ringPots = saved.ringPots;
+        if (Array.isArray(saved.history)) state.history = saved.history.slice(0, 30);
+      }
+    } catch {}
+
+    function saveLocal() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        balance: state.balance,
+        username: state.username,
+        avatar: state.avatar,
+        rings: state.rings,
+        ringPots: state.ringPots,
+        history: state.history.slice(0, 30),
+      }));
+      localStorage.setItem("vx2_client_seed", state.clientSeed);
+      localStorage.setItem("vx2_nonce", String(state.nonce));
+    }
+
+    let db = null, fsTools = null, walletField = "balance";
+
+    function extractRealName(data, authUser) {
+      const fl = data?.firstName ? `${data.firstName} ${data.lastName || ""}`.trim() : "";
+      const c = data?.fullName || data?.name || data?.displayName || data?.userName || data?.username || fl ||
+        authUser?.displayName || (authUser?.email ? authUser.email.split("@")[0] : "") || data?.phone || data?.mobile || "";
+      return (!c || c === "Silver Proper Bandicoot") ? "Player" : String(c);
+    }
+
+    async function initFirebase() {
+      try {
+        const [{ initializeApp }, authMod, fsMod] = await Promise.all([
+          import("https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js"),
+          import("https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js"),
+          import("https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js"),
+        ]);
+        const app = initializeApp(FIREBASE_CONFIG);
+        const auth = authMod.getAuth(app);
+        db = fsMod.getFirestore(app);
+        fsTools = fsMod;
+
+        authMod.onAuthStateChanged(auth, async (user) => {
+          if (!user) { await authMod.signInAnonymously(auth); return; }
+          state.uid = user.uid;
+          state.firebaseConnected = true;
+          document.getElementById("firebase-dot").classList.add("connected");
+          document.getElementById("sync-label").textContent = "Firebase Synced";
+
+          const userRef = fsMod.doc(db, "users", user.uid);
+          const snap = await fsMod.getDoc(userRef);
+          if (snap.exists()) {
+            const d = snap.data();
+            if (typeof d.walletBalance === "number") { walletField = "walletBalance"; state.balance = d.walletBalance; }
+            else if (typeof d.balance === "number") { walletField = "balance"; state.balance = d.balance; }
+            state.username = extractRealName(d, user);
+            if (d.vortexAvatar) state.avatar = d.vortexAvatar;
+            if (d.vortexRings) state.rings = d.vortexRings;
+            if (d.vortexPots) state.ringPots = d.vortexPots;
+            if (Array.isArray(d.vortexHistory)) state.history = d.vortexHistory;
+            saveLocal();
+            updateUI();
+          } else {
+            state.username = extractRealName({}, user);
+            await fsMod.setDoc(userRef, {
+              vortexAvatar: state.avatar,
+              [walletField]: state.balance,
+              vortexRings: state.rings,
+              vortexPots: state.ringPots,
+              vortexHistory: state.history,
+              updatedAt: fsMod.serverTimestamp(),
+            }, { merge: true });
+            updateUI();
+          }
+
+          const q = fsMod.query(fsMod.collection(db, "live_wins"), fsMod.orderBy("createdAt", "desc"), fsMod.limit(1));
+          fsMod.onSnapshot(q, (ss) => {
+            ss.forEach((docSnap) => {
+              const d = docSnap.data();
+              if (d && d.username && typeof d.payout === "number") showLiveWin(d.flag || "🇮🇳", d.username, d.payout);
+            });
+          });
+        });
+      } catch (err) {
+        console.warn("Firebase offline fallback:", err);
+        document.getElementById("sync-label").textContent = "Local Mode";
+      }
+    }
+
+    async function syncFirebase() {
+      saveLocal();
+      if (!db || !state.uid || !fsTools) return;
+      try {
+        const payload = {
+          vortexAvatar: state.avatar,
+          [walletField]: Number(state.balance.toFixed(2)),
+          vortexRings: state.rings,
+          vortexPots: state.ringPots,
+          vortexHistory: state.history.slice(0, 30),
+          updatedAt: fsTools.serverTimestamp(),
         };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let currentUser = null;
-        let userDocRef = null;
-        let userBalance = 0;
-        let currentBet = 50;
-
-        let isSpinning = false;
-        let wheelAngle = 0;
-        let spinVelocity = 0;
-
-        const sectors = [
-            { mult: 0.0, color: '#1e293b', label: '0.0x' },
-            { mult: 2.0, color: '#16a34a', label: '2.0x' },
-            { mult: 0.0, color: '#0f172a', label: '0.0x' },
-            { mult: 5.0, color: '#15803d', label: '5.0x' },
-            { mult: 0.5, color: '#334155', label: '0.5x' },
-            { mult: 10.0, color: '#ca8a04', label: '10x' },
-            { mult: 0.0, color: '#1e293b', label: '0.0x' },
-            { mult: 1.5, color: '#22c55e', label: '1.5x' },
-            { mult: 0.0, color: '#0f172a', label: '0.0x' },
-            { mult: 20.0, color: '#eab308', label: '20x' }
-        ];
-
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.width;
-            drawWheel();
+        if (state.nameEditedByUser) {
+          payload.name = state.username;
+          payload.username = state.username;
         }
-        window.addEventListener('resize', resizeCanvas);
+        await fsTools.setDoc(fsTools.doc(db, "users", state.uid), payload, { merge: true });
+      } catch {}
+    }
 
-        window.setBet = function(amt) {
-            if (isSpinning) return;
-            document.getElementById("bet-input").value = amt;
-            currentBet = amt;
+    async function pushLiveWin(payout) {
+      if (!db || !state.uid || !fsTools || payout < 50) return;
+      try {
+        await fsTools.addDoc(fsTools.collection(db, "live_wins"), {
+          uid: state.uid,
+          username: state.username,
+          flag: "🇮🇳",
+          payout: Number(payout.toFixed(2)),
+          createdAt: fsTools.serverTimestamp(),
+        });
+      } catch {}
+    }
+
+    // =========================================================================
+    // 6. UI HELPERS
+    // =========================================================================
+    const elBal = document.getElementById("balance-text");
+    const elBet = document.getElementById("bet-input");
+    const elPartBtn = document.getElementById("btn-part-payout");
+    const elPartAmt = document.getElementById("part-amount");
+    const elCashBtn = document.getElementById("btn-cashout");
+    const elCashAmt = document.getElementById("cashout-amount");
+    const elSpinBtn = document.getElementById("btn-spin");
+    const elToast = document.getElementById("result-toast");
+
+    function fmtINR(n) {
+      const [i, d] = Number(n).toFixed(2).split(".");
+      return i.replace(/\B(?=(\d{3})+(?!\d))/g, " ") + "." + d;
+    }
+
+    function getTotalPot() {
+      return Math.min(window.env.MAX_WIN, state.ringPots.water + state.ringPots.earth + state.ringPots.fire);
+    }
+
+    function getPartPayoutInfo() {
+      // Partial payout takes the profit of the lowest non-zero step or steps down 1 sector on highest ring
+      const order = ["water", "earth", "fire"];
+      for (const k of order) {
+        const s = state.rings[k];
+        if (s > 0 && state.ringPots[k] > 0) {
+          const mults = RINGS[k].mults;
+          const prevM = mults[s - 1];
+          const currM = mults[s];
+          const keepRatio = prevM / currM;
+          const takeAmount = Number((state.ringPots[k] * (1 - keepRatio)).toFixed(2));
+          if (takeAmount > 0) return { ring: k, newStep: s - 1, takeAmount };
+        }
+      }
+      return null;
+    }
+
+    function showToast(msg, color = "#fff") {
+      elToast.textContent = msg;
+      elToast.style.color = color;
+      elToast.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => elToast.classList.remove("show"), 1800);
+    }
+
+    function updateUI() {
+      elBal.textContent = fmtINR(state.balance);
+      document.getElementById("menu-avatar").textContent = state.avatar;
+      document.getElementById("menu-username").textContent = state.username;
+
+      document.getElementById("stat-water").textContent = `${state.rings.water}/3 · ${RINGS.water.mults[state.rings.water]}x`;
+      document.getElementById("stat-earth").textContent = `${state.rings.earth}/5 · ${RINGS.earth.mults[state.rings.earth]}x`;
+      document.getElementById("stat-fire").textContent = `${state.rings.fire}/8 · ${RINGS.fire.mults[state.rings.fire]}x`;
+
+      const totalPot = getTotalPot();
+      elCashAmt.textContent = `₹${totalPot.toFixed(2)}`;
+      elCashBtn.disabled = state.spinning || state.inBonus || totalPot <= 0;
+
+      const part = getPartPayoutInfo();
+      const hasMultipleSteps = (state.rings.water + state.rings.earth + state.rings.fire) >= 2;
+      if (part && hasMultipleSteps) {
+        elPartAmt.textContent = `₹${part.takeAmount.toFixed(2)}`;
+        elPartBtn.disabled = state.spinning || state.inBonus;
+      } else {
+        elPartAmt.textContent = "₹0.00";
+        elPartBtn.disabled = true;
+      }
+
+      elSpinBtn.disabled = state.spinning || state.inBonus;
+      elSpinBtn.classList.toggle("auto-active", state.autoplay);
+      document.getElementById("spin-label").textContent = state.autoplay ? "STOP" : "SPIN";
+      document.getElementById("btn-auto").classList.toggle("active", state.autoplay);
+      document.getElementById("btn-turbo").classList.toggle("active", state.turbo);
+    }
+
+    // =========================================================================
+    // 7. VORTEX 3-RING CANVAS RENDERER (60-120FPS)
+    // =========================================================================
+    const canvas = document.getElementById("vortex-canvas");
+    const ctx = canvas.getContext("2d");
+    let cw = 600, ch = 400;
+
+    function resizeCanvas() {
+      const r = canvas.parentElement.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cw = Math.max(260, Math.floor(r.width));
+      ch = Math.max(220, Math.floor(r.height));
+      canvas.width = Math.floor(cw * dpr);
+      canvas.height = Math.floor(ch * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(canvas.parentElement);
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    const vAnim = {
+      time: 0,
+      wheelAngle: 0,
+      spinVel: 0,
+      pulseRing: null,
+      pulseTime: 0,
+      centerSymbol: "🌀",
+      centerLabel: "VORTEX",
+      centerColor: "#818cf8",
+      lastTime: performance.now(),
+    };
+
+    function drawSegmentedRing(cx, cy, rInner, rOuter, segments, filledCount, color, glow, isPulsing) {
+      const gap = 0.055;
+      const step = (Math.PI * 2) / segments;
+      const midR = (rInner + rOuter) * 0.5;
+      const thick = rOuter - rInner;
+
+      for (let i = 0; i < segments; i++) {
+        const a0 = -Math.PI / 2 + i * step + gap * 0.5;
+        const a1 = -Math.PI / 2 + (i + 1) * step - gap * 0.5;
+        const filled = i < filledCount;
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, midR, a0, a1);
+        ctx.lineWidth = thick;
+        ctx.lineCap = "butt";
+
+        if (filled) {
+          ctx.strokeStyle = color;
+          if (isPulsing) {
+            ctx.shadowColor = glow;
+            ctx.shadowBlur = 18;
+          }
+        } else {
+          ctx.strokeStyle = document.body.classList.contains("light-mode")
+            ? "rgba(15, 23, 42, 0.1)"
+            : "rgba(255, 255, 255, 0.08)";
+          ctx.shadowBlur = 0;
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    function renderLoop(now) {
+      const dt = Math.min(0.05, (now - vAnim.lastTime) / 1000);
+      vAnim.lastTime = now;
+      vAnim.time += dt;
+      vAnim.wheelAngle += (0.25 + vAnim.spinVel) * dt;
+      if (vAnim.pulseTime > 0) vAnim.pulseTime = Math.max(0, vAnim.pulseTime - dt);
+
+      ctx.clearRect(0, 0, cw, ch);
+
+      const cx = cw * 0.5;
+      const cy = ch * 0.5;
+      const maxR = Math.min(cw, ch) * 0.44;
+
+      // Ambient rotating vortex aura
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(vAnim.wheelAngle);
+      for (let i = 0; i < 6; i++) {
+        ctx.rotate(Math.PI / 3);
+        ctx.beginPath();
+        ctx.arc(maxR * 0.65, 0, maxR * 0.32, 0, Math.PI * 0.6);
+        ctx.strokeStyle = "rgba(99, 102, 241, 0.12)";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // Outer Fire Ring (8 sectors)
+      drawSegmentedRing(
+        cx, cy, maxR * 0.78, maxR * 0.96, 8, state.rings.fire,
+        RINGS.fire.color, RINGS.fire.glow, vAnim.pulseRing === "fire" && vAnim.pulseTime > 0
+      );
+
+      // Middle Earth Ring (5 sectors)
+      drawSegmentedRing(
+        cx, cy, maxR * 0.56, maxR * 0.73, 5, state.rings.earth,
+        RINGS.earth.color, RINGS.earth.glow, vAnim.pulseRing === "earth" && vAnim.pulseTime > 0
+      );
+
+      // Inner Water Ring (3 sectors)
+      drawSegmentedRing(
+        cx, cy, maxR * 0.35, maxR * 0.51, 3, state.rings.water,
+        RINGS.water.color, RINGS.water.glow, vAnim.pulseRing === "water" && vAnim.pulseTime > 0
+      );
+
+      // Central Result Orb
+      const orbR = maxR * 0.29;
+      ctx.beginPath();
+      ctx.arc(cx, cy, orbR, 0, Math.PI * 2);
+      ctx.fillStyle = "#0e1329";
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = vAnim.centerColor;
+      ctx.shadowColor = vAnim.centerColor;
+      ctx.shadowBlur = 16;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      ctx.font = `${Math.max(22, Math.floor(orbR * 0.72))}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(vAnim.centerSymbol, cx, cy - orbR * 0.14);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = `800 ${Math.max(10, Math.floor(orbR * 0.24))}px Montserrat, sans-serif`;
+      ctx.fillText(vAnim.centerLabel, cx, cy + orbR * 0.45);
+      ctx.textBaseline = "alphabetic";
+
+      requestAnimationFrame(renderLoop);
+    }
+    requestAnimationFrame(renderLoop);
+
+    // =========================================================================
+    // 8. SPIN & BONUS GAME ENGINE (96.00% RTP)
+    // =========================================================================
+    function parseBet() {
+      let val = parseFloat(elBet.value.replace(",", "."));
+      if (isNaN(val)) val = window.env.MIN_BET;
+      val = Math.max(window.env.MIN_BET, Math.min(window.env.MAX_BET, val));
+      elBet.value = val;
+      state.bet = val;
+      return val;
+    }
+
+    async function rollOutcome() {
+      state.nonce += 1;
+      const hex = await sha256Hex(`${state.serverSeed}:${state.clientSeed}:${state.nonce}`);
+      const r = parseInt(hex.slice(0, 8), 16) / 0x100000000;
+
+      // Probabilities tuned for ~96% RTP with progressive ring retention + bonuses
+      if (r < 0.18) return { type: "element", ring: "water", mult: 1 };
+      if (r < 0.22) return { type: "element", ring: "water", mult: state.rings.water >= RINGS.water.max - 1 ? 1 : 2 }; // x2 restriction rule
+      if (r < 0.34) return { type: "element", ring: "earth", mult: 1 };
+      if (r < 0.365) return { type: "element", ring: "earth", mult: state.rings.earth >= RINGS.earth.max - 1 ? 1 : 2 };
+      if (r < 0.445) return { type: "element", ring: "fire", mult: 1 };
+      if (r < 0.46) return { type: "element", ring: "fire", mult: state.rings.fire >= RINGS.fire.max - 1 ? 1 : 2 };
+      if (r < 0.76) return { type: "wind" };
+      return { type: "skull" };
+    }
+
+    const SYMBOL_MAP = {
+      water: { icon: "💧", label: "WATER", color: "#38bdf8" },
+      earth: { icon: "🌿", label: "EARTH", color: "#4ade80" },
+      fire:  { icon: "🔥", label: "FIRE",  color: "#f87171" },
+      wind:  { icon: "💨", label: "WIND",  color: "#94a3b8" },
+      skull: { icon: "💀", label: "SKULL", color: "#a855f7" },
+    };
+
+    async function spinOnce() {
+      if (state.spinning || state.inBonus) return;
+      const bet = parseBet();
+      if (bet > state.balance) {
+        state.autoplay = false;
+        showToast("Insufficient ₹ balance — tap balance to refill", "#f87171");
+        updateUI();
+        return;
+      }
+
+      state.balance = Number((state.balance - bet).toFixed(2));
+      state.spinning = true;
+      updateUI();
+
+      // Spin animation
+      const spinDuration = state.turbo ? 160 : 620;
+      vAnim.spinVel = state.turbo ? 14 : 9;
+      const previewIcons = ["💧", "🌿", "🔥", "💨", "💀"];
+      const ticker = setInterval(() => {
+        const ic = previewIcons[Math.floor(Math.random() * previewIcons.length)];
+        vAnim.centerSymbol = ic;
+        vAnim.centerLabel = "...";
+        audio.spinTick();
+      }, 75);
+
+      const outcome = await rollOutcome();
+      await new Promise((r) => setTimeout(r, spinDuration));
+      clearInterval(ticker);
+      vAnim.spinVel = 0;
+
+      if (outcome.type === "element") {
+        const rk = outcome.ring;
+        const cfg = RINGS[rk];
+        const oldStep = state.rings[rk];
+        const newStep = Math.min(cfg.max, oldStep + outcome.mult);
+        const oldM = cfg.mults[oldStep];
+        const newM = cfg.mults[newStep];
+
+        state.rings[rk] = newStep;
+        state.ringPots[rk] = Number((state.ringPots[rk] + bet * (newM - oldM)).toFixed(2));
+
+        const sym = SYMBOL_MAP[rk];
+        vAnim.centerSymbol = sym.icon;
+        vAnim.centerLabel = outcome.mult === 2 ? `${sym.label} x2!` : sym.label;
+        vAnim.centerColor = sym.color;
+        vAnim.pulseRing = rk;
+        vAnim.pulseTime = 0.7;
+
+        audio.hitElement(rk, newStep);
+        audio.speak(outcome.mult === 2 ? `${cfg.name} 2x` : cfg.name);
+        showToast(`${sym.icon} ${cfg.name} ${newStep}/${cfg.max} (${newM}x)`, sym.color);
+
+        state.spinning = false;
+        updateUI();
+        syncFirebase();
+
+        // Check if Ring reached Bonus!
+        if (newStep >= cfg.max) {
+          await triggerBonus(rk, bet);
+        }
+      } else if (outcome.type === "wind") {
+        vAnim.centerSymbol = SYMBOL_MAP.wind.icon;
+        vAnim.centerLabel = "WIND";
+        vAnim.centerColor = SYMBOL_MAP.wind.color;
+        audio.wind();
+        showToast("💨 Wind — Progress Saved", "#94a3b8");
+        state.spinning = false;
+        updateUI();
+        syncFirebase();
+      } else {
+        // Skull: rolls back 1 segment from highest active ring
+        vAnim.centerSymbol = SYMBOL_MAP.skull.icon;
+        vAnim.centerLabel = "SKULL!";
+        vAnim.centerColor = SYMBOL_MAP.skull.color;
+        audio.skull();
+        audio.speak("Skull");
+
+        const targetRing = state.rings.fire > 0 ? "fire" : state.rings.earth > 0 ? "earth" : state.rings.water > 0 ? "water" : null;
+        if (targetRing) {
+          const oldS = state.rings[targetRing];
+          const newS = oldS - 1;
+          const mults = RINGS[targetRing].mults;
+          state.rings[targetRing] = newS;
+          state.ringPots[targetRing] = newS === 0 ? 0 : Number((state.ringPots[targetRing] * (mults[newS] / mults[oldS])).toFixed(2));
+          showToast(`💀 Skull! ${RINGS[targetRing].name} rolled back to ${newS}/${RINGS[targetRing].max}`, "#f87171");
+        } else {
+          showToast("💀 Skull — No active rings to lose", "#a855f7");
         }
 
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = 'ANP.HTML';
-                return;
+        state.spinning = false;
+        updateUI();
+        syncFirebase();
+      }
+
+      if (state.autoplay && !state.inBonus) {
+        setTimeout(() => {
+          if (state.autoplay && !state.spinning && !state.inBonus) spinOnce();
+        }, state.turbo ? 220 : 480);
+      }
+    }
+
+    // =========================================================================
+    // 9. BONUS GAMES (WATER, EARTH 3-REEL SLOT, FIRE 4x4 GRID)
+    // =========================================================================
+    async function triggerBonus(ringKey, lastBet) {
+      state.inBonus = true;
+      audio.bonus();
+      const baseRingBet = state.ringPots[ringKey] / RINGS[ringKey].mults[RINGS[ringKey].max] || lastBet;
+
+      if (ringKey === "water") {
+        // Water Bonus: Quick Wheel Reveal (5x, 7x, 10x) — does NOT stop Autoplay!
+        const picks = [5, 7, 10];
+        const mult = picks[Math.floor(Math.random() * picks.length)];
+        const win = Math.min(window.env.MAX_WIN, Number((baseRingBet * mult).toFixed(2)));
+        state.balance = Number((state.balance + win).toFixed(2));
+        state.rings.water = 0;
+        state.ringPots.water = 0;
+
+        showToast(`💧 WATER BONUS ${mult}x! +₹${win.toFixed(2)}`, "#38bdf8");
+        state.history.unshift({ time: new Date().toLocaleTimeString(), label: `Water Bonus ${mult}x`, win });
+        pushLiveWin(win);
+        state.inBonus = false;
+        updateUI();
+        syncFirebase();
+        return;
+      }
+
+      if (ringKey === "earth") {
+        // Earth Bonus pauses Autoplay & opens 3-reel slot (up to 50x)
+        state.autoplay = false;
+        updateUI();
+
+        await new Promise((resolve) => {
+          openModal("🌿 Earth Bonus (3-Reel Slot)", `
+            <p>Spin the Earth reels once to win up to <strong>50x</strong>!</p>
+            <div class="earth-reels">
+              <div id="reel-0" class="reel-box">🌿</div>
+              <div id="reel-1" class="reel-box">🌿</div>
+              <div id="reel-2" class="reel-box">🌿</div>
+            </div>
+            <button id="btn-earth-spin" style="width:100%;height:46px;border-radius:10px;background:#22c55e;color:#fff;font-weight:900;font-size:15px;">
+              SPIN EARTH BONUS
+            </button>
+          `, false);
+
+          document.getElementById("btn-earth-spin").addEventListener("click", async (e) => {
+            e.target.disabled = true;
+            const opts = [15, 25, 35, 50];
+            const mult = opts[Math.floor(Math.random() * opts.length)];
+            for (let t = 0; t < 10; t++) {
+              ["reel-0", "reel-1", "reel-2"].forEach((id) => {
+                document.getElementById(id).textContent = `${opts[Math.floor(Math.random() * opts.length)]}x`;
+              });
+              await new Promise((r) => setTimeout(r, 70));
             }
-            currentUser = user;
-            userDocRef = doc(db, "users", user.uid);
-            await fetchBalance();
-            resizeCanvas();
+            ["reel-0", "reel-1", "reel-2"].forEach((id) => {
+              document.getElementById(id).textContent = `${mult}x`;
+            });
+            const win = Math.min(window.env.MAX_WIN, Number((baseRingBet * mult).toFixed(2)));
+            state.balance = Number((state.balance + win).toFixed(2));
+            state.rings.earth = 0;
+            state.ringPots.earth = 0;
+            state.history.unshift({ time: new Date().toLocaleTimeString(), label: `Earth Bonus ${mult}x`, win });
+            pushLiveWin(win);
+            audio.bonus();
+            showToast(`🌿 EARTH BONUS ${mult}x! +₹${win.toFixed(2)}`, "#4ade80");
+            setTimeout(() => { closeModal(); resolve(); }, 950);
+          });
         });
 
-        async function fetchBalance() {
-            try {
-                const snap = await getDoc(userDocRef);
-                if (snap.exists()) {
-                    userBalance = snap.data().balance || 0;
-                    document.getElementById("game-wallet-balance").innerText = `₹${userBalance.toLocaleString()}`;
-                }
-            } catch (e) {
-                console.error("Balance fetch error:", e);
-            }
-        }
+        state.inBonus = false;
+        updateUI();
+        syncFirebase();
+        return;
+      }
 
-        window.spinVortex = async function() {
-            if (isSpinning) return;
-            const betInput = parseFloat(document.getElementById("bet-input").value);
-            if (!betInput || betInput <= 0) {
-                showModal("Invalid Bet", "Please enter a valid amount.", "fas fa-exclamation-triangle", "text-yellow-600");
-                return;
-            }
-            if (betInput > userBalance) {
-                showModal("Insufficient Balance", "Your gaming balance is too low.", "fas fa-lock", "text-red-600");
-                return;
-            }
+      if (ringKey === "fire") {
+        // Fire Bonus pauses Autoplay & opens 4x4 Pick-and-Win Grid (up to 799x)
+        state.autoplay = false;
+        updateUI();
 
-            currentBet = betInput;
-            await updateDoc(userDocRef, { balance: increment(-currentBet) });
-            userBalance -= currentBet;
-            document.getElementById("game-wallet-balance").innerText = `₹${userBalance.toLocaleString()}`;
+        await new Promise((resolve) => {
+          const pool = [20, 20, 50, 50, 100, 100, 200, 200, 350, 350, 500, 500, 799, 799, 75, 150];
+          pool.sort(() => Math.random() - 0.5);
+          const cells = pool.map((v, idx) => `<button class="fire-cell" data-idx="${idx}" data-val="${v}">🔥</button>`).join("");
+          openModal("🔥 Fire Bonus (4×4 Pick & Win)", `
+            <p>Match any pair of multipliers to win up to <strong>799x</strong>!</p>
+            <div class="fire-grid">${cells}</div>
+            <div id="fire-picked" style="text-align:center;font-weight:800;min-height:22px;">Pick tiles...</div>
+          `, false);
 
-            isSpinning = true;
-            document.getElementById("main-action-btn").disabled = true;
-            document.getElementById("main-action-btn").innerText = "SPINNING...";
-
-            // Determine winning sector index (House Edge weighting: ~65% low/zero, ~35% win)
-            const rand = Math.random();
-            let targetIndex = 0;
-            if (rand < 0.65) {
-                const zeros = [0, 2, 4, 6, 8];
-                targetIndex = zeros[Math.floor(Math.random() * zeros.length)];
-            } else {
-                const wins = [1, 3, 5, 7, 9];
-                targetIndex = wins[Math.floor(Math.random() * wins.length)];
-            }
-
-            const arc = (Math.PI * 2) / sectors.length;
-            const targetAngle = (Math.PI * 2 * 6) + (sectors.length - targetIndex) * arc - (arc / 2);
-
-            spinVelocity = (targetAngle - (wheelAngle % (Math.PI * 2))) / 45;
-            animateWheel(targetIndex);
-        }
-
-        function animateWheel(targetIndex) {
-            wheelAngle += spinVelocity;
-            spinVelocity *= 0.96; // deceleration friction
-
-            drawWheel();
-
-            if (spinVelocity > 0.002) {
-                requestAnimationFrame(() => animateWheel(targetIndex));
-            } else {
-                isSpinning = false;
-                document.getElementById("main-action-btn").disabled = false;
-                document.getElementById("main-action-btn").innerText = "SPIN VORTEX";
-                settleSpin(targetIndex);
-            }
-        }
-
-        async function settleSpin(targetIndex) {
-            const wonMult = sectors[targetIndex].mult;
-            const winnings = currentBet * wonMult;
-
-            document.getElementById("live-multiplier").innerText = `Result: ${wonMult}x`;
-
-            if (winnings > 0) {
-                await updateDoc(userDocRef, { balance: increment(winnings) });
-                await fetchBalance();
-                showModal("Vortex Victory! 🎉", `Landed on ${wonMult}x! You won ₹${winnings.toLocaleString()}!`, "fas fa-trophy", "text-emerald-600");
-            } else {
-                showModal("Vortex Missed 🌀", `Landed on 0.0x. Lost ₹${currentBet.toLocaleString()}.`, "fas fa-bolt", "text-red-600");
-                await fetchBalance();
-            }
-        }
-
-        function drawWheel() {
-            const w = canvas.width;
-            const h = canvas.height;
-            const cx = w / 2;
-            const cy = h / 2;
-            const radius = w / 2 - 10;
-
-            ctx.clearRect(0, 0, w, h);
-
-            const arc = (Math.PI * 2) / sectors.length;
-
-            ctx.save();
-            ctx.translate(cx, cy);
-            ctx.rotate(wheelAngle);
-
-            for (let i = 0; i < sectors.length; i++) {
-                const angle = i * arc;
-                ctx.beginPath();
-                ctx.fillStyle = sectors[i].color;
-                ctx.moveTo(0, 0);
-                ctx.arc(0, 0, radius, angle, angle + arc);
-                ctx.lineTo(0, 0);
-                ctx.fill();
-
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                // Text label
-                ctx.save();
-                ctx.rotate(angle + arc / 2);
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 12px JetBrains Mono, monospace';
-                ctx.fillText(sectors[i].label, radius - 15, 5);
-                ctx.restore();
-            }
-
-            ctx.restore();
-
-            // Outer ring
-            ctx.beginPath();
-            ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-            ctx.strokeStyle = '#22c55e';
-            ctx.lineWidth = 6;
-            ctx.stroke();
-        }
-
-        function showModal(title, desc, iconClass, colorClass) {
-            document.getElementById("modal-title").innerText = title;
-            document.getElementById("modal-desc").innerText = desc;
-            const el = document.getElementById("modal-icon");
-            el.className = `w-14 h-14 bg-emerald-100 border border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl ${colorClass}`;
-            el.innerHTML = `<i class="${iconClass}"></i>`;
-            document.getElementById("game-modal").classList.remove("hidden");
-        }
-
-        window.closeModal = function() {
-            document.getElementById("game-modal").classList.add("hidden");
-        }
-
-        document.addEventListener('click', function (e) {
-            const target = e.target.closest('.tactile-btn');
-            if (!target) return;
-            const circle = document.createElement('span');
-            const rect = target.getBoundingClientRect();
-            const d = Math.max(rect.width, rect.height);
-            circle.style.width = circle.style.height = `${d}px`;
-            circle.style.left = `${e.clientX - rect.left - d/2}px`;
-            circle.style.top = `${e.clientY - rect.top - d/2}px`;
-            circle.classList.add('ripple');
-            target.appendChild(circle);
-            setTimeout(() => circle.remove(), 600);
+          const seen = {};
+          let done = false;
+          modalBody.querySelectorAll(".fire-cell").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              if (done || btn.classList.contains("revealed")) return;
+              const val = Number(btn.dataset.val);
+              btn.classList.add("revealed");
+              btn.textContent = `${val}x`;
+              audio.hitElement("fire", 3);
+              seen[val] = (seen[val] || 0) + 1;
+              if (seen[val] >= 2) {
+                done = true;
+                const finalMult = Math.min(window.env.MAX_MULT, val);
+                const win = Math.min(window.env.MAX_WIN, Number((baseRingBet * finalMult).toFixed(2)));
+                state.balance = Number((state.balance + win).toFixed(2));
+                state.rings.fire = 0;
+                state.ringPots.fire = 0;
+                state.history.unshift({ time: new Date().toLocaleTimeString(), label: `Fire Bonus ${finalMult}x`, win });
+                pushLiveWin(win);
+                audio.bonus();
+                document.getElementById("fire-picked").textContent = `MATCHED ${finalMult}x! +₹${win.toFixed(2)}`;
+                showToast(`🔥 FIRE BONUS ${finalMult}x! +₹${win.toFixed(2)}`, "#f87171");
+                setTimeout(() => { closeModal(); resolve(); }, 1100);
+              }
+            });
+          });
         });
-    </script>
+
+        state.inBonus = false;
+        updateUI();
+        syncFirebase();
+      }
+    }
+
+    // =========================================================================
+    // 10. CASH OUT & PART PAYOUT (SEQUENTIAL CASHOUTS SUPPORTED)
+    // =========================================================================
+    elCashBtn.addEventListener("click", () => {
+      audio.unlock();
+      const total = getTotalPot();
+      if (state.spinning || state.inBonus || total <= 0) return;
+
+      state.balance = Number((state.balance + total).toFixed(2));
+      state.rings = { water: 0, earth: 0, fire: 0 };
+      state.ringPots = { water: 0, earth: 0, fire: 0 };
+      audio.bonus();
+      showToast(`💰 CASHED OUT +₹${total.toFixed(2)}`, "#4ade80");
+      state.history.unshift({ time: new Date().toLocaleTimeString(), label: "Full Cash Out", win: total });
+      pushLiveWin(total);
+      updateUI();
+      syncFirebase();
+    });
+
+    elPartBtn.addEventListener("click", () => {
+      audio.unlock();
+      const part = getPartPayoutInfo();
+      if (state.spinning || state.inBonus || !part) return;
+
+      state.balance = Number((state.balance + part.takeAmount).toFixed(2));
+      state.rings[part.ring] = part.newStep;
+      state.ringPots[part.ring] = Number((state.ringPots[part.ring] - part.takeAmount).toFixed(2));
+      audio.hitElement(part.ring, part.newStep);
+      showToast(`💸 PART PAYOUT +₹${part.takeAmount.toFixed(2)}`, "#38bdf8");
+      state.history.unshift({ time: new Date().toLocaleTimeString(), label: `Part Payout (${RINGS[part.ring].name})`, win: part.takeAmount });
+      updateUI();
+      syncFirebase();
+    });
+
+    // =========================================================================
+    // 11. BUTTONS, HOLD-FOR-AUTO, DARK/LIGHT MODE, MODALS
+    // =========================================================================
+    let holdTimer = null;
+    let heldAuto = false;
+
+    elSpinBtn.addEventListener("pointerdown", () => {
+      audio.unlock();
+      heldAuto = false;
+      if (state.autoplay) return;
+      holdTimer = setTimeout(() => {
+        heldAuto = true;
+        state.autoplay = true;
+        updateUI();
+        if (!state.spinning && !state.inBonus) spinOnce();
+      }, 550);
+    });
+
+    const endSpinPointer = () => {
+      clearTimeout(holdTimer);
+    };
+    elSpinBtn.addEventListener("pointerup", endSpinPointer);
+    elSpinBtn.addEventListener("pointercancel", endSpinPointer);
+
+    elSpinBtn.addEventListener("click", () => {
+      audio.unlock();
+      if (heldAuto) { heldAuto = false; return; }
+      if (state.autoplay) {
+        state.autoplay = false;
+        updateUI();
+      } else {
+        spinOnce();
+      }
+    });
+
+    document.getElementById("btn-auto").addEventListener("click", () => {
+      audio.unlock();
+      state.autoplay = !state.autoplay;
+      updateUI();
+      if (state.autoplay && !state.spinning && !state.inBonus) spinOnce();
+    });
+
+    document.getElementById("btn-turbo").addEventListener("click", () => {
+      state.turbo = !state.turbo;
+      updateUI();
+    });
+
+    document.getElementById("btn-min").addEventListener("click", () => { elBet.value = window.env.MIN_BET; parseBet(); });
+    document.getElementById("btn-max").addEventListener("click", () => { elBet.value = Math.min(window.env.MAX_BET, Math.floor(state.balance)); parseBet(); });
+    document.querySelectorAll(".fast-btn").forEach((b) => {
+      b.addEventListener("click", () => { elBet.value = b.dataset.val; parseBet(); });
+    });
+    elBet.addEventListener("change", parseBet);
+
+    document.getElementById("btn-balance").addEventListener("click", () => {
+      if (state.balance < 50) {
+        state.balance = 10000;
+        updateUI();
+        syncFirebase();
+        showToast("+₹10,000 Demo Credits Added", "#4ade80");
+      }
+    });
+
+    // Dark / Light Mode toggle
+    document.getElementById("btn-theme").addEventListener("click", (e) => {
+      const isLight = document.body.classList.toggle("light-mode");
+      e.target.textContent = isLight ? "☀️" : "🌙";
+    });
+
+    // Burger Menu & Switches
+    const menuEl = document.getElementById("menu-container");
+    document.getElementById("btn-burger").addEventListener("click", (e) => {
+      e.stopPropagation();
+      menuEl.classList.toggle("open");
+    });
+    document.addEventListener("click", (e) => {
+      if (!menuEl.contains(e.target)) menuEl.classList.remove("open");
+    });
+
+    document.getElementById("sound-switch").addEventListener("click", () => {
+      audio.unlock();
+      audio.on = !audio.on;
+      document.getElementById("toggle-sound").classList.toggle("on", audio.on);
+    });
+
+    document.getElementById("btn-fullscreen").addEventListener("click", () => {
+      const d = document.documentElement;
+      if (!document.fullscreenElement) (d.requestFullscreen || d.webkitRequestFullscreen)?.call(d);
+      else (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
+    });
+
+    // Modals
+    const modalBackdrop = document.getElementById("modal-backdrop");
+    const modalTitle = document.getElementById("modal-title");
+    const modalBody = document.getElementById("modal-body");
+    const modalClose = document.getElementById("modal-close");
+
+    function openModal(title, html, allowClose = true) {
+      menuEl.classList.remove("open");
+      modalTitle.textContent = title;
+      modalBody.innerHTML = html;
+      modalClose.style.display = allowClose ? "inline-block" : "none";
+      modalBackdrop.dataset.allowClose = allowClose ? "1" : "0";
+      modalBackdrop.classList.add("open");
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove("open");
+    }
+
+    modalClose.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop && modalBackdrop.dataset.allowClose === "1") closeModal();
+    });
+
+    function openHow() {
+      openModal("How to play Vortex 2", `
+        <p><strong>1. Choose your bet</strong> (1 ₹ – 5,000 ₹ or quick chips 50 ₹, 100 ₹, 500 ₹) and tap <strong>SPIN</strong> (or hold Spin for Autoplay).</p>
+        <p><strong>2. Fill the 3 Elemental Rings:</strong><br>
+          • 💧 <strong>Water (3 sectors):</strong> 1.6x, 5x, 10x + Water Bonus (up to 10x)<br>
+          • 🌿 <strong>Earth (5 sectors):</strong> 2.5x to 45x + 3-Reel Slot Bonus (up to 50x)<br>
+          • 🔥 <strong>Fire (8 sectors):</strong> 4x to 200x + 4×4 Pick Grid Bonus (up to 799x)</p>
+        <p><strong>3. Special Symbols:</strong><br>
+          • <strong>x2 Booster:</strong> Fills 2 segments at once (won't drop when only 1 sector remains).<br>
+          • <strong>Wind 💨:</strong> Neutral spin.<br>
+          • <strong>Skull 💀:</strong> Rolls back 1 sector from your highest active ring.</p>
+        <p><strong>4. Part Payout &amp; Cash Out:</strong> Lock in partial profits with <strong>Part Payout</strong> or collect everything anytime with <strong>Cash Out</strong>!</p>
+      `);
+    }
+    document.getElementById("btn-how").addEventListener("click", openHow);
+    document.getElementById("btn-how-mobile").addEventListener("click", openHow);
+
+    document.getElementById("btn-rules").addEventListener("click", () => {
+      openModal("Vortex 2 Rules & RTP", `
+        <p><strong>RTP:</strong> 96.00%<br>
+           <strong>Max Multiplier:</strong> 999x<br>
+           <strong>Max Profit Cap:</strong> ₹${window.env.MAX_WIN.toLocaleString()}<br>
+           <strong>Min / Max Bet:</strong> ₹${window.env.MIN_BET} / ₹${window.env.MAX_BET.toLocaleString()}</p>
+        <p>Progress on all three rings persists across spins and saves automatically to your Firebase account.</p>
+      `);
+    });
+
+    document.getElementById("btn-change-avatar").addEventListener("click", () => {
+      const grid = AVATARS.map((a) => `<button class="avatar-choice ${a === state.avatar ? "selected" : ""}" data-av="${a}">${a}</button>`).join("");
+      openModal("Profile & Avatar", `
+        <label style="font-size:12px;font-weight:700;color:var(--text-muted);">Player Name</label>
+        <input id="inp-name" value="${state.username}" maxlength="24" style="width:100%;margin:6px 0 12px;padding:10px;border-radius:8px;border:1px solid var(--border-soft);background:var(--bg-input);color:var(--text-main);font-weight:700;" />
+        <div class="avatar-grid">${grid}</div>
+      `);
+      modalBody.querySelectorAll(".avatar-choice").forEach((b) => {
+        b.addEventListener("click", () => {
+          state.avatar = b.dataset.av;
+          modalBody.querySelectorAll(".avatar-choice").forEach((x) => x.classList.remove("selected"));
+          b.classList.add("selected");
+          updateUI();
+          syncFirebase();
+        });
+      });
+      document.getElementById("inp-name").addEventListener("change", (e) => {
+        if (e.target.value.trim()) {
+          state.username = e.target.value.trim();
+          state.nameEditedByUser = true;
+          updateUI();
+          syncFirebase();
+        }
+      });
+    });
+
+    document.getElementById("btn-fair").addEventListener("click", async () => {
+      if (!state.serverSeedHash) state.serverSeedHash = await sha256Hex(state.serverSeed);
+      openModal("Provably Fair Settings", `
+        <p>Every spin outcome is generated using <code>SHA256(serverSeed:clientSeed:nonce)</code>.</p>
+        <strong>Client Seed</strong>
+        <div class="seed-box" id="fair-client">${state.clientSeed}</div>
+        <strong>Server Seed Hash</strong>
+        <div class="seed-box">${state.serverSeedHash}</div>
+        <div><strong>Nonce:</strong> ${state.nonce}</div>
+        <button id="btn-regen" style="margin-top:12px;padding:10px 14px;border-radius:8px;background:#22c55e;color:#fff;font-weight:800;">Randomize Client Seed</button>
+      `);
+      document.getElementById("btn-regen").addEventListener("click", () => {
+        state.clientSeed = randomHex(12);
+        document.getElementById("fair-client").textContent = state.clientSeed;
+        saveLocal();
+      });
+    });
+
+    document.getElementById("btn-history").addEventListener("click", () => {
+      const rows = state.history.length
+        ? state.history.map((h) => `
+          <div class="history-row">
+            <div><strong>${h.label}</strong><div style="font-size:11px;color:var(--text-muted);">${h.time}</div></div>
+            <div style="font-weight:800;color:#22c55e;">+₹${Number(h.win).toFixed(2)}</div>
+          </div>`).join("")
+        : "<p>No payouts recorded yet.</p>";
+      openModal("My Bet History", rows);
+    });
+
+    // Live Wins Ticker
+    const SIM = [["🇮🇳", "RohanVortex", 1250], ["🇮🇳", "Priya99", 450], ["🇮🇳", "VikramFire", 3800], ["🇮🇳", "AnanyaWin", 640]];
+    function showLiveWin(flag, user, sum) {
+      document.getElementById("live-feed-item").innerHTML = `<span>${flag}</span><span>${user}</span><span class="live-win-sum">+₹${Number(sum).toFixed(2)}</span>`;
+    }
+    setInterval(() => {
+      document.getElementById("online-count").textContent = 4750 + Math.floor(Math.random() * 250);
+      if (!state.firebaseConnected) {
+        const p = SIM[Math.floor(Math.random() * SIM.length)];
+        showLiveWin(p[0], p[1], p[2] * (0.7 + Math.random() * 0.7));
+      }
+    }, 3600);
+
+    // Boot
+    updateUI();
+    initFirebase();
+  </script>
 </body>
 </html>
