@@ -3,17 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#3f8e43">
     <title>ANP MONEY - Transaction History</title>
+    <!-- Lightweight Inline SVG Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%233f8e43'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-size='30' font-family='Arial' font-weight='bold' fill='white'%3E₹%3C/text%3E%3C/svg%3E">
+
+    <!-- Preconnects for Faster Edge Loading -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a1f12 0%, #000000 100%);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a1f12 0%, #020804 100%);
             -webkit-tap-highlight-color: transparent;
             min-height: 100vh;
             min-height: 100dvh;
@@ -22,16 +34,27 @@
             justify-content: center;
             overflow-x: hidden;
         }
+        .font-mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
         .bg-wave-pattern {
-            background: linear-gradient(to bottom, #5cb45c, #3f8e43);
+            background: linear-gradient(145deg, #5cb45c 0%, #388e3c 60%, #2b6e2f 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .glass-modal {
+            background: rgba(16, 36, 22, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
         }
         .app-container {
             width: 100%;
             max-width: 430px;
             height: 100dvh;
-            background: white;
+            background: #ffffff;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -46,69 +69,222 @@
                 border: 8px solid rgba(255, 255, 255, 0.12);
             }
         }
+
+        /* Ambient Orbs (GPU transform only) */
+        @keyframes floatOrb {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(16px, -10px, 0) scale(1.15); }
+        }
+        .orb-1 {
+            position: absolute; top: -25px; right: -20px; width: 120px; height: 120px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            border-radius: 50%; animation: floatOrb 7s infinite ease-in-out; pointer-events: none;
+        }
+
+        /* Tactile Button & Ripple Physics */
+        .tactile-btn {
+            position: relative; overflow: hidden; transform: translateZ(0);
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.15s ease;
+            cursor: pointer; -webkit-user-select: none; user-select: none;
+        }
+        .tactile-btn:active { transform: scale(0.95) translateY(1px) !important; }
+        .ripple {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%; transform: scale(0);
+            animation: rippleEffect 0.48s ease-out forwards; pointer-events: none;
+        }
+        @keyframes rippleEffect {
+            0% { transform: scale(0); opacity: 0.7; }
+            100% { transform: scale(4); opacity: 0; }
+        }
+
+        /* Staggered Card Entrance */
+        @keyframes fadeUpIn {
+            from { opacity: 0; transform: translate3d(0, 14px, 0); }
+            to { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+        .anim-card {
+            opacity: 0;
+            animation: fadeUpIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* Lightweight Skeleton Pulse */
+        @keyframes shimmerBg {
+            0%, 100% { opacity: 0.55; }
+            50% { opacity: 1; }
+        }
+        .skeleton-box {
+            background: #f1f5f9;
+            animation: shimmerBg 1.3s ease-in-out infinite;
+        }
+
+        /* Floating Bike FAB */
+        @keyframes floatSlow {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(0, -4px, 0); }
+        }
+        .animate-float-slow { animation: floatSlow 2.6s ease-in-out infinite; }
+
+        /* Modal Pop */
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.9) translate3d(0, 12px, 0); }
+            to { opacity: 1; transform: scale(1) translate3d(0, 0, 0); }
+        }
+        .animate-modal-pop { animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        
+
         <!-- Header -->
-        <header class="bg-wave-pattern pt-6 px-5 pb-6 text-white">
-            <div class="flex items-center justify-between mb-2">
-                <h1 class="text-lg font-black tracking-tight">Transaction History</h1>
-                <button onclick="window.location.href='index.html'" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs">
-                    <i class="fas fa-home"></i>
+        <header class="bg-wave-pattern pt-6 px-5 pb-9 text-white">
+            <div class="orb-1"></div>
+
+            <div class="flex items-center justify-between mb-3 relative z-10">
+                <div class="flex items-center gap-2.5">
+                    <button onclick="window.location.href='index.html'" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-xs tactile-btn" title="Back to Home">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div>
+                        <h1 class="text-lg font-extrabold tracking-tight leading-tight">Transaction History</h1>
+                        <p class="text-[11px] text-green-100/90">Deposits, payouts & request status</p>
+                    </div>
+                </div>
+                <button id="refresh-btn" onclick="refreshHistory()" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-xs tactile-btn" title="Refresh">
+                    <i class="fas fa-sync-alt" id="refresh-icon"></i>
                 </button>
             </div>
-            <p class="text-xs text-green-100">Your deposits, daily partner earnings, and payout status.</p>
+
+            <!-- 3 Summary Mini Cards -->
+            <div class="grid grid-cols-3 gap-2 mt-3 relative z-10">
+                <div class="bg-white/15 border border-white/20 rounded-2xl p-2.5 text-center">
+                    <span class="text-[9px] uppercase tracking-wider text-green-100 block font-semibold">Deposited</span>
+                    <span class="text-sm font-extrabold text-white block mt-0.5" id="sum-deposited">₹0</span>
+                </div>
+                <div class="bg-white/15 border border-white/20 rounded-2xl p-2.5 text-center">
+                    <span class="text-[9px] uppercase tracking-wider text-green-100 block font-semibold">Withdrawn</span>
+                    <span class="text-sm font-extrabold text-white block mt-0.5" id="sum-withdrawn">₹0</span>
+                </div>
+                <div class="bg-white/15 border border-white/20 rounded-2xl p-2.5 text-center">
+                    <span class="text-[9px] uppercase tracking-wider text-green-100 block font-semibold">Pending</span>
+                    <span class="text-sm font-extrabold text-yellow-300 block mt-0.5" id="sum-pending">0</span>
+                </div>
+            </div>
         </header>
 
         <!-- Main Content List -->
-        <main class="flex-1 bg-white rounded-t-[24px] -mt-3 relative z-10 px-5 pt-6 pb-24 overflow-y-auto hide-scrollbar">
-            
-            <h3 class="text-gray-800 font-bold text-xs mb-3 flex items-center gap-2">
-                <i class="fas fa-history text-green-600"></i> History Log
-            </h3>
+        <main class="flex-1 bg-white rounded-t-[26px] -mt-5 relative z-10 px-4 pt-5 pb-24 overflow-y-auto hide-scrollbar shadow-[0_-6px_20px_rgba(0,0,0,0.06)]">
 
+            <!-- Filter Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-3 mb-2" id="filter-bar">
+                <button onclick="setFilter('all')" data-filter="all" class="filter-pill px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-green-600 text-white shadow-sm shrink-0 tactile-btn">
+                    All <span class="ml-1 opacity-80" id="count-all">0</span>
+                </button>
+                <button onclick="setFilter('deposit')" data-filter="deposit" class="filter-pill px-3.5 py-1.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 shrink-0 tactile-btn">
+                    Deposits <span class="ml-1 opacity-75" id="count-deposit">0</span>
+                </button>
+                <button onclick="setFilter('withdrawal')" data-filter="withdrawal" class="filter-pill px-3.5 py-1.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 shrink-0 tactile-btn">
+                    Withdrawals <span class="ml-1 opacity-75" id="count-withdrawal">0</span>
+                </button>
+                <button onclick="setFilter('pending')" data-filter="pending" class="filter-pill px-3.5 py-1.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 shrink-0 tactile-btn">
+                    Pending <span class="ml-1 opacity-75" id="count-pending">0</span>
+                </button>
+            </div>
+
+            <div class="flex items-center justify-between mb-3 px-1">
+                <h3 class="text-gray-800 font-bold text-xs flex items-center gap-2">
+                    <i class="fas fa-history text-green-600"></i> History Log
+                </h3>
+                <span class="text-[10px] text-gray-400 font-medium">Tap item for receipt</span>
+            </div>
+
+            <!-- Transaction List Container (Skeleton on initial load) -->
             <div id="history-list" class="flex flex-col gap-3">
-                <div class="text-center py-12 text-gray-400 text-xs">
-                    <i class="fas fa-spinner fa-spin text-lg mb-2 text-green-500"></i>
-                    <p>Loading history...</p>
-                </div>
+                <div class="skeleton-box h-20 rounded-2xl"></div>
+                <div class="skeleton-box h-20 rounded-2xl"></div>
+                <div class="skeleton-box h-20 rounded-2xl"></div>
             </div>
 
         </main>
 
         <!-- Bottom Navigation Bar -->
-        <nav class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between items-center px-6 pt-2 pb-5 z-40">
-            <button onclick="window.location.href='index.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600">
-                <i class="fas fa-home text-lg mb-1"></i>
+        <nav class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-between items-center px-3.5 pt-2 pb-4 z-40 shadow-[0_-4px_15px_rgba(0,0,0,0.06)]">
+            <button onclick="window.location.href='index.html'" class="flex flex-col items-center text-gray-400 hover:text-green-600 transition-colors tactile-btn px-1">
+                <i class="fas fa-home text-base mb-1"></i>
                 <span class="text-[10px] font-medium">Home</span>
             </button>
-            <button onclick="window.location.href='delivery.html'" class="flex flex-col items-center text-green-600 group">
-                <i class="fas fa-box text-lg mb-1"></i>
-                <span class="text-[10px] font-medium">Delivery</span>
+            <button onclick="window.location.href='delivery.html'" class="flex flex-col items-center text-green-600 tactile-btn px-1">
+                <i class="fas fa-box text-base mb-1"></i>
+                <span class="text-[10px] font-semibold">Delivery</span>
             </button>
-            <div class="relative -top-6">
-                <button onclick="window.location.href='referral.html'" class="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white border-4 border-white shadow-[0_5px_15px_rgba(74,222,128,0.4)]">
-                    <i class="fas fa-bicycle text-2xl"></i>
+            <button onclick="window.location.href='games.html'" class="flex flex-col items-center text-gray-400 hover:text-green-600 transition-colors tactile-btn px-1">
+                <i class="fas fa-gamepad text-base mb-1"></i>
+                <span class="text-[10px] font-medium">Games</span>
+            </button>
+            <div class="relative -top-5">
+                <button onclick="window.location.href='referral.html'" class="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white border-4 border-white shadow-[0_6px_16px_rgba(63,142,67,0.4)] tactile-btn animate-float-slow" title="Promotion">
+                    <i class="fas fa-bicycle text-xl"></i>
                 </button>
             </div>
-            <button onclick="window.location.href='map.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600">
-                <i class="fas fa-map-marked-alt text-lg mb-1"></i>
+            <button onclick="window.location.href='map.html'" class="flex flex-col items-center text-gray-400 hover:text-green-600 transition-colors tactile-btn px-1">
+                <i class="fas fa-map-marked-alt text-base mb-1"></i>
                 <span class="text-[10px] font-medium">Map</span>
             </button>
-            <button onclick="window.location.href='my.html'" class="flex flex-col items-center text-gray-400 group hover:text-green-600">
-                <i class="fas fa-user text-lg mb-1"></i>
+            <button onclick="window.location.href='my.html'" class="flex flex-col items-center text-gray-400 hover:text-green-600 transition-colors tactile-btn px-1">
+                <i class="fas fa-user text-base mb-1"></i>
                 <span class="text-[10px] font-medium">My</span>
             </button>
         </nav>
     </div>
 
+    <!-- Transaction Receipt Detail Modal -->
+    <div id="receipt-modal" class="fixed inset-0 bg-black/75 z-50 flex items-center justify-center hidden px-4" onclick="if(event.target===this) closeReceiptModal()">
+        <div class="glass-modal rounded-3xl max-w-sm w-full p-6 text-white animate-modal-pop">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div id="receipt-icon-box" class="w-10 h-10 rounded-2xl bg-green-500/25 border border-green-400 flex items-center justify-center text-green-300">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <div>
+                        <h3 id="receipt-type" class="text-sm font-bold">Transaction</h3>
+                        <span id="receipt-status-badge" class="text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">pending</span>
+                    </div>
+                </div>
+                <button onclick="closeReceiptModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-xs tactile-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="bg-white/10 border border-white/10 rounded-2xl p-4 text-center mb-4">
+                <span class="text-[10px] text-gray-300 block mb-1">Transaction Amount</span>
+                <span id="receipt-amount" class="text-2xl font-black text-white">₹0</span>
+            </div>
+
+            <div class="flex flex-col gap-2.5 text-xs bg-black/25 rounded-2xl p-3.5 border border-white/10 mb-4">
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Reference</span>
+                    <span id="receipt-meta" class="font-mono font-semibold text-gray-100">--</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Date & Time</span>
+                    <span id="receipt-date" class="font-medium text-gray-200">--</span>
+                </div>
+            </div>
+
+            <div id="receipt-note-box" class="hidden bg-red-500/15 border border-red-400/30 rounded-2xl p-3 text-[11px] text-red-200 mb-4"></div>
+
+            <button onclick="closeReceiptModal()" class="w-full py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold rounded-2xl text-xs tactile-btn">
+                Done
+            </button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAoXMQtogVuO8O_OXO62JthLagGeqGSPHg",
@@ -124,63 +300,165 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        function generateDailyEarningsHistory(userData) {
-            let items = [];
-            const level = userData.partnerLevel || "NONE";
-            if (level === "NONE" || level === "FREE" || level === "INACTIVE") return items;
+        let allItems = [];
+        let activeFilter = "all";
+        let activeUser = null;
 
-            let dailyRate = 50;
-            if (level === "VIP2") dailyRate = 130;
-            if (level === "VIP3") dailyRate = 500;
-            if (level === "VIP4") dailyRate = 2000;
-
-            const startDateStr = userData.startDate;
-            if (!startDateStr) return items;
-
-            let startDate;
-            if (startDateStr.includes('/')) {
-                const parts = startDateStr.split('/');
-                startDate = new Date(parts[2], parts[1] - 1, parts[0]);
-            } else {
-                startDate = new Date(startDateStr);
-            }
-
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            let curr = new Date(startDate);
-            curr.setHours(0, 0, 0, 0);
-
-            while (curr <= today) {
-                const dayOfWeek = curr.getDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
-                // Skip Monday (1) and Tuesday (2)
-                if (dayOfWeek !== 1 && dayOfWeek !== 2) {
-                    items.push({
-                        type: 'Daily Partner Earnings',
-                        amount: dailyRate,
-                        status: 'credited',
-                        date: new Date(curr),
-                        meta: `Tier: ${level} (Automated Reward)`,
-                        adminNote: null
-                    });
-                }
-                curr.setDate(curr.getDate() + 1);
-            }
-            return items;
+        function escapeHtml(str) {
+            return String(str ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
         }
 
-        onAuthStateChanged(auth, async (user) => {
+        function animateSummaryValue(id, target, prefix = "") {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const end = Number(target) || 0;
+            if (end === 0) {
+                el.innerText = `${prefix}0`;
+                return;
+            }
+            const duration = 500;
+            const start = performance.now();
+            function tick(now) {
+                const p = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - p, 3);
+                el.innerText = `${prefix}${Math.round(end * eased).toLocaleString()}`;
+                if (p < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+
+        function updateSummaryAndCounts() {
+            let totalDeposited = 0;
+            let totalWithdrawn = 0;
+            let pendingCount = 0;
+            let depositCount = 0;
+            let withdrawalCount = 0;
+
+            allItems.forEach(item => {
+                if (item.category === "deposit") {
+                    depositCount++;
+                    if (item.status !== "rejected") totalDeposited += Number(item.amount) || 0;
+                } else {
+                    withdrawalCount++;
+                    if (item.status !== "rejected") totalWithdrawn += Number(item.amount) || 0;
+                }
+                if (item.status === "pending") pendingCount++;
+            });
+
+            animateSummaryValue("sum-deposited", totalDeposited, "₹");
+            animateSummaryValue("sum-withdrawn", totalWithdrawn, "₹");
+            animateSummaryValue("sum-pending", pendingCount, "");
+
+            document.getElementById("count-all").innerText = allItems.length;
+            document.getElementById("count-deposit").innerText = depositCount;
+            document.getElementById("count-withdrawal").innerText = withdrawalCount;
+            document.getElementById("count-pending").innerText = pendingCount;
+        }
+
+        function getStatusStyle(status) {
+            const s = (status || "pending").toLowerCase();
+            if (s === "approved" || s === "paid") {
+                return { badge: "bg-green-500/10 text-green-700 border-green-200", dot: "bg-green-500" };
+            }
+            if (s === "verified") {
+                return { badge: "bg-blue-500/10 text-blue-700 border-blue-200", dot: "bg-blue-500" };
+            }
+            if (s === "rejected") {
+                return { badge: "bg-red-500/10 text-red-700 border-red-200", dot: "bg-red-500" };
+            }
+            return { badge: "bg-yellow-500/15 text-yellow-700 border-yellow-200", dot: "bg-yellow-500 animate-pulse" };
+        }
+
+        function renderList() {
+            const listContainer = document.getElementById("history-list");
+            const filtered = allItems.filter(item => {
+                if (activeFilter === "deposit") return item.category === "deposit";
+                if (activeFilter === "withdrawal") return item.category === "withdrawal";
+                if (activeFilter === "pending") return item.status === "pending";
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-12 px-4 bg-gray-50 rounded-2xl border border-dashed border-gray-200 anim-card">
+                        <div class="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-3 text-lg">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <p class="text-gray-700 font-bold text-xs mb-1">No transactions found</p>
+                        <p class="text-gray-400 text-[11px]">${activeFilter === 'all' ? 'Your deposits and withdrawal requests will appear here.' : 'Try switching to another filter tab above.'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listContainer.innerHTML = filtered.map((item, idx) => {
+                const isWithdrawal = item.category === "withdrawal";
+                const st = getStatusStyle(item.status);
+                const iconClass = isWithdrawal ? "fa-arrow-up text-red-500" : "fa-arrow-down text-green-600";
+                const iconBg = isWithdrawal ? "bg-red-50 border-red-100" : "bg-green-50 border-green-100";
+                const delay = Math.min(idx * 45, 360);
+
+                return `
+                    <div onclick="openReceipt(${item._idx})" style="animation-delay: ${delay}ms" class="anim-card bg-white hover:bg-green-50/30 border border-gray-100 rounded-2xl p-3.5 flex flex-col gap-2 shadow-sm transition-colors cursor-pointer tactile-btn">
+                        <div class="flex justify-between items-center gap-2">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-10 h-10 rounded-xl border ${iconBg} flex items-center justify-center shrink-0 text-sm">
+                                    <i class="fas ${iconClass}"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-1.5 flex-wrap mb-0.5">
+                                        <span class="text-xs font-bold text-gray-900 truncate">${escapeHtml(item.type)}</span>
+                                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-full uppercase border inline-flex items-center gap-1 ${st.badge}">
+                                            <span class="w-1.5 h-1.5 rounded-full ${st.dot}"></span>${escapeHtml(item.status)}
+                                        </span>
+                                    </div>
+                                    <p class="text-[11px] text-gray-500 font-mono truncate">${escapeHtml(item.meta)}</p>
+                                </div>
+                            </div>
+                            <div class="text-right shrink-0">
+                                <span class="text-sm font-black ${isWithdrawal ? 'text-red-600' : 'text-green-600'} block">
+                                    ${isWithdrawal ? '-' : '+'}₹${(Number(item.amount) || 0).toLocaleString()}
+                                </span>
+                                <span class="text-[9px] text-gray-400 font-medium">${item.date.toLocaleDateString('en-IN')}</span>
+                            </div>
+                        </div>
+                        ${item.adminNote ? `
+                            <div class="bg-red-50 border border-red-200 rounded-xl p-2.5 text-[10px] text-red-600 font-medium">
+                                <i class="fas fa-exclamation-circle mr-1"></i> Admin Note: ${escapeHtml(item.adminNote)}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join("");
+        }
+
+        async function loadHistory(user) {
             const listContainer = document.getElementById("history-list");
             if (!user) {
-                listContainer.innerHTML = `<p class="text-center text-xs text-gray-500 py-8">Please log in to view your history.</p>`;
+                document.getElementById("sum-deposited").innerText = "₹0";
+                document.getElementById("sum-withdrawn").innerText = "₹0";
+                document.getElementById("sum-pending").innerText = "0";
+                listContainer.innerHTML = `
+                    <div class="bg-green-50/60 border border-green-200 rounded-3xl p-6 text-center anim-card">
+                        <div class="w-12 h-12 rounded-full bg-green-600 text-white flex items-center justify-center mx-auto mb-3 text-lg shadow-md">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h4 class="text-sm font-bold text-gray-900 mb-1">Sign In Required</h4>
+                        <p class="text-xs text-gray-500 mb-4 leading-relaxed">Please log in or register an ANP Money account to view your deposits, payouts, and live status.</p>
+                        <div class="flex gap-2">
+                            <button onclick="window.location.href='login.html'" class="flex-1 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl text-xs shadow tactile-btn">Log In</button>
+                            <button onclick="window.location.href='anpregister.html'" class="flex-1 py-2.5 bg-white border border-green-300 text-green-700 font-bold rounded-xl text-xs tactile-btn">Register</button>
+                        </div>
+                    </div>
+                `;
                 return;
             }
 
             try {
-                const userDocRef = doc(db, "users", user.uid);
-                const userSnap = await getDoc(userDocRef);
-                const userData = userSnap.exists() ? userSnap.data() : null;
-
                 const depositsQuery = query(collection(db, "deposits"), where("uid", "==", user.uid));
                 const withdrawalsQuery = query(collection(db, "withdrawals"), where("uid", "==", user.uid));
 
@@ -190,93 +468,113 @@
                 ]);
 
                 let items = [];
-
-                if (userData) {
-                    const dailyEarningsLogs = generateDailyEarningsHistory(userData);
-                    items = items.concat(dailyEarningsLogs);
-                }
-
-                depositsSnap.forEach(docSnap => {
-                    const data = docSnap.data();
+                depositsSnap.forEach(doc => {
+                    const data = doc.data();
                     items.push({
-                        type: 'Deposit (VIP Pack)',
-                        amount: data.amount,
-                        status: data.status,
+                        category: "deposit",
+                        type: "Deposit (VIP Pack)",
+                        amount: data.amount || 0,
+                        status: data.status || "pending",
                         date: data.createdAt ? new Date(data.createdAt) : new Date(0),
-                        meta: `UTR: ${data.utr}`,
+                        meta: `UTR: ${data.utr || 'N/A'}`,
                         adminNote: data.adminNote || null
                     });
                 });
 
-                withdrawalsSnap.forEach(docSnap => {
-                    const data = docSnap.data();
+                withdrawalsSnap.forEach(doc => {
+                    const data = doc.data();
                     items.push({
-                        type: 'Withdrawal Payout',
-                        amount: data.amount,
-                        status: data.status,
+                        category: "withdrawal",
+                        type: "Withdrawal Payout",
+                        amount: data.amount || 0,
+                        status: data.status || "pending",
                         date: data.createdAt ? new Date(data.createdAt) : new Date(0),
-                        meta: `Bank A/C: ${data.bankAccount}`,
+                        meta: `A/C: ${data.bankAccount || 'N/A'}`,
                         adminNote: data.adminNote || null
                     });
                 });
 
                 items.sort((a, b) => b.date - a.date);
+                allItems = items.map((item, i) => ({ ...item, _idx: i }));
 
-                listContainer.innerHTML = "";
-
-                if (items.length === 0) {
-                    listContainer.innerHTML = `
-                        <div class="text-center py-12 text-gray-400 text-xs">
-                            <i class="fas fa-file-invoice-dollar text-2xl text-green-300 mb-2"></i>
-                            <p>No transaction history found yet.</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                items.forEach(item => {
-                    let badgeColor = "bg-yellow-500/10 text-yellow-600 border-yellow-200";
-                    if (item.status === "approved" || item.status === "paid" || item.status === "credited") {
-                        badgeColor = "bg-green-500/10 text-green-700 border-green-200";
-                    } else if (item.status === "verified") {
-                        badgeColor = "bg-blue-500/10 text-blue-700 border-blue-200";
-                    } else if (item.status === "rejected") {
-                        badgeColor = "bg-red-500/10 text-red-700 border-red-200";
-                    }
-
-                    const isCredit = item.type.includes('Deposit') || item.type.includes('Earnings');
-
-                    const card = `
-                        <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 flex flex-col gap-2 shadow-sm">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="text-xs font-bold text-gray-900">${item.type}</span>
-                                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-full uppercase border ${badgeColor}">${item.status}</span>
-                                    </div>
-                                    <p class="text-[11px] text-gray-500">${item.meta}</p>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-sm font-black ${isCredit ? 'text-green-600' : 'text-red-600'}">
-                                        ${isCredit ? '+' : '-'}₹${(item.amount || 0).toLocaleString()}
-                                    </span>
-                                </div>
-                            </div>
-                            ${item.adminNote ? `
-                                <div class="bg-red-50 border border-red-200 rounded-xl p-2.5 text-[10px] text-red-600 font-medium">
-                                    <i class="fas fa-exclamation-circle mr-1"></i> Note from Admin: ${item.adminNote}
-                                </div>
-                            ` : ''}
-                            <div class="text-[10px] text-gray-400 text-right">${item.date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
-                        </div>
-                    `;
-                    listContainer.innerHTML += card;
-                });
-
+                updateSummaryAndCounts();
+                renderList();
             } catch (error) {
                 console.error("Error loading history:", error);
-                listContainer.innerHTML = `<p class="text-red-500 text-xs text-center py-4">Error loading history: ${error.message}</p>`;
+                listContainer.innerHTML = `<p class="text-red-500 text-xs text-center py-4">Error loading history: ${escapeHtml(error.message)}</p>`;
             }
+        }
+
+        window.setFilter = function(filter) {
+            activeFilter = filter;
+            document.querySelectorAll(".filter-pill").forEach(btn => {
+                const isMatch = btn.getAttribute("data-filter") === filter;
+                btn.className = isMatch
+                    ? "filter-pill px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-green-600 text-white shadow-sm shrink-0 tactile-btn"
+                    : "filter-pill px-3.5 py-1.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 shrink-0 tactile-btn";
+            });
+            renderList();
+        }
+
+        window.refreshHistory = async function() {
+            const icon = document.getElementById("refresh-icon");
+            if (icon) icon.classList.add("fa-spin");
+            await loadHistory(activeUser);
+            setTimeout(() => {
+                if (icon) icon.classList.remove("fa-spin");
+            }, 400);
+        }
+
+        window.openReceipt = function(idx) {
+            const item = allItems[idx];
+            if (!item) return;
+
+            const isWithdrawal = item.category === "withdrawal";
+            document.getElementById("receipt-type").innerText = item.type;
+            document.getElementById("receipt-amount").innerText = `${isWithdrawal ? '-' : '+'}₹${(Number(item.amount) || 0).toLocaleString()}`;
+            document.getElementById("receipt-meta").innerText = item.meta;
+            document.getElementById("receipt-date").innerText = item.date.toLocaleString('en-IN');
+
+            const badge = document.getElementById("receipt-status-badge");
+            badge.innerText = item.status;
+            const st = getStatusStyle(item.status);
+            badge.className = `text-[9px] font-bold px-2 py-0.5 rounded-full uppercase border inline-block mt-0.5 ${st.badge}`;
+
+            const noteBox = document.getElementById("receipt-note-box");
+            if (item.adminNote) {
+                noteBox.innerText = `Admin Note: ${item.adminNote}`;
+                noteBox.classList.remove("hidden");
+            } else {
+                noteBox.classList.add("hidden");
+            }
+
+            document.getElementById("receipt-modal").classList.remove("hidden");
+        }
+
+        window.closeReceiptModal = function() {
+            document.getElementById("receipt-modal").classList.add("hidden");
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            activeUser = user;
+            loadHistory(user);
+        });
+
+        // Lightweight Tactile Ripple Listener
+        document.addEventListener('click', function (e) {
+            const target = e.target.closest('.tactile-btn');
+            if (!target) return;
+            const old = target.querySelector('.ripple');
+            if (old) old.remove();
+            const circle = document.createElement('span');
+            const rect = target.getBoundingClientRect();
+            const d = Math.max(rect.width, rect.height);
+            circle.style.width = circle.style.height = `${d}px`;
+            circle.style.left = `${e.clientX - rect.left - d / 2}px`;
+            circle.style.top = `${e.clientY - rect.top - d / 2}px`;
+            circle.classList.add('ripple');
+            target.appendChild(circle);
+            setTimeout(() => circle.remove(), 500);
         });
     </script>
 </body>
